@@ -7,7 +7,8 @@ module.exports = function (grunt) {
     grunt.initConfig({
         yeoman: {
             app: 'src',
-            dist: 'dist'
+            dist: 'dist',
+            namespace: 'Planner.Templates'
         },
         watch: {
             compass: {
@@ -17,6 +18,12 @@ module.exports = function (grunt) {
             styles: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
                 tasks: ['copy:styles', 'autoprefixer']
+            },
+            handlebars: {
+                files: [
+                    'src/templates/**/*.hbs'
+                ],
+                tasks: ['handlebars']
             },
             livereload: {
                 options: {
@@ -233,6 +240,24 @@ module.exports = function (grunt) {
                 'svgmin',
                 'htmlmin'
             ]
+        },
+        handlebars: {
+            compile: {
+                files: {
+                    '.tmp/scripts/compiled-templates.js': [
+                        '<%= yeoman.app %>/templates/**/*.hbs'
+                    ]
+                },
+                options: {
+                    namespace: '<%= yeoman.namespace %>',
+                    wrapped: true,
+                    processName: function(filename) {
+                        return filename
+                            .replace(/^src\/templates\//, '')
+                            .replace(/\.hbs$/, '');
+                    }
+                }
+            }
         }
     });
 
@@ -244,6 +269,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'concurrent:server',
+            'handlebars',
             'autoprefixer',
             'connect:livereload',
             'watch'
@@ -266,6 +292,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
+        'handlebars',
         'concurrent:dist',
         'autoprefixer',
         'concat',

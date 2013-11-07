@@ -2,7 +2,8 @@
   "name": "planner-js",
   "version": "0.0.0",
   "dependencies": {
-    "jquery": "~1.10.2"
+    "jquery": "~1.10.2",
+    "handlebars": "~1.1.2"
   },
   "devDependencies": {}
 }
