@@ -1,0 +1,9 @@
+# Library
+node_modules
+dist
+.tmp
+.sass-cache
+src/modules/
+
+# IDE
+.idea/
