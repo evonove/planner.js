@@ -2,5 +2,14 @@
     {{> header}}
 </div>
 <div class="js-planner-body row">
-    {{> timeslot}}
+    <div class="col-xs-1">
+        {{> timeslot}}
+    </div>
+    <div class="col-xs-11">
+        <div class="planner-column">
+            {{#each columns}}
+                {{> column}}
+            {{/each}}
+        </div>
+    </div>
 </div>
