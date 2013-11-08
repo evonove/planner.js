@@ -12,11 +12,11 @@ module.exports = function (grunt) {
         },
         watch: {
             compass: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+                files: ['<%= yeoman.app %>/sass/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server', 'autoprefixer']
             },
             styles: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
+                files: ['<%= yeoman.app %>/sass/{,*/}*.css'],
                 tasks: ['copy:styles', 'autoprefixer']
             },
             handlebars: {
@@ -31,8 +31,8 @@ module.exports = function (grunt) {
                 },
                 files: [
                     '<%= yeoman.app %>/*.html',
-                    '.tmp/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    '.tmp/css/{,*/}*.css',
+                    '{.tmp,<%= yeoman.app %>}/js/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,svg,webp}'
                 ]
             }
@@ -89,8 +89,8 @@ module.exports = function (grunt) {
             },
             all: [
                 'Gruntfile.js',
-                '<%= yeoman.app %>/scripts/{,*/}*.js',
-                '!<%= yeoman.app %>/scripts/vendor/*',
+                '<%= yeoman.app %>/js/{,*/}*.js',
+                '!<%= yeoman.app %>/js/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
         },
@@ -104,16 +104,16 @@ module.exports = function (grunt) {
         },
         compass: {
             options: {
-                sassDir: '<%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
+                sassDir: '<%= yeoman.app %>/sass',
+                cssDir: '.tmp/css',
                 generatedImagesDir: '.tmp/images/generated',
                 imagesDir: '<%= yeoman.app %>/images',
-                javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '<%= yeoman.app %>/styles/fonts',
+                javascriptsDir: '<%= yeoman.app %>/js',
+                fontsDir: '<%= yeoman.app %>/sass/fonts',
                 importPath: '<%= yeoman.app %>/modules',
                 httpImagesPath: '/images',
                 httpGeneratedImagesPath: '/images/generated',
-                httpFontsPath: '/styles/fonts',
+                httpFontsPath: '/css/fonts',
                 relativeAssets: false,
                 assetCacheBuster: false
             },
@@ -135,9 +135,9 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: '.tmp/styles/',
+                    cwd: '.tmp/css/',
                     src: '{,*/}*.css',
-                    dest: '.tmp/styles/'
+                    dest: '.tmp/css/'
                 }]
             }
         },
@@ -151,10 +151,10 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     src: [
-                        '<%= yeoman.dist %>/scripts/{,*/}*.js',
-                        '<%= yeoman.dist %>/styles/{,*/}*.css',
+                        '<%= yeoman.dist %>/js/{,*/}*.js',
+                        '<%= yeoman.dist %>/css/{,*/}*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
-                        '<%= yeoman.dist %>/styles/fonts/{,*/}*.*'
+                        '<%= yeoman.dist %>/css/fonts/{,*/}*.*'
                     ]
                 }
             }
@@ -170,7 +170,7 @@ module.exports = function (grunt) {
                 assetsDirs: ['<%= yeoman.dist %>']
             },
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
-            css: ['<%= yeoman.dist %>/styles/{,*/}*.css']
+            css: ['<%= yeoman.dist %>/css/{,*/}*.css']
         },
         imagemin: {
             dist: {
@@ -213,15 +213,15 @@ module.exports = function (grunt) {
                         '*.{ico,png,txt}',
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/{,*/}*.*'
+                        'css/fonts/{,*/}*.*'
                     ]
                 }]
             },
             styles: {
                 expand: true,
                 dot: true,
-                cwd: '<%= yeoman.app %>/styles',
-                dest: '.tmp/styles/',
+                cwd: '<%= yeoman.app %>/sass',
+                dest: '.tmp/css/',
                 src: '{,*/}*.css'
             }
         },
@@ -244,7 +244,7 @@ module.exports = function (grunt) {
         handlebars: {
             compile: {
                 files: {
-                    '.tmp/scripts/compiled-templates.js': [
+                    '.tmp/js/compiled-templates.js': [
                         '<%= yeoman.app %>/templates/**/*.hbs'
                     ]
                 },
