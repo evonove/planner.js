@@ -10,8 +10,8 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
+        <!-- build:css(.tmp) css/main.css -->
+        <link rel="stylesheet" href="css/main.css">
         <!-- endbuild -->
     </head>
     <body>
@@ -19,23 +19,26 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div class="hero-unit">
-          <h1>'Allo, 'Allo!</h1>
-          <p>You now have</p>
-          <ul>
-            <li>HTML5 Boilerplate</li>
+        <div class="container"></div>
 
-          </ul>
-        </div>
-
-        <!-- build:js scripts/ext/vendor.js -->
+        <!-- build:js js/ext/vendor.js -->
         <!-- bower:js -->
         <script src="modules/jquery/jquery.js"></script>
+        <script src="modules/handlebars/handlebars.runtime.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
-        <!-- build:js scripts/main.js -->
-        <script src="scripts/main.js"></script>
+        <!-- build:js js/ext/plugin.js -->
+        <!-- bower:js -->
+        <!-- endbower -->
+        <!-- endbuild -->
+
+        <!-- build:js(.tmp) js/ext/templates.js -->
+        <script src="js/compiled-templates.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js js/main.js -->
+        <script src="js/main.js"></script>
         <!-- endbuild -->
 </body>
 </html>
