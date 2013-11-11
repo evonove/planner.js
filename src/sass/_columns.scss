@@ -1,0 +1,22 @@
+// ==============
+// Column classes
+// ==============
+
+.planner-columns {
+    overflow: hidden;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.planner-columns-overflow {
+    @include animate-ease;
+
+    width: 100%;
+    position: relative;
+    white-space: nowrap;
+}
+
+.planner-columns-overflow > div {
+    width: 100%;
+    display: inline-block;
+}

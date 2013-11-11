@@ -1,0 +1,10 @@
+// =============
+// Mixin classes
+// =============
+
+// Animation
+// ---------
+
+@mixin animate-ease() {
+    @include transition(all $transition-duration ease-in)
+}
