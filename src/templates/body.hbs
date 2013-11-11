@@ -2,11 +2,11 @@
     {{> header}}
 </div>
 <div class="js-planner-body row">
-    <div class="col-xs-1">
+    <div class="col-xs-1 planner-timeslots">
         {{> timeslot}}
     </div>
-    <div class="col-xs-11">
-        <div class="planner-column">
+    <div class="col-xs-11 planner-columns">
+        <div class="planner-columns-overflow">
             {{#each columns}}
                 {{> column}}
             {{/each}}
