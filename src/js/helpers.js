@@ -20,7 +20,7 @@
     Planner.Helpers = {
         // Create HTML string using a default columns configuration
         plannerWeekday: function() {
-            return Planner.Templates.body({columns: dayColumn});
+            return dayColumn;
         }
     };
 
