@@ -251,10 +251,11 @@ module.exports = function (grunt) {
                 options: {
                     namespace: '<%= yeoman.namespace %>',
                     wrapped: true,
-                    processName: function(filename) {
-                        return filename
-                            .replace(/^src\/templates\//, '')
-                            .replace(/\.hbs$/, '');
+                    partialsUseNamespace: true,
+
+                    processName: function(fileName) {
+                        var bits = fileName.split('/');
+                        return bits[bits.length - 1].replace('.hbs', '');
                     }
                 }
             }
