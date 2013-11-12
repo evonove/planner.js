@@ -1,3 +1,3 @@
-;(function($, Planner) { 'use strict';
+;(function() { 'use strict';
 
-})(jQuery, Planner);
+})();

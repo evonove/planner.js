@@ -1,19 +1,19 @@
 ;(function($, Planner) { 'use strict';
 
-    // _Planner class definition with defaults
+    // PlanningChart class definition with defaults
     // ---------------------------------------
 
-    var _Planner = function (element, options) {
+    var PlanningChart = function (element, options) {
         this.$element = $(element);
         this.options = options;
     };
 
-    _Planner.DEFAULTS = {
+    PlanningChart.DEFAULTS = {
         columns: [],
         visibleColumns: 1
     };
 
-    // _Planner widget definition
+    // PlanningChart widget definition
     // --------------------------
 
     var old = $.fn.planner;
@@ -22,11 +22,11 @@
         return this.each(function() {
             var $this = $(this);
             var data = $this.data('pl.planner');
-            var options = $.extend({}, _Planner.DEFAULTS, $this.data(), typeof option === 'object' && option);
+            var options = $.extend({}, PlanningChart.DEFAULTS, $this.data(), typeof option === 'object' && option);
 
             // If this node isn't initialized, call the constructor
             if (!data) {
-                $this.data('pl.planner', (data = new _Planner(this, options)));
+                $this.data('pl.planner', (data = new PlanningChart(this, options)));
             }
 
             // Check if any columns are set otherwise use a default behaviour
@@ -38,9 +38,9 @@
         });
     };
 
-    $.fn.planner.Constructor = _Planner;
+    $.fn.planner.Constructor = PlanningChart;
 
-    // _Planner no conflict
+    // PlanningChart no conflict
     // --------------------
 
     $.fn.planner.noConflict = function() {
@@ -48,7 +48,7 @@
         return this;
     };
 
-    // _Planner DATA-API
+    // PlanningChart DATA-API
     // -----------------
 
     $(window).on('load', function() {
