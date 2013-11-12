@@ -10,6 +10,7 @@
 
     PlanningChart.DEFAULTS = {
         columns: [],
+        rows: [],
         visibleColumns: 1
     };
 
@@ -29,11 +30,11 @@
                 $this.data('pl.planner', (data = new PlanningChart(this, options)));
             }
 
-            // Check if any columns are set otherwise use a default behaviour
-            if (options.columns.length > 0) {
-                $this.html(Planner.Templates.body({columns: options.columns}));
+            // Check if columns and rows are set otherwise use a default planner
+            if (options.columns.length > 0 && options.rows.length > 0) {
+                $this.html(Planner.Templates.body({columns: options.columns, rows: options.rows}));
             } else {
-                $this.html(Planner.Templates.body({columns: Planner.Helpers.plannerWeekday()}));
+                $this.html(Planner.Helpers.plannerWeekday());
             }
         });
     };
