@@ -1,5 +1,4 @@
-;(function($, Planner) { 'use strict';
-    Planner.Helpers = {};
+;(function($, Planner, Handlebars) { 'use strict';
 
     // Local data useful for some helpers
     // ----------------------------------
@@ -41,8 +40,8 @@
         {name: '23:00'}
     ];
 
-    // Helpers definition
-    // ------------------
+    // Planner helpers
+    // ---------------
 
     Planner.Helpers = {
         // Create HTML string using a default columns configuration
@@ -51,5 +50,17 @@
         }
     };
 
+    // Handlebars helpers
+    // ------------------
 
-})(jQuery, Planner);
+    Handlebars.registerHelper('times', function(n, block) {
+        var accumulator = '';
+
+        for (var i = 0; i < n; ++i) {
+            accumulator += block.fn(i);
+        }
+
+        return accumulator;
+    });
+
+})(jQuery, Planner, Handlebars);
