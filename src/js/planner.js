@@ -11,6 +11,7 @@
     PlanningChart.DEFAULTS = {
         columns: [],
         rows: [],
+        timeslots: 1,
         visibleColumns: 1
     };
 
@@ -32,7 +33,7 @@
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columns.length > 0 && options.rows.length > 0) {
-                $this.html(Planner.Templates.body({columns: options.columns, rows: options.rows}));
+                $this.html(Planner.Templates.body({columns: options.columns, rows: options.rows, timeslots: options.timeslots}));
             } else {
                 $this.html(Planner.Helpers.plannerWeekday());
             }

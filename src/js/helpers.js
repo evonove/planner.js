@@ -46,7 +46,7 @@
     Planner.Helpers = {
         // Create HTML string using a default columns configuration
         plannerWeekday: function() {
-            return Planner.Templates.body({columns: dayColumns, rows: hourRows});
+            return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: 4});
         }
     };
 
