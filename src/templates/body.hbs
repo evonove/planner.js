@@ -10,7 +10,14 @@
     <div class="col-xs-11 planner-columns">
         <div class="planner-columns-overflow">
             {{#each columns}}
-                {{> column}}
+                <div class="column">
+                    <div class="column-header">{{name}}</div>
+                    {{#each ../rows}}
+                        {{#times ../../timeslots}}
+                            <div></div>
+                        {{/times}}
+                    {{/each}}
+                </div>
             {{/each}}
         </div>
     </div>
