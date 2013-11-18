@@ -6,17 +6,42 @@
     overflow: hidden;
     padding-right: 0px;
     padding-left: 0px;
+
+    .planner-columns-overflow {
+        @include animate-ease;
+
+        width: 14%;
+        position: relative;
+        display: inline-block;
+        white-space: nowrap;
+    }
 }
 
-.planner-columns-overflow {
-    @include animate-ease;
-
-    width: 100%;
-    position: relative;
-    white-space: nowrap;
-}
-
-.planner-columns-overflow > div {
+.column {
     width: 100%;
     display: inline-block;
+
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+
+    .column-header {
+        text-align: center;
+        border-bottom: 5px solid #cccccc;
+        margin-bottom: 40px;
+        padding: 5px;
+    }
+
+    > div:not(:first-child) {
+      height: 25px;
+      border-bottom: 1px dotted #cccccc;
+    }
+
+    > div:nth-child(2) {
+      border-top: 2px solid #cccccc;
+    }
+
+    > div:nth-child(4n+1):not(:first-child):not(:last-child) {
+      border-bottom: 2px solid #cccccc;
+    }
 }
