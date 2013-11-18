@@ -8,10 +8,20 @@
         this.options = options;
     };
 
+    PlanningChart.CONST = {
+        ALIGNMENT: {
+            TOP: 0,
+            MIDDLE: 1
+        }
+    };
+
     PlanningChart.DEFAULTS = {
         columns: [],
         rows: [],
         timeslots: 1,
+        timeslotsHeight: 25,
+        timeslotsPadding: 80,
+        textAlignment: PlanningChart.CONST.ALIGNMENT.TOP,
         visibleColumns: 1
     };
 
@@ -33,10 +43,13 @@
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columns.length > 0 && options.rows.length > 0) {
-                $this.html(Planner.Templates.body({columns: options.columns, rows: options.rows, timeslots: options.timeslots}));
+                $this.html(Planner.Templates.body(options));
             } else {
                 $this.html(Planner.Helpers.plannerWeekday());
             }
+
+            // Add computed styles
+            $('head').append(Planner.Helpers.computedCSS(options));
         });
     };
 

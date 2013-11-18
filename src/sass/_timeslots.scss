@@ -1,0 +1,18 @@
+// =================
+// Timeslots classes
+// =================
+
+.planner-timeslots {
+    padding-top: 40px;
+
+    > div {
+      padding-top: 45px;
+      text-align: center;
+      border-right: 1px solid #cccccc;
+    }
+
+    > div:last-child {
+      padding-bottom: 105px;
+      margin-bottom: 5px;
+    }
+}

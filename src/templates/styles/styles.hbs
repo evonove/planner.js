@@ -1,0 +1,15 @@
+{{! List of computed styles }}
+
+.column > div:not(:first-child) {
+    height: {{rowHeight}}px;
+}
+
+{{#if textAlignment}}
+    .planner-timeslots > div {
+        padding-top: 94px;
+    }
+{{/if}}
+
+.planner-timeslots > div:not(:first-child) {
+    padding-top: {{rowPadding}}px;
+}

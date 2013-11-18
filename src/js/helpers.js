@@ -44,6 +44,17 @@
     // ---------------
 
     Planner.Helpers = {
+        // Generate a computed style node
+        computedCSS: function(options) {
+            var styleNode = $('<style></style>');
+            styleNode.html(Planner.Templates.styles({
+                textAlignment: options.textAlignment,
+                rowHeight: options.timeslotsHeight,
+                rowPadding: options.timeslotsPadding
+            }));
+
+            return styleNode;
+        },
         // Create HTML string using a default columns configuration
         plannerWeekday: function() {
             return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: 4});
