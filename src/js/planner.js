@@ -18,7 +18,7 @@
     PlanningChart.DEFAULTS = {
         columns: [],
         rows: [],
-        timeslots: 1,
+        timeslots: 4,
         timeslotsHeight: 25,
         textAlignment: PlanningChart.CONST.ALIGNMENT.TOP,
         visibleColumns: 1
@@ -44,7 +44,7 @@
             if (options.columns.length > 0 && options.rows.length > 0) {
                 $this.html(Planner.Templates.body(options));
             } else {
-                $this.html(Planner.Helpers.plannerWeekday());
+                $this.html(Planner.Helpers.plannerWeekday(options));
             }
 
             // Add computed styles

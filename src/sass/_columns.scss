@@ -40,8 +40,4 @@
     > div:nth-child(2) {
       border-top: 2px solid #cccccc;
     }
-
-    > div:nth-child(4n+1):not(:first-child):not(:last-child) {
-      border-bottom: 2px solid #cccccc;
-    }
 }

@@ -52,14 +52,15 @@
                 textAlignment: options.textAlignment,
                 topPadding: options.timeslotsHeight * 2 + 44,
                 rowHeight: options.timeslotsHeight,
-                rowPadding: options.timeslotsHeight * 4 - 20
+                rowPadding: (options.timeslots - 1) * options.timeslotsHeight + 5,
+                timeslots: options.timeslots
             }));
 
             return styleNode;
         },
         // Create HTML string using a default columns configuration
-        plannerWeekday: function() {
-            return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: 4});
+        plannerWeekday: function(options) {
+            return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: options.timeslots});
         }
     };
 
