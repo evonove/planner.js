@@ -47,10 +47,12 @@
         // Generate a computed style node
         computedCSS: function(options) {
             var styleNode = $('<style></style>');
+
             styleNode.html(Planner.Templates.styles({
                 textAlignment: options.textAlignment,
+                topPadding: options.timeslotsHeight * 2 + 44,
                 rowHeight: options.timeslotsHeight,
-                rowPadding: options.timeslotsPadding
+                rowPadding: options.timeslotsHeight * 4 - 20
             }));
 
             return styleNode;

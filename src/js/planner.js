@@ -20,7 +20,6 @@
         rows: [],
         timeslots: 1,
         timeslotsHeight: 25,
-        timeslotsPadding: 80,
         textAlignment: PlanningChart.CONST.ALIGNMENT.TOP,
         visibleColumns: 1
     };
