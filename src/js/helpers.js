@@ -48,15 +48,13 @@
         computedCSS: function(options) {
             var styleNode = $('<style></style>');
             var timeslotSize = options.timeslotsHeight * options.timeslots;
-
-            timeslotSize = options.textAlignment ? timeslotSize / 2 : timeslotSize;
+            var timeslotPadding = options.textAlignment ? timeslotSize / 2 : timeslotSize;
 
             styleNode.html(Planner.Templates.styles({
-                textAlignment: options.textAlignment,
-                topPadding: timeslotSize + 45,
+                topPadding: (options.textAlignment && timeslotPadding) + 45,
                 rowHeight: options.timeslotsHeight,
-                rowPadding: options.timeslots * options.timeslotsHeight - 20,
-                rowPaddingBottom: timeslotSize,
+                rowPadding: timeslotSize - 20,
+                rowPaddingBottom: timeslotPadding,
                 timeslots: options.timeslots
             }));
 
