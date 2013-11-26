@@ -16,12 +16,13 @@
     };
 
     PlanningChart.DEFAULTS = {
-        columns: [],
-        rows: [],
         timeslots: 4,
-        timeslotsHeight: 25,
-        textAlignment: PlanningChart.CONST.ALIGNMENT.TOP,
-        visibleColumns: 1
+        timeslotHeight: 25,
+        timeslotPadding: 20,
+        timeslotStartPadding: 45,
+        centered: PlanningChart.CONST.ALIGNMENT.TOP,
+        columnLabels: [],
+        rowLabels: []
     };
 
     // PlanningChart widget definition
@@ -41,7 +42,7 @@
             }
 
             // Check if columns and rows are set otherwise use a default planner
-            if (options.columns.length > 0 && options.rows.length > 0) {
+            if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {
                 $this.html(Planner.Templates.body(options));
             } else {
                 $this.html(Planner.Helpers.plannerWeekday(options));

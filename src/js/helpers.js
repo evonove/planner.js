@@ -47,15 +47,15 @@
         // Generate a computed style node
         computedCSS: function(options) {
             var styleNode = $('<style></style>');
-            var timeslotSize = options.timeslotsHeight * options.timeslots;
-            var timeslotPadding = options.textAlignment ? timeslotSize / 2 : timeslotSize;
+            var timeslotSize = options.timeslotHeight * options.timeslots;
+            var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
 
             styleNode.html(Planner.Templates.styles({
-                topPadding: (options.textAlignment && timeslotPadding) + 45,
-                rowHeight: options.timeslotsHeight,
-                rowPadding: timeslotSize - 20,
-                rowPaddingBottom: timeslotPadding,
-                timeslots: options.timeslots
+                timeslots: options.timeslots,
+                startPadding: (options.centered && timeslotPadding) + options.timeslotStartPadding,
+                timeslotHeight: options.timeslotHeight,
+                timeslotPadding: timeslotSize - options.timeslotPadding,
+                lastTimeslotPadding: timeslotPadding
             }));
 
             return styleNode;
