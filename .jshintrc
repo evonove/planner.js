@@ -19,6 +19,7 @@
     "smarttabs": true,
     "jquery": true,
     "globals": {
-        "Planner": false
+        "Planner": false,
+        "Handlebars": false
     }
 }
