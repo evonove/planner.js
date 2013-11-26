@@ -52,7 +52,7 @@
                 textAlignment: options.textAlignment,
                 topPadding: options.timeslotsHeight * 2 + 44,
                 rowHeight: options.timeslotsHeight,
-                rowPadding: (options.timeslots - 1) * options.timeslotsHeight + 5,
+                rowPadding: options.timeslots * options.timeslotsHeight - 20,
                 timeslots: options.timeslots
             }));
 
