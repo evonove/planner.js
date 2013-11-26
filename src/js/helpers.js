@@ -50,7 +50,7 @@
 
             styleNode.html(Planner.Templates.styles({
                 textAlignment: options.textAlignment,
-                topPadding: options.timeslotsHeight * 2 + 44,
+                topPadding: options.timeslotsHeight * options.timeslots / 2 + 45,
                 rowHeight: options.timeslotsHeight,
                 rowPadding: options.timeslots * options.timeslotsHeight - 20,
                 timeslots: options.timeslots
