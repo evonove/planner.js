@@ -1,0 +1,22 @@
+// ==============
+// Card classes
+// ==============
+
+div.planner-card {
+    @include border-radius(4px, 4px);
+    background-color: rgba($card-color, $card-header-alpha);
+
+    width: 90%;
+    position: absolute;
+    text-align: center;
+    overflow: hidden;
+
+    > .planner-card-time {
+        @include border-radius(4px, 4px);
+        background-color: rgba($card-color, $card-body-alpha);
+    }
+  
+    > div {
+        font-weight: bold;
+    }
+}
