@@ -1,7 +1,7 @@
 ;(function($, Planner) { 'use strict';
 
     // PlanningChart class definition with defaults
-    // ---------------------------------------
+    // --------------------------------------------
 
     var PlanningChart = function (element, options) {
         this.$element = $(element);
@@ -26,7 +26,7 @@
     };
 
     // PlanningChart widget definition
-    // --------------------------
+    // -------------------------------
 
     var old = $.fn.planner;
 
@@ -53,10 +53,10 @@
         });
     };
 
-    $.fn.planner.Constructor = PlanningChart;
+    $.fn.planner.constructor = PlanningChart;
 
     // PlanningChart no conflict
-    // --------------------
+    // -------------------------
 
     $.fn.planner.noConflict = function() {
         $.fn.planner = old;
@@ -64,7 +64,7 @@
     };
 
     // PlanningChart DATA-API
-    // -----------------
+    // ----------------------
 
     $(window).on('load', function() {
         $('[data-planner="container"]').each(function() {
