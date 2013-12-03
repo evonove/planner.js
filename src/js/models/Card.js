@@ -5,13 +5,13 @@
     // Card class definition with prototype methods
     // --------------------------------------------
 
-    var Card = function() {
-        this.id = null;
-        this.title = null;
-        this.content = null;
-        this.start = null;
-        this.end = null;
-        this.assignees = [];
+    var Card = function(id, title, content, start, end, assignees) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.start = start;
+        this.end = end;
+        this.assignees = assignees;
     };
 
     // Methods that should be overridden by your
