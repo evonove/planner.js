@@ -25,6 +25,31 @@
         rowLabels: []
     };
 
+    // Prototype functions
+    // -------------------
+
+    /**
+     * TODO: this function doesn't support multi day events
+     * @param card to draw
+     */
+    PlanningChart.prototype.drawCard = function(card) {
+        var self = this;
+
+        card.$element.forEach(function(cardDOM) {
+            // Get data-attributes element from card DOM
+            var column = cardDOM.data('column');
+            var start = cardDOM.data('start');
+            var end = cardDOM.data('end');
+            var cardLength = (end - start) * self.options.timeslotHeight;
+
+            // Set height according to card length
+            cardDOM.height(cardLength);
+
+            // Find the right column and search starting div; append created object
+            self.$element.find('.column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
+        });
+    };
+
     // PlanningChart widget definition
     // -------------------------------
 
@@ -40,6 +65,9 @@
             if (!data) {
                 $this.data('pl.planner', (data = new PlanningChart(this, options)));
             }
+
+            // Planner helpers can control options
+            Planner.Helpers.options = options;
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {
