@@ -46,6 +46,7 @@
             cardDOM.height(cardLength);
 
             // Find the right column and search starting div; append created object
+            // TODO test collisions
             self.$element.find('.column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
         });
     };
