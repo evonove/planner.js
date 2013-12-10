@@ -33,10 +33,12 @@
         var cardDOM = $(Planner.Templates.card(self));
         var element;
 
-        // Generate DOM element for each assignees (column)
+        // Generate DOM element for each assignees
         this.assignees.forEach(function(value) {
             element = cardDOM.clone();
             element.data('column', value);
+            element.data('start', Planner.Helpers.attributeToIndex(self.start));
+            element.data('end', Planner.Helpers.attributeToIndex(self.end));
 
             generatedElements.push(element);
         });
