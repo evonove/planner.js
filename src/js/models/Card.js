@@ -1,4 +1,4 @@
-;(function(Planner){ 'use strict';
+;(function(Planner, Utils){ 'use strict';
 
     Planner.Model = Planner.Model || {};
 
@@ -13,17 +13,26 @@
         this.end = end;
         this.assignees = assignees;
 
-        // Duck typing: if it has hours and minutes, it's a Date object
-        if (typeof start.getHours === 'function' && typeof start.getMinutes === 'function' &&
-            typeof end.getHours === 'function' && typeof end.getMinutes === 'function') {
-            this.titleHeader = start.getHours() + ':' + start.getMinutes() + " - " + end.getHours() + ':' + end.getMinutes();
-        }
-
+        this.titleHeader = this.generateTitle(start, end);
         this.$element = this.generateDOM();
     };
 
     // Card class definition with prototype methods
     // --------------------------------------------
+
+    Card.prototype.generateTitle = function(start, end) {
+        var title;
+
+        if (typeof start.getHours === 'function' && typeof start.getMinutes === 'function' && typeof end.getHours === 'function' && typeof end.getMinutes === 'function') {
+            title = Utils.pad(start.getHours()) + ':' + Utils.pad(start.getMinutes()) + '-' + Utils.pad(end.getHours()) + ':' + Utils.pad(end.getMinutes());
+        } else if (start === end) {
+            title = start;
+        } else {
+            title = start + '-' + end;
+        }
+
+        return title;
+    };
 
     Card.prototype.generateDOM = function() {
         var self = this;
@@ -55,4 +64,4 @@
 
     Planner.Model.Card = Card;
 
-})(Planner);
+})(Planner, Planner.Utils);
