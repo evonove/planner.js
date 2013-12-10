@@ -20,6 +20,7 @@
         timeslotHeight: 25,
         timeslotPadding: 20,
         timeslotStartPadding: 45,
+        cardTitleMargin: 6,
         centered: PlanningChart.CONST.ALIGNMENT.TOP,
         columnLabels: [],
         rowLabels: []
@@ -40,7 +41,7 @@
             var column = cardDOM.data('column');
             var start = cardDOM.data('start');
             var end = cardDOM.data('end');
-            var cardLength = (end - start) * self.options.timeslotHeight;
+            var cardLength = (end - start) * self.options.timeslotHeight - self.options.cardTitleMargin;
 
             // Set height according to card length
             cardDOM.height(cardLength);

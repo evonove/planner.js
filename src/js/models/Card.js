@@ -24,7 +24,7 @@
         var title;
 
         if (typeof start.getHours === 'function' && typeof start.getMinutes === 'function' && typeof end.getHours === 'function' && typeof end.getMinutes === 'function') {
-            title = Utils.pad(start.getHours()) + ':' + Utils.pad(start.getMinutes()) + '-' + Utils.pad(end.getHours()) + ':' + Utils.pad(end.getMinutes());
+            title = Utils.pad(start.getHours()) + ':' + Utils.pad(start.getMinutes()) + ' - ' + Utils.pad(end.getHours()) + ':' + Utils.pad(end.getMinutes());
         } else if (start === end) {
             title = start;
         } else {
