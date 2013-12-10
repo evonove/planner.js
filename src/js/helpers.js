@@ -40,12 +40,15 @@
         {name: '23:00'}
     ];
 
+    Planner.Helpers.options = {};
+
     // Planner helpers
     // ---------------
 
     Planner.Helpers = {
         // Generate a computed style node
-        computedCSS: function(options) {
+        computedCSS: function() {
+            var options = Planner.Helpers.options;
             var styleNode = $('<style></style>');
             var timeslotSize = options.timeslotHeight * options.timeslots;
             var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
@@ -61,8 +64,26 @@
             return styleNode;
         },
         // Create HTML string using a default columns configuration
-        plannerWeekday: function(options) {
+        plannerWeekday: function() {
+            var options = Planner.Helpers.options;
+
             return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: options.timeslots});
+        },
+        // Transform start or end attributes to a valid planner interval (index) according to attribute type
+        attributeToIndex: function(attribute) {
+            var options = Planner.Helpers.options;
+            var index;
+
+            // Duck typing: if it has hours and minutes, it's a Date object
+            if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
+                index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots) + 2;
+            } else if (typeof attribute === 'string') {
+                index = options.rowLabels.indexOf(attribute) + 2;
+            } else {
+                console.error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
+            }
+
+            return index;
         }
     };
 
