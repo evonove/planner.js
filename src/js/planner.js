@@ -66,7 +66,7 @@
     // PlanningChart DATA-API
     // ----------------------
 
-    $(window).on('load', function() {
+    $(document).ready(function() {
         $('[data-planner="container"]').each(function() {
             var $planner = $(this);
             $planner.planner($planner.data());
