@@ -13,6 +13,12 @@
         this.end = end;
         this.assignees = assignees;
 
+        // Duck typing: if it has hours and minutes, it's a Date object
+        if (typeof start.getHours === 'function' && typeof start.getMinutes === 'function' &&
+            typeof end.getHours === 'function' && typeof end.getMinutes === 'function') {
+            this.titleHeader = start.getHours() + ':' + start.getMinutes() + " - " + end.getHours() + ':' + end.getMinutes();
+        }
+
         this.$element = this.generateDOM();
     };
 
