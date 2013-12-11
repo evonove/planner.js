@@ -1,4 +1,4 @@
-;(function($, Planner) { 'use strict';
+;(function($, Planner, Plugins) { 'use strict';
 
     // PlanningChart class definition with defaults
     // --------------------------------------------
@@ -16,6 +16,7 @@
     };
 
     PlanningChart.DEFAULTS = {
+        plugins: [],
         timeslots: 4,
         timeslotHeight: 25,
         timeslotPadding: 20,
@@ -52,6 +53,21 @@
         });
     };
 
+    /**
+     * Start plugins loading
+     */
+    PlanningChart.prototype.pluginsLoader = function() {
+        var self = this;
+
+        if (typeof this.options.plugins.forEach === 'function') {
+            this.options.plugins.forEach(function(pluginName) {
+                Plugins.call(pluginName, self.$element);
+            });
+        } else {
+            console.error('"Plugins" option on Planner.js should be list of string');
+        }
+    };
+
     // PlanningChart widget definition
     // -------------------------------
 
@@ -80,6 +96,9 @@
 
             // Add computed styles
             $('head').append(Planner.Helpers.computedCSS(options));
+
+            // Load attached plugins
+            data.pluginsLoader();
         });
     };
 
@@ -99,8 +118,14 @@
     $(document).ready(function() {
         $('[data-planner="container"]').each(function() {
             var $planner = $(this);
+
+            // Allows plugins definition with data attributes
+            var plugins = $planner.data('plugins') && $planner.data('plugins').split(' ');
+            $planner.data('plugins', plugins);
+
+            // Planner initialization
             $planner.planner($planner.data());
         });
     });
 
-})(jQuery, Planner);
+})(jQuery, Planner, Planner.Plugins);
