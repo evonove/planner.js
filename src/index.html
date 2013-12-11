@@ -11,10 +11,10 @@
         <meta name="viewport" content="width=device-width">
 
         <!-- Bootstrap 3 -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
 
-        <!-- build:css(.tmp) css/main.css -->
+        <!-- build:css(.tmp) css/plannerjs.css -->
         <link rel="stylesheet" href="css/main.css">
         <!-- endbuild -->
     </head>
@@ -28,24 +28,27 @@
         <script src="modules/handlebars/handlebars.runtime.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-        <!-- Planner add-on -->
-        <!-- build:js js/ext/plugins.js -->
-        <!-- bower:js -->
-        <!-- endbower -->
-        <!-- endbuild -->
-
-        <!-- Plannerjs -->
+        <!-- Planner.js -->
         <!-- build:js js/planner.js -->
         <script src="js/bootstrap.js"></script>
         <script src="js/utils.js"></script>
         <script src="js/helpers.js"></script>
-        <script src="js/models/Card.js"></script>
         <script src="js/planner.js"></script>
         <!-- endbuild -->
 
-        <!-- Templates -->
+        <!-- Planner models -->
+        <!-- build:js js/models.js -->
+        <script src="js/models/Card.js"></script>
+        <!-- endbuild -->
+
+        <!-- Planner plugins -->
+        <!-- build:js js/plugins.js -->
+        <script src="js/plugins/crud.js"></script>
+        <!-- endbuild -->
+
+        <!-- Planner templates -->
         <!-- build:js(.tmp) js/ext/templates.js -->
         <script src="js/compiled-styles.js"></script>
         <script src="js/compiled-templates.js"></script>
