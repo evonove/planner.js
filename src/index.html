@@ -19,7 +19,7 @@
         <!-- endbuild -->
     </head>
     <body>
-        <div class="container" data-planner="container"></div>
+        <div class="js-planner container" data-planner="container" data-plugins="crud"></div>
 
         <!-- External framework or libraries -->
         <!-- build:js js/ext/vendors.js -->
@@ -31,8 +31,11 @@
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
         <!-- Planner.js -->
-        <!-- build:js js/planner.js -->
+        <!-- build:js js/bootstrap.js -->
         <script src="js/bootstrap.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js js/planner.js -->
         <script src="js/plugins/manager.js"></script>
         <script src="js/utils.js"></script>
         <script src="js/helpers.js"></script>
