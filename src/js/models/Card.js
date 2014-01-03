@@ -5,30 +5,33 @@
     // Card class definition with prototype methods
     // --------------------------------------------
 
-    var Card = function(id, title, content, start, end, assignees) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.start = start;
-        this.end = end;
-        this.assignees = assignees;
+    var Card = function(args) {
+        this.id = args.id;
+        this.title = args.title;
+        this.content = args.content;
+        this.start = args.start;
+        this.end = args.end;
+        this.assignees = args.assignees;
 
-        this.titleHeader = this.generateTitle(start, end);
-        this.$element = this.generateDOM();
+        // Generate DOM if all required arguments are defined
+        if(typeof this.start !== 'undefined' && typeof this.end !== 'undefined' && typeof this.assignees !== 'undefined') {
+            this.generateDOM();
+        }
     };
 
     // Card class definition with prototype methods
     // --------------------------------------------
 
-    Card.prototype.generateTitle = function(start, end) {
+    Card.prototype.generateTitle = function() {
+        var self = this;
         var title;
 
-        if (typeof start.getHours === 'function' && typeof start.getMinutes === 'function' && typeof end.getHours === 'function' && typeof end.getMinutes === 'function') {
-            title = Utils.pad(start.getHours()) + ':' + Utils.pad(start.getMinutes()) + ' - ' + Utils.pad(end.getHours()) + ':' + Utils.pad(end.getMinutes());
-        } else if (start === end) {
-            title = start;
+        if (typeof self.start.getHours === 'function' && typeof self.start.getMinutes === 'function' && typeof self.end.getHours === 'function' && typeof self.end.getMinutes === 'function') {
+            title = Utils.pad(self.start.getHours()) + ':' + Utils.pad(self.start.getMinutes()) + ' - ' + Utils.pad(self.end.getHours()) + ':' + Utils.pad(self.end.getMinutes());
+        } else if (self.start === self.end) {
+            title = self.start;
         } else {
-            title = start + '-' + end;
+            title = self.start + '-' + self.end;
         }
 
         return title;
@@ -36,9 +39,10 @@
 
     Card.prototype.generateDOM = function() {
         var self = this;
-        var generatedElements = [];
+        self.titleHeader = self.generateTitle();
 
         // Generate a standard DOM element
+        var generatedElements = [];
         var cardDOM = $(Planner.Templates.card(self));
         var element;
 
@@ -52,7 +56,7 @@
             generatedElements.push(element);
         });
 
-        return generatedElements;
+        self.$element = generatedElements;
     };
 
     // Methods that should be overridden by your
