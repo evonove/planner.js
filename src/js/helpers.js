@@ -84,6 +84,27 @@
             }
 
             return index;
+        },
+        // Transform $element index to a valid card start/end object
+        indexToAttribute: function(index) {
+            var options = Planner.Helpers.options;
+            var attribute;
+
+            // Convert date time object
+            var hours = Math.floor((index - 1) / options.timeslots);
+            var minutes = 15 * (index % options.timeslots);
+
+            if (minutes == index % options.timeslots) {
+                hours += 1;
+            }
+
+            // TODO convert string object
+
+            attribute = new Date();
+            attribute.setHours(hours);
+            attribute.setMinutes(minutes);
+
+            return attribute;
         }
     };
 

@@ -61,7 +61,7 @@
 
         if (typeof this.options.plugins.forEach === 'function') {
             this.options.plugins.forEach(function(pluginName) {
-                Plugins.call(pluginName, self.$element);
+                Plugins.call(pluginName, self);
             });
         } else {
             console.error('"Plugins" option on Planner.js should be list of string');
