@@ -84,8 +84,8 @@
                 $this.data('pl.planner', (data = new PlanningChart(this, options)));
             }
 
-            // Planner helpers can control options
-            Planner.Helpers.options = options;
+            // Planner options available on whole namespace
+            Planner.options = options;
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {

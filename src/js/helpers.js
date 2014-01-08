@@ -48,7 +48,7 @@
     Planner.Helpers = {
         // Generate a computed style node
         computedCSS: function() {
-            var options = Planner.Helpers.options;
+            var options = Planner.options;
             var styleNode = $('<style></style>');
             var timeslotSize = options.timeslotHeight * options.timeslots;
             var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
@@ -65,13 +65,13 @@
         },
         // Create HTML string using a default columns configuration
         plannerWeekday: function() {
-            var options = Planner.Helpers.options;
+            var options = Planner.options;
 
             return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: options.timeslots});
         },
         // Transform start or end attributes to a valid planner interval (index) according to attribute type
         attributeToIndex: function(attribute) {
-            var options = Planner.Helpers.options;
+            var options = Planner.options;
             var index;
 
             // Duck typing: if it has hours and minutes, it's a Date object
@@ -87,7 +87,7 @@
         },
         // Transform $element index to a valid card start/end object
         indexToAttribute: function(index) {
-            var options = Planner.Helpers.options;
+            var options = Planner.options;
             var attribute;
 
             // Convert date time object
