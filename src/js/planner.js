@@ -41,11 +41,6 @@
             // Get data-attributes element from card DOM
             var column = cardDOM.data('column');
             var start = cardDOM.data('start');
-            var end = cardDOM.data('end');
-            var cardLength = (end - start) * self.options.timeslotHeight - self.options.cardTitleMargin;
-
-            // Set height according to card length
-            cardDOM.height(cardLength);
 
             // Find the right column and search starting div; append created object
             // TODO test collisions

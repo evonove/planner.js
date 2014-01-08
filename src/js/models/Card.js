@@ -38,20 +38,29 @@
     };
 
     Card.prototype.generateDOM = function() {
+        var options = Planner.options;
         var self = this;
         self.titleHeader = self.generateTitle();
 
-        // Generate a standard DOM element
+        // Generate a standard Card DOM object
         var generatedElements = [];
         var cardDOM = $(Planner.Templates.card(self));
         var element;
 
         // Generate DOM element for each assignees
-        this.assignees.forEach(function(value) {
+        this.assignees.forEach(function(assignee) {
             element = cardDOM.clone();
-            element.data('column', value);
-            element.data('start', Planner.Helpers.attributeToIndex(self.start));
-            element.data('end', Planner.Helpers.attributeToIndex(self.end));
+
+            // Convert Card attributes to DOM attributes
+            var start = Planner.Helpers.attributeToIndex(self.start);
+            var end = Planner.Helpers.attributeToIndex(self.end);
+            var cardLength = (end - start) * options.timeslotHeight - options.cardTitleMargin;
+
+            // Set DOM values
+            element.data('column', assignee);
+            element.data('start', start);
+            element.data('end', end);
+            element.height(cardLength);
 
             generatedElements.push(element);
         });
