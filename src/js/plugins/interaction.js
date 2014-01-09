@@ -105,6 +105,6 @@
     // Register this plugin to plugins list
     // ------------------------------------
 
-    Plugins.register('crud', $.fn.crud);
+    Plugins.register('interaction', $.fn.crud);
 
 })(jQuery, Planner.Plugins, Planner.Model.Card, Planner.Helpers);
