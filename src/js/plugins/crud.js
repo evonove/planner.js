@@ -66,7 +66,7 @@
         return this.$element.each(function() {
             var $this = $(this);
             var data = $this.data('pl.plugins.crud');
-            var options = $.extend({}, Crud.DEFAULTS, $this.data(), typeof option === 'object' && option);
+            var options = $.extend({}, Crud.DEFAULTS, $this.data('pl.planner').options, typeof option === 'object' && option);
 
             // If this node isn't initialized, call the constructor
             if (!data) {
