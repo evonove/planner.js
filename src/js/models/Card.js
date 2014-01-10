@@ -62,8 +62,13 @@
             element.data('end', end);
             element.height(cardLength);
 
-            element.on('click', function() {
+            // Publish click event on Card DOM element
+            element.on('mousedown', function(event) {
                 Planner.Events.publish('cardClicked', [self, element]);
+
+                // Avoid propagation of element on other DOM elements
+                event.stopPropagation();
+                event.preventDefault();
             });
 
             generatedElements.push(element);
