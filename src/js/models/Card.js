@@ -62,6 +62,10 @@
             element.data('end', end);
             element.height(cardLength);
 
+            element.on('click', function() {
+                Planner.Events.publish('cardClicked', [self, element]);
+            });
+
             generatedElements.push(element);
         });
 
