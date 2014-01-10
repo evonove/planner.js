@@ -94,7 +94,7 @@
             var hours = Math.floor((index - 1) / options.timeslots);
             var minutes = 15 * (index % options.timeslots);
 
-            if (minutes == index % options.timeslots) {
+            if (minutes === index % options.timeslots) {
                 hours += 1;
             }
 
