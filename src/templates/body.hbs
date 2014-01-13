@@ -1,13 +1,13 @@
-<div class="js-header row">
+<div class="js-header">
     {{> header}}
 </div>
-<div class="js-planner-body row">
-    <div class="col-xs-1 planner-timeslots">
+<div class="planner-body">
+    <div class="planner-timeslots">
         {{#each rows}}
             {{> timeslot}}
         {{/each}}
     </div>
-    <div class="col-xs-11 planner-columns">
+    <div class="planner-columns">
         <div class="planner-columns-overflow">
             {{#each columns}}
                 <div class="column">

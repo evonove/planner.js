@@ -3,7 +3,12 @@
 // =================
 
 .planner-timeslots {
+    width: 10%;
+    float: left;
+    position: relative;
     padding-top: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
 
     > div {
       text-align: center;

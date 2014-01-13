@@ -3,9 +3,11 @@
 // ==============
 
 .planner-columns {
+    width: 90%;
     overflow: hidden;
-    padding-right: 0px;
-    padding-left: 0px;
+    position: relative;
+    padding-left: 15px;
+    padding-right: 15px;
 
     .planner-columns-overflow {
         @include animate-ease;
