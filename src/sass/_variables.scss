@@ -2,14 +2,30 @@
 // Variables
 // =========
 
-// Style variables
-// ---------------
+// Main
+// ----
+
+$line-height: 1.42858;
+$text-size: 14px;
+$timeslots-width: 10%;
+$slider-width: 100 - $timeslots-width;
+
+// Header
+// ------
+
+$header-height: 60px;
+
+// Container
+// ---------
+
+$container-padding: $header-height + 5;
+
+// Card
+// ----
 
 $card-color: #57adc1;
 $card-header-alpha: 0.3;
 $card-body-alpha: 0.6;
-$line-height: 1.42858;
-$text-size: 14px;
 
 // Animations
 // ----------

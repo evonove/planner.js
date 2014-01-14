@@ -2,41 +2,55 @@
 // Column classes
 // ==============
 
+.planner-header {
+    top: 0px;
+    position: fixed;
+    width: 99%;
+    height: $header-height;
+    background-color: #FFF;
+    display: inline-block;
+    z-index: 1030;
+
+    font-size: $text-size;
+    line-height: $line-height;
+
+    .planner-column-header {
+        width: 90%;
+        padding: 5px;
+        text-align: center;
+        display: inline-block;
+        border-bottom: 5px solid #cccccc;
+    }
+}
+
 .planner-container {
-    width: 90%;
+    width: 99%;
     overflow: hidden;
     position: relative;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-top: $container-padding;
 
-    .planner-slider {
-        @include animate-ease;
+    font-size: $text-size;
+    line-height: $line-height;
 
-        width: 14%;
-        position: relative;
-        white-space: nowrap;
+    .planner-column {
+        width: 90%;
+        margin-top: 20px;
+        display: inline-block;
+
+        > div {
+          border-bottom: 1px dotted #cccccc;
+        }
+
+        > div:nth-child(1) {
+          border-top: 2px solid #cccccc;
+        }
     }
 }
 
-.planner-column-header {
-    width: 100%;
-    padding: 5px;
-    text-align: center;
-    display: inline-block;
+.planner-slider {
+    @include animate-ease;
 
-    margin-bottom: 60px;
-    border-bottom: 5px solid #cccccc;
-}
-
-.planner-column {
-    width: 100%;
-    display: inline-block;
-
-    > div {
-      border-bottom: 1px dotted #cccccc;
-    }
-
-    > div:nth-child(1) {
-      border-top: 2px solid #cccccc;
-    }
+    width: 14%;
+    position: relative;
+    white-space: nowrap;
 }

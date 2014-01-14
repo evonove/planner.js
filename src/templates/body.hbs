@@ -1,25 +1,27 @@
-<div class="planner-body">
+<div class="planner-header">
+    <div class="planner-timeslots-header"></div>
+    <div class="planner-slider">
+        {{#each columns}}
+            <div class="planner-column-header">{{name}}</div>
+        {{/each}}
+    </div>
+</div>
+
+<div class="planner-container">
     <div class="planner-timeslots">
         {{#each rows}}
             {{> timeslot}}
         {{/each}}
     </div>
-    <div class="planner-container">
-        <div class="planner-slider">
-            {{#each columns}}
-                <div class="planner-column-header">{{name}}</div>
-            {{/each}}
-        </div>
-        <div class="planner-slider">
-            {{#each columns}}
-                <div class="planner-column">
-                    {{#each ../rows}}
-                        {{#times ../../timeslots}}
-                            <div></div>
-                        {{/times}}
-                    {{/each}}
-                </div>
-            {{/each}}
-        </div>
+    <div class="planner-slider">
+        {{#each columns}}
+            <div class="planner-column">
+                {{#each ../rows}}
+                    {{#times ../../timeslots}}
+                        <div></div>
+                    {{/times}}
+                {{/each}}
+            </div>
+        {{/each}}
     </div>
 </div>

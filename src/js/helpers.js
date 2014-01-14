@@ -55,7 +55,6 @@
 
             styleNode.html(Planner.Templates.styles({
                 timeslots: options.timeslots,
-                startPadding: (options.centered && timeslotPadding) + options.timeslotStartPadding,
                 timeslotHeight: options.timeslotHeight,
                 timeslotPadding: timeslotSize - options.timeslotPadding,
                 lastTimeslotPadding: timeslotPadding

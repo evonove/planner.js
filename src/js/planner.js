@@ -20,7 +20,6 @@
         timeslots: 4,
         timeslotHeight: 25,
         timeslotPadding: 20,
-        timeslotStartPadding: 45,
         cardTitleMargin: 6,
         centered: PlanningChart.CONST.ALIGNMENT.TOP,
         columnLabels: [],

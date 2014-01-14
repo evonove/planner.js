@@ -2,20 +2,31 @@
 // Timeslots classes
 // =================
 
+.planner-timeslots-header {
+    width: 10%;
+    float: left;
+    position: relative;
+
+    background-color: #FFF;
+    padding-bottom: 20px;
+}
+
 .planner-timeslots {
     width: 10%;
     float: left;
     position: relative;
-    padding-top: 40px;
-    padding-left: 15px;
     padding-right: 15px;
+    text-align: center;
+
+    > div:first-child {
+      padding-top: 10px;
+    }
 
     > div {
-      text-align: center;
       border-right: 1px solid #cccccc;
     }
 
     > div:last-child {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
 }
