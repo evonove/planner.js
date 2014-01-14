@@ -2,44 +2,41 @@
 // Column classes
 // ==============
 
-.planner-columns {
+.planner-container {
     width: 90%;
     overflow: hidden;
     position: relative;
     padding-left: 15px;
     padding-right: 15px;
 
-    .planner-columns-overflow {
+    .planner-slider {
         @include animate-ease;
 
         width: 14%;
         position: relative;
-        display: inline-block;
         white-space: nowrap;
     }
 }
 
-.column {
+.planner-column-header {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    display: inline-block;
+
+    margin-bottom: 60px;
+    border-bottom: 5px solid #cccccc;
+}
+
+.planner-column {
     width: 100%;
     display: inline-block;
 
-    padding-top: 20px;
-    padding-bottom: 10px;
-    padding-left: 5px;
-
-    .column-header {
-        text-align: center;
-        border-bottom: 5px solid #cccccc;
-        margin-bottom: 40px;
-        padding: 5px;
-    }
-
-    > div:not(:first-child) {
-      height: 25px;
+    > div {
       border-bottom: 1px dotted #cccccc;
     }
 
-    > div:nth-child(2) {
+    > div:nth-child(1) {
       border-top: 2px solid #cccccc;
     }
 }

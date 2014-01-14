@@ -1,4 +1,4 @@
-<div class="js-header">
+<div class="planner-header">
     {{> header}}
 </div>
 <div class="planner-body">
@@ -7,11 +7,15 @@
             {{> timeslot}}
         {{/each}}
     </div>
-    <div class="planner-columns">
-        <div class="planner-columns-overflow">
+    <div class="planner-container">
+        <div class="planner-slider">
             {{#each columns}}
-                <div class="column">
-                    <div class="column-header">{{name}}</div>
+                <div class="planner-column-header">{{name}}</div>
+            {{/each}}
+        </div>
+        <div class="planner-slider">
+            {{#each columns}}
+                <div class="planner-column">
                     {{#each ../rows}}
                         {{#times ../../timeslots}}
                             <div></div>

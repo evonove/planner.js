@@ -1,10 +1,10 @@
 {{! Column computed styles }}
 
-.column > div:not(:first-child) {
+.planner-column > div {
     height: {{timeslotHeight}}px;
 }
 
-.column > div:nth-child({{timeslots}}n+1):not(:first-child) {
+.planner-column > div:nth-child({{timeslots}}n) {
     border-bottom: 2px solid #cccccc;
 }
 
