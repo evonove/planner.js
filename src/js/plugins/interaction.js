@@ -19,12 +19,12 @@
     Crud.prototype.attachDragCreation = function() {
         var self = this;
 
-        self.$element.find('.column > div:not(.column-header)').
+        self.$element.find('.planner-column > div').
             on('mousedown', function(event) {
                 // Start card creation
                 var $this = $(this);
-                var startAttribute = Helpers.indexToAttribute($this.index() - 1);
-                var endAttribute = Helpers.indexToAttribute($this.index());
+                var startAttribute = Helpers.indexToAttribute($this.index());
+                var endAttribute = Helpers.indexToAttribute($this.index() + 1);
                 var assignee = [$this.parent().index() + 1];
 
                 // Create a Card object with relative DOM element
@@ -47,7 +47,7 @@
             }).
             on('mousemove', function(event) {
                 if (self.currentCard !== null) {
-                    var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight);
+                    var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight) + 1;
 
                     self.currentCard.end = Helpers.indexToAttribute(self.initialIndex + currentCardPosition);
                     self.currentCard.titleHeader = self.currentCard.generateTitle();
