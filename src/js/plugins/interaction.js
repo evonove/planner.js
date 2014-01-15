@@ -73,10 +73,15 @@
     Crud.prototype.attachDragAndDrop = function() {
         var self = this;
 
+        // Add jQuery event 'dataTransfer' property
+        $.event.props.push( "dataTransfer" );
+
         Events.subscribe('cardCreated', function(card, element) {
             $(element).attr('draggable', true);
-            $(element).on('dragstart', function() {
+            $(element).on('dragstart', function(event) {
                 $(this).addClass('dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/html', this.innerHTML);
             });
         });
     };
