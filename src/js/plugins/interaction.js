@@ -1,4 +1,4 @@
-;(function($, Plugins, Card, Helpers) { 'use strict';
+;(function($, Plugins, Card, Helpers, Events) { 'use strict';
 
     // Plugin constructor and defaults
     // -------------------------------
@@ -70,6 +70,17 @@
             });
     };
 
+    Crud.prototype.attachDragAndDrop = function() {
+        var self = this;
+
+        Events.subscribe('cardCreated', function(card, element) {
+            $(element).attr('draggable', true);
+            $(element).on('dragstart', function() {
+                $(this).addClass('dragging');
+            });
+        });
+    };
+
     // Crud plugin definition
     // ----------------------
 
@@ -89,6 +100,7 @@
             }
 
             data.attachDragCreation();
+            data.attachDragAndDrop();
         });
     };
 
@@ -107,4 +119,4 @@
 
     Plugins.register('interaction', $.fn.crud);
 
-})(jQuery, Planner.Plugins, Planner.Model.Card, Planner.Helpers);
+})(jQuery, Planner.Plugins, Planner.Model.Card, Planner.Helpers, Planner.Events);

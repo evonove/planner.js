@@ -1,4 +1,4 @@
-;(function(Planner, Utils){ 'use strict';
+;(function(Planner, Events, Templates, Helpers, Utils){ 'use strict';
 
     Planner.Model = Planner.Model || {};
 
@@ -44,7 +44,7 @@
 
         // Generate a standard Card DOM object
         var generatedElements = [];
-        var cardDOM = $(Planner.Templates.card(self));
+        var cardDOM = $(Templates.card(self));
         var element;
 
         // Generate DOM element for each assignees
@@ -52,8 +52,8 @@
             element = cardDOM.clone();
 
             // Convert Card attributes to DOM attributes
-            var start = Planner.Helpers.attributeToIndex(self.start);
-            var end = Planner.Helpers.attributeToIndex(self.end);
+            var start = Helpers.attributeToIndex(self.start);
+            var end = Helpers.attributeToIndex(self.end);
             var cardLength = (end - start) * options.timeslotHeight - options.cardTitleMargin;
 
             // Set DOM values
@@ -64,14 +64,14 @@
 
             // Publish click event on Card DOM element
             element.on('mousedown', function(event) {
-                Planner.Events.publish('cardClicked', [self, element]);
+                Events.publish('cardClicked', [self, element]);
 
                 // Avoid propagation of element on other DOM elements
                 event.stopPropagation();
-                event.preventDefault();
             });
 
             generatedElements.push(element);
+            Events.publish('cardCreated', [self, element]);
         });
 
         self.$element = generatedElements;
@@ -86,4 +86,4 @@
 
     Planner.Model.Card = Card;
 
-})(Planner, Planner.Utils);
+})(Planner, Planner.Events, Planner.Templates, Planner.Helpers, Planner.Utils);

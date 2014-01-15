@@ -25,3 +25,25 @@ div.planner-card {
         white-space: normal;
     }
 }
+
+
+// ================
+// User interaction
+// ================
+
+[draggable] {
+    cursor: move;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    /* Old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+.dragging {
+    opacity: $card-drag-alpha;
+}
