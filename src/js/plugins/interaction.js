@@ -75,6 +75,18 @@
         var draggedElement = null;
         var listReduced = [];
 
+        /**
+         * Reset all variables and classes to starting values
+         */
+        var resetDrag = function() {
+            draggedElement = null;
+            listReduced.forEach(function(node) {
+                node.removeClass('card-small');
+            });
+
+            listReduced = [];
+        };
+
         // Add jQuery event 'dataTransfer' property as
         // stated in: http://api.jquery.com/category/events/event-object/
         $.event.props.push('dataTransfer');
@@ -87,18 +99,18 @@
             }).
             on('drop', function() {
                 $(draggedElement).appendTo(this);
-
-                // Reset all variables and classes to starting values
-                draggedElement = null;
-                listReduced.forEach(function(node) {
-                    node.removeClass('card-small');
-                });
-                listReduced = [];
+                resetDrag();
             });
 
         Events.subscribe('cardCreated', function(card, element) {
             $(element).attr('draggable', true);
             $(element).
+                on('drop', function(event) {
+                    // Avoid to drop a card on another card
+                    event.preventDefault();
+                    event.stopPropagation();
+                    resetDrag();
+                }).
                 on('dragstart', function(event) {
                     draggedElement = this;
 
