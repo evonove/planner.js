@@ -73,8 +73,9 @@
     Crud.prototype.attachDragAndDrop = function() {
         var self = this;
 
-        // Add jQuery event 'dataTransfer' property
-        $.event.props.push( "dataTransfer" );
+        // Add jQuery event 'dataTransfer' property as
+        // stated in: http://api.jquery.com/category/events/event-object/
+        $.event.props.push('dataTransfer');
 
         Events.subscribe('cardCreated', function(card, element) {
             $(element).attr('draggable', true);
