@@ -31,6 +31,12 @@ div.planner-card {
 // User interaction
 // ================
 
+div.planner-card.card-small {
+    @include animate-ease-fast;
+
+    width: 40%;
+}
+
 [draggable] {
     cursor: move;
 

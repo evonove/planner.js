@@ -72,18 +72,57 @@
 
     Crud.prototype.attachDragAndDrop = function() {
         var self = this;
+        var draggedElement = null;
+        var listReduced = [];
 
         // Add jQuery event 'dataTransfer' property as
         // stated in: http://api.jquery.com/category/events/event-object/
         $.event.props.push('dataTransfer');
 
+        // Happend drag events to timeslots
+        self.$element.find('.planner-column > div').
+            on('dragover', function(event) {
+                // Needed otherwise drop will not work
+                event.preventDefault();
+            }).
+            on('drop', function() {
+                $(draggedElement).appendTo(this);
+
+                // Reset all variables and classes to starting values
+                draggedElement = null;
+                listReduced.forEach(function(node) {
+                    node.removeClass('card-small');
+                });
+                listReduced = [];
+            });
+
         Events.subscribe('cardCreated', function(card, element) {
             $(element).attr('draggable', true);
-            $(element).on('dragstart', function(event) {
-                $(this).addClass('dragging');
-                event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('text/html', this.innerHTML);
-            });
+            $(element).
+                on('dragstart', function(event) {
+                    draggedElement = this;
+
+                    // Required for Firefox
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/html', '[Object] Card');
+
+                    // Add a ghost effect
+                    $(this).addClass('dragging');
+                }).
+                on('dragenter', function() {
+                    var $this = $(this);
+
+                    // Reduce card size if draggedElement goes upfront another card
+                    // and store the node to remove this effect later
+                    if (!$this.hasClass('card-small')) {
+                        $this.addClass('card-small');
+                        listReduced.push($this);
+                    }
+                }).
+                on('dragend', function() {
+                    // Remove ghost effect
+                    $(this).removeClass('dragging');
+                });
         });
     };
 

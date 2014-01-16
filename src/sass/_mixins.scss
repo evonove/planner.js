@@ -6,5 +6,9 @@
 // ---------
 
 @mixin animate-ease() {
-    @include transition(all $transition-duration ease-in)
+    @include transition(all $transition ease-in)
+}
+
+@mixin animate-ease-fast() {
+    @include transition(all $transition-fast ease-in)
 }
