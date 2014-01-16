@@ -7,3 +7,6 @@ src/modules/
 
 # IDE
 .idea/
+
+# OSX
+.DS_Store
