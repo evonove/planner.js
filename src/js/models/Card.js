@@ -77,13 +77,6 @@
         self.$element = generatedElements;
     };
 
-    // Methods that should be overridden by your
-    // application to enable persistence
-    // -----------------------------------------
-
-    Card.prototype.save = function() {};
-    Card.prototype.delete = function() {};
-
     Planner.Model.Card = Card;
 
 })(Planner, Planner.Events, Planner.Templates, Planner.Helpers, Planner.Utils);
