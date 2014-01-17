@@ -1,4 +1,4 @@
-;(function($, Planner) { 'use strict';
+;(function(Planner) { 'use strict';
 
     Planner.Plugins = Planner.Plugins || {};
     Planner.Plugins.fn = [];
@@ -16,8 +16,8 @@
         if (typeof fn === 'function') {
             fn.apply(context, params);
         } else {
-            console.error('Chosen plugin is not available: ' + pluginName);
+            throw new Error('Chosen plugin is not available: ' + pluginName);
         }
     };
 
-})(jQuery, Planner);
+})(Planner);

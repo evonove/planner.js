@@ -1,4 +1,4 @@
-;(function($, Planner, Plugins) { 'use strict';
+;(function($, Planner) { 'use strict';
 
     // PlanningChart class definition with defaults
     // --------------------------------------------
@@ -53,12 +53,12 @@
     PlanningChart.prototype.pluginsLoader = function() {
         var self = this;
 
-        if (typeof this.options.plugins.forEach === 'function') {
+        if (typeof self.options.plugins.forEach === 'function') {
             this.options.plugins.forEach(function(pluginName) {
-                Plugins.call(pluginName, self);
+                Planner.Plugins.call(pluginName, self);
             });
         } else {
-            console.error('"Plugins" option on Planner.js should be list of string');
+            throw new Error('"Plugins" option on Planner.js should be a list of string');
         }
     };
 
@@ -122,4 +122,4 @@
         });
     });
 
-})(jQuery, Planner, Planner.Plugins);
+})(jQuery, Planner);

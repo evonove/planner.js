@@ -1,4 +1,4 @@
-;(function($, Planner) { 'use strict';
+;(function(Planner) { 'use strict';
 
     // Javascript utilities
     // --------------------
@@ -12,4 +12,4 @@
         }
     };
 
-})(jQuery, Planner);
+})(Planner);

@@ -40,8 +40,6 @@
         {name: '23:00'}
     ];
 
-    Planner.Helpers.options = {};
-
     // Planner helpers
     // ---------------
 

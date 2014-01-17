@@ -1,4 +1,4 @@
-;(function($, Plugins, Card, Helpers, Events) { 'use strict';
+;(function($, Planner) { 'use strict';
 
     // Plugin constructor and defaults
     // -------------------------------
@@ -23,12 +23,12 @@
             on('mousedown', function(event) {
                 // Start card creation
                 var $this = $(this);
-                var startAttribute = Helpers.indexToAttribute($this.index());
-                var endAttribute = Helpers.indexToAttribute($this.index() + 1);
+                var startAttribute = Planner.Helpers.indexToAttribute($this.index());
+                var endAttribute = Planner.Helpers.indexToAttribute($this.index() + 1);
                 var assignee = [$this.parent().index() + 1];
 
                 // Create a Card object with relative DOM element
-                self.currentCard = new Card({start: startAttribute, end: endAttribute, assignees: assignee});
+                self.currentCard = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
                 self.planner.drawCard(self.currentCard);
 
                 self.initialIndex = $this.index();
@@ -49,13 +49,13 @@
                 if (self.currentCard !== null) {
                     var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight) + 1;
 
-                    self.currentCard.end = Helpers.indexToAttribute(self.initialIndex + currentCardPosition);
+                    self.currentCard.end = Planner.Helpers.indexToAttribute(self.initialIndex + currentCardPosition);
                     self.currentCard.titleHeader = self.currentCard.generateTitle();
 
                     self.currentCard.$element.forEach(function (cardDOM) {
                         // Calculate new length
-                        var startIndex = Helpers.attributeToIndex(self.currentCard.start);
-                        var endIndex = Helpers.attributeToIndex(self.currentCard.end);
+                        var startIndex = Planner.Helpers.attributeToIndex(self.currentCard.start);
+                        var endIndex = Planner.Helpers.attributeToIndex(self.currentCard.end);
                         var cardLength = (endIndex - startIndex) * self.options.timeslotHeight - self.options.cardTitleMargin;
 
                         // Update DOM values
@@ -102,7 +102,7 @@
                 resetDrag();
             });
 
-        Events.subscribe('cardCreated', function(card, element) {
+        Planner.Events.subscribe('cardCreated', function(card, element) {
             $(element).attr('draggable', true);
             $(element).
                 on('drop', function(event) {
@@ -174,6 +174,6 @@
     // Register this plugin to plugins list
     // ------------------------------------
 
-    Plugins.register('interaction', $.fn.crud);
+    Planner.Plugins.register('interaction', $.fn.crud);
 
-})(jQuery, Planner.Plugins, Planner.Model.Card, Planner.Helpers, Planner.Events);
+})(jQuery, Planner);

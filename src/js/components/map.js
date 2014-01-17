@@ -24,7 +24,7 @@
 
     HashMap.prototype.hash = function(value) {
         return (typeof value) + ' ' + (value instanceof Object ?
-            (value.__hash__ || (value.__hash__ = ++this._hashCounter)) : value.toString());
+            (value._hash || (value._hash = ++this._hashCounter)) : value.toString());
     };
 
     // Hash map functions
