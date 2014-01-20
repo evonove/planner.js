@@ -156,6 +156,7 @@
                 $this.data('pl.plugins.crud', (data = new Crud(planner, options)));
             }
 
+            data.attachClick();
             data.attachDragCreation();
             data.attachDragAndDrop();
         });

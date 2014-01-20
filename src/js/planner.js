@@ -1,4 +1,4 @@
-;(function($, Planner) { 'use strict';
+;(function($, Planner, HashMap) { 'use strict';
 
     // PlanningChart class definition with defaults
     // --------------------------------------------
@@ -6,6 +6,8 @@
     var PlanningChart = function (element, options) {
         this.$element = $(element);
         this.options = options;
+        this.mapCard = new HashMap();
+        this.mapDom = new HashMap();
     };
 
     PlanningChart.CONST = {
@@ -61,6 +63,8 @@
             // Planner attributes available on whole namespace
             Planner.$element = data.$element;
             Planner.options = data.options;
+            Planner.mapCard = data.mapCard;
+            Planner.mapDom = data.mapDom;
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {
@@ -103,4 +107,4 @@
         });
     });
 
-})(jQuery, Planner);
+})(jQuery, Planner, Planner.Utils.HashMap);

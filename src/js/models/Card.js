@@ -10,6 +10,9 @@
         this.start = object.start;
         this.end = object.end;
         this.assignees = Array.isArray(object.assignees) ? object.assignees : [object.assignees];
+
+        // Object assignment to a global hash map
+        Planner.mapCard.put(this, []);
     };
 
     // Card prototype methods
@@ -49,6 +52,14 @@
         $element.data('start', start);
         $element.data('end', end);
         $element.height(cardLength);
+
+        // Map DOM with Card
+        Planner.mapDom.put($element, self);
+
+        // Map Card with DOM
+        var registeredDoms = Planner.mapCard.get(self);
+        registeredDoms.push($element);
+        Planner.mapCard.put(self, registeredDoms);
 
         return $element;
     };
