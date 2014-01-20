@@ -1,33 +1,26 @@
-;(function(Planner, Events, Templates, Helpers, Utils){ 'use strict';
+;(function(Planner) { 'use strict';
 
-    Planner.Model = Planner.Model || {};
+    // Card class definition
+    // ---------------------
 
-    // Card class definition with prototype methods
-    // --------------------------------------------
-
-    var Card = function(args) {
-        this.id = args.id;
-        this.title = args.title;
-        this.content = args.content;
-        this.start = args.start;
-        this.end = args.end;
-        this.assignees = args.assignees;
-
-        // Generate DOM if all required arguments are defined
-        if(typeof this.start !== 'undefined' && typeof this.end !== 'undefined' && typeof this.assignees !== 'undefined') {
-            this.generateDOM();
-        }
+    var Card = function(object) {
+        this.id = object.id;
+        this.title = object.title;
+        this.content = object.content;
+        this.start = object.start;
+        this.end = object.end;
+        this.assignees = Array.isArray(object.assignees) ? object.assignees : [object.assignees];
     };
 
-    // Card class definition with prototype methods
-    // --------------------------------------------
+    // Card prototype methods
+    // ----------------------
 
-    Card.prototype.generateTitle = function() {
+    Card.prototype._generateTitle = function() {
         var self = this;
-        var title;
+        var title = '';
 
         if (typeof self.start.getHours === 'function' && typeof self.start.getMinutes === 'function' && typeof self.end.getHours === 'function' && typeof self.end.getMinutes === 'function') {
-            title = Utils.pad(self.start.getHours()) + ':' + Utils.pad(self.start.getMinutes()) + ' - ' + Utils.pad(self.end.getHours()) + ':' + Utils.pad(self.end.getMinutes());
+            title = Planner.Utils.pad(self.start.getHours()) + ':' + Planner.Utils.pad(self.start.getMinutes()) + ' - ' + Planner.Utils.pad(self.end.getHours()) + ':' + Planner.Utils.pad(self.end.getMinutes());
         } else if (self.start === self.end) {
             title = self.start;
         } else {
@@ -37,46 +30,46 @@
         return title;
     };
 
-    Card.prototype.generateDOM = function() {
+    Card.prototype._generateDOM = function(assignee) {
         var options = Planner.options;
         var self = this;
-        self.titleHeader = self.generateTitle();
+        self.titleHeader = self._generateTitle();
 
         // Generate a standard Card DOM object
-        var generatedElements = [];
-        var cardDOM = $(Templates.card(self));
-        var element;
+        var cardDOM = $(Planner.Templates.card(self));
+        var $element = cardDOM.clone();
 
-        // Generate DOM element for each assignees
-        this.assignees.forEach(function(assignee) {
-            element = cardDOM.clone();
+        // Convert Card attributes to DOM attributes
+        var start = Planner.Helpers.attributeToIndex(self.start);
+        var end = Planner.Helpers.attributeToIndex(self.end);
+        var cardLength = (end - start) * options.timeslotHeight - options.cardTitleMargin;
 
-            // Convert Card attributes to DOM attributes
-            var start = Helpers.attributeToIndex(self.start);
-            var end = Helpers.attributeToIndex(self.end);
-            var cardLength = (end - start) * options.timeslotHeight - options.cardTitleMargin;
+        // Set DOM values
+        $element.data('column', assignee);
+        $element.data('start', start);
+        $element.data('end', end);
+        $element.height(cardLength);
 
-            // Set DOM values
-            element.data('column', assignee);
-            element.data('start', start);
-            element.data('end', end);
-            element.height(cardLength);
-
-            // Publish click event on Card DOM element
-            element.on('mousedown', function(event) {
-                Events.publish('cardClicked', [self, element]);
-
-                // Avoid propagation of element on other DOM elements
-                event.stopPropagation();
-            });
-
-            generatedElements.push(element);
-            Events.publish('cardCreated', [self, element]);
-        });
-
-        self.$element = generatedElements;
+        return $element;
     };
 
+    Card.prototype.drawCard = function() {
+        var self = this;
+
+        self.assignees.forEach(function(assignee) {
+            // Get data-attributes element from card DOM
+            var cardDOM = self._generateDOM(assignee);
+            var column = cardDOM.data('column');
+            var start = cardDOM.data('start');
+
+            // TODO: this function doesn't support multi day events and collisions
+            // Find the right column and search starting div to append created object
+            Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
+        });
+    };
+
+    // Register Card model
+    // -------------------
     Planner.Model.Card = Card;
 
-})(Planner, Planner.Events, Planner.Templates, Planner.Helpers, Planner.Utils);
+})(Planner);

@@ -29,27 +29,6 @@
     // Prototype functions
     // -------------------
 
-    /**
-     * TODO: this function doesn't support multi day events
-     * @param card to draw
-     */
-    PlanningChart.prototype.drawCard = function(card) {
-        var self = this;
-
-        card.$element.forEach(function(cardDOM) {
-            // Get data-attributes element from card DOM
-            var column = cardDOM.data('column');
-            var start = cardDOM.data('start');
-
-            // Find the right column and search starting div; append created object
-            // TODO test collisions
-            self.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
-        });
-    };
-
-    /**
-     * Start plugins loading
-     */
     PlanningChart.prototype.pluginsLoader = function() {
         var self = this;
 
@@ -78,8 +57,10 @@
                 $this.data('pl.planner', (data = new PlanningChart(this, options)));
             }
 
-            // Planner options available on whole namespace
-            Planner.options = options;
+            // TODO: better implementation required
+            // Planner attributes available on whole namespace
+            Planner.$element = data.$element;
+            Planner.options = data.options;
 
             // Check if columns and rows are set otherwise use a default planner
             if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {
