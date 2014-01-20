@@ -23,16 +23,17 @@
     // Publish click event on Card DOM element
     Crud.prototype.attachClick = function() {
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
-            $element.
-                on('mouseclick', function(event) {
+            $element.on({
+                mouseclick: function(event) {
                     Planner.Events.publish('cardClicked', [card, $element]);
 
                     // Avoid propagation of element on child/parent elements
                     event.stopPropagation();
-                }).
-                on('mousedown', function(event) {
-                    // Avoid propagation of element on other DOM elements
+                },
+                mousedown: function(event) {
+                    // Avoid propagation of element on child/parent elements
                     event.stopPropagation();
+                }
             });
         });
     };
@@ -40,8 +41,8 @@
     Crud.prototype.attachDragCreation = function() {
         var self = this;
 
-        self.$element.find('.planner-column > div').
-            on('mousedown', function(event) {
+        self.$element.find('.planner-column > div').on({
+            mousedown: function(event) {
                 // Start card creation
                 var $this = $(this);
                 var startAttribute = Planner.Helpers.indexToAttribute($this.index());
@@ -59,8 +60,8 @@
 
                 // Avoid other actions
                 event.preventDefault();
-            }).
-            on('mouseup', function(event) {
+            },
+            mouseup: function(event) {
                 // Propagate Card creation event
                 Planner.Events.publish('cardCreated', [self, self.generatedDom]);
 
@@ -72,8 +73,8 @@
 
                 // Avoid other actions
                 event.preventDefault();
-            }).
-            on('mousemove', function(event) {
+            },
+            mousemove: function(event) {
                 if (self.currentCard !== null) {
                     var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight) + 1;
 
@@ -93,7 +94,8 @@
                     // Avoid other actions
                     event.preventDefault();
                 }
-            });
+            }
+        });
     };
 
     Crud.prototype.attachDragAndDrop = function() {
@@ -118,12 +120,12 @@
         $.event.props.push('dataTransfer');
 
         // Happend drag events to timeslots
-        self.$element.find('.planner-column > div').
-            on('dragover', function(event) {
+        self.$element.find('.planner-column > div').on({
+            dragover:  function(event) {
                 // Needed otherwise drop will not work
                 event.preventDefault();
-            }).
-            on('drop', function() {
+            },
+            drop: function() {
                 var card = Planner.mapDom.get($draggedElement);
                 var length = $draggedElement.data('end') - $draggedElement.data('start');
 
@@ -145,18 +147,19 @@
 
                 Planner.Events.publish('cardUpdated', [card, $draggedElement]);
                 resetDrag();
-            });
+            }
+        });
 
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
             $element.attr('draggable', true);
-            $element.
-                on('drop', function(event) {
+            $element.on({
+                drop: function(event) {
                     // Avoid to drop a card on another card
                     event.preventDefault();
                     event.stopPropagation();
                     resetDrag();
-                }).
-                on('dragstart', function(event) {
+                },
+                dragstart: function(event) {
                     // Store current element
                     $draggedElement = $element;
 
@@ -166,19 +169,20 @@
 
                     // Add a ghost effect
                     $element.addClass('dragging');
-                }).
-                on('dragenter', function() {
+                },
+                dragenter: function() {
                     // Reduce card size if draggedElement goes upfront another card
                     // and store the node to remove this effect later
                     if (!$element.hasClass('card-small')) {
                         $element.addClass('card-small');
                         listReduced.push($element);
                     }
-                }).
-                on('dragend', function() {
+                },
+                dragend: function() {
                     // Remove ghost effect
                     $element.removeClass('dragging');
-                });
+                }
+            });
         });
     };
 
