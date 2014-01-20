@@ -8,13 +8,31 @@
         this.$element = planner.$element;
         this.options = options;
 
+        // Used during card generation
         this.currentCard = null;
+        this.generatedDom = null;
+        this.initialIndex = null;
+        this.initialY = null;
     };
 
     Crud.DEFAULTS = {};
 
     // Plugin functionalities
     // ----------------------
+
+    // Publish click event on Card DOM element
+    Crud.prototype.attachClick = function() {
+        var self = this;
+
+        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+            $element.on('mouseclick', function(event) {
+                Planner.Events.publish('cardClicked', [card, $element]);
+
+                // Avoid propagation of element on child/parent elements
+                event.stopPropagation();
+            });
+        });
+    };
 
     Crud.prototype.attachDragCreation = function() {
         var self = this;
@@ -29,8 +47,10 @@
 
                 // Create a Card object with relative DOM element
                 self.currentCard = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
-                self.planner.drawCard(self.currentCard);
+                self.currentCard.drawCard();
 
+                // Store temporary values
+                self.generatedDom = Planner.mapCard.get(self.currentCard)[0];
                 self.initialIndex = $this.index();
                 self.initialY = event.clientY;
 
@@ -38,9 +58,14 @@
                 event.preventDefault();
             }).
             on('mouseup', function(event) {
-                // End card creation
-                // TODO add object to a global Card Array before dismiss
+                // Propagate Card creation event
+                Planner.Events.publish('cardCreated', [self, self.generatedDom]);
+
+                // Reset temporary values
                 self.currentCard = null;
+                self.generatedDom = null;
+                self.initialIndex = null;
+                self.initialY = null;
 
                 // Avoid other actions
                 event.preventDefault();
@@ -50,19 +75,17 @@
                     var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight) + 1;
 
                     self.currentCard.end = Planner.Helpers.indexToAttribute(self.initialIndex + currentCardPosition);
-                    self.currentCard.titleHeader = self.currentCard.generateTitle();
+                    self.currentCard.titleHeader = self.currentCard._generateTitle();
 
-                    self.currentCard.$element.forEach(function (cardDOM) {
-                        // Calculate new length
-                        var startIndex = Planner.Helpers.attributeToIndex(self.currentCard.start);
-                        var endIndex = Planner.Helpers.attributeToIndex(self.currentCard.end);
-                        var cardLength = (endIndex - startIndex) * self.options.timeslotHeight - self.options.cardTitleMargin;
+                    // Calculate new length
+                    var startIndex = Planner.Helpers.attributeToIndex(self.currentCard.start);
+                    var endIndex = Planner.Helpers.attributeToIndex(self.currentCard.end);
+                    var cardLength = (endIndex - startIndex) * self.options.timeslotHeight - self.options.cardTitleMargin;
 
-                        // Update DOM values
-                        cardDOM.data('end', endIndex);
-                        cardDOM.find('.planner-card-time').html(self.currentCard.titleHeader);
-                        cardDOM.height(cardLength);
-                    });
+                    // Update DOM values
+                    self.generatedDom.data('end', endIndex);
+                    self.generatedDom.find('.planner-card-time').html(self.currentCard.titleHeader);
+                    self.generatedDom.height(cardLength);
 
                     // Avoid other actions
                     event.preventDefault();

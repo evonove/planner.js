@@ -76,6 +76,7 @@
             // TODO: this function doesn't support multi day events and collisions
             // Find the right column and search starting div to append created object
             Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
+            Planner.Events.publish('cardDrawn', [self, cardDOM]);
         });
     };
 
