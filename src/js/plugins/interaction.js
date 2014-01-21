@@ -15,7 +15,9 @@
         this.initialY = null;
     };
 
-    Crud.DEFAULTS = {};
+    Crud.DEFAULTS = {
+        dragComponent: '---'
+    };
 
     // Plugin functionalities
     // ----------------------
@@ -186,6 +188,15 @@
         });
     };
 
+    Crud.prototype.attachResize = function() {
+        var self = this;
+
+        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+            var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent}));
+            $element.find('.planner-card-title').after(draggableDom);
+        });
+    };
+
     // Crud plugin definition
     // ----------------------
 
@@ -207,6 +218,7 @@
             data.attachClick();
             data.attachDragCreation();
             data.attachDragAndDrop();
+            data.attachResize();
         });
     };
 

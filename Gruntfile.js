@@ -245,7 +245,8 @@ module.exports = function (grunt) {
             compile: {
                 files: {
                     '.tmp/js/compiled-templates.js': [
-                        '<%= yeoman.app %>/templates/*.hbs'
+                        '<%= yeoman.app %>/templates/*.hbs',
+                        '<%= yeoman.app %>/templates/plugins/*.hbs'
                     ],
                     '.tmp/js/compiled-styles.js': [
                         '<%= yeoman.app %>/templates/styles/*.hbs'

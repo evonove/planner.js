@@ -47,18 +47,23 @@
         // Generate a computed style node
         computedCSS: function() {
             var options = Planner.options;
-            var styleNode = $('<style></style>');
+
+            // Planner related
             var timeslotSize = options.timeslotHeight * options.timeslots;
             var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
 
-            styleNode.html(Planner.Templates.styles({
+            // Plugins related
+            var interaction = options.plugins.indexOf('interaction') !== -1;
+
+            var cssContext = {
                 timeslots: options.timeslots,
                 timeslotHeight: options.timeslotHeight,
                 timeslotPadding: timeslotSize - options.timeslotPadding,
-                lastTimeslotPadding: timeslotPadding
-            }));
+                lastTimeslotPadding: timeslotPadding,
+                interaction: interaction
+            };
 
-            return styleNode;
+            return $(Planner.Templates.styles(cssContext));
         },
         // Create HTML string using a default columns configuration
         plannerWeekday: function() {

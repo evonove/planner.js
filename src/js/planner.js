@@ -74,7 +74,7 @@
             }
 
             // Add computed styles
-            $('head').append(Planner.Helpers.computedCSS(options));
+            $('head').append(Planner.Helpers.computedCSS());
 
             // Load attached plugins
             data.pluginsLoader();

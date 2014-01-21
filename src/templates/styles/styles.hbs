@@ -1,19 +1,33 @@
-{{! Column computed styles }}
+<style>
+    {{! Column computed styles }}
 
-.planner-column > div {
-    height: {{timeslotHeight}}px;
-}
+    .planner-column > div {
+        height: {{timeslotHeight}}px;
+    }
 
-.planner-column > div:nth-child({{timeslots}}n) {
-    border-bottom: 2px solid #cccccc;
-}
+    .planner-column > div:nth-child({{timeslots}}n) {
+        border-bottom: 2px solid #cccccc;
+    }
 
-{{! Timeslot computed styles }}
+    {{! Timeslot computed styles }}
 
-.planner-timeslots > div:not(:first-child) {
-    padding-top: {{timeslotPadding}}px;
-}
+    .planner-timeslots > div:not(:first-child) {
+        padding-top: {{timeslotPadding}}px;
+    }
 
-.planner-timeslots > div:last-child {
-    padding-bottom: {{lastTimeslotPadding}}px;
-}
+    .planner-timeslots > div:last-child {
+        padding-bottom: {{lastTimeslotPadding}}px;
+    }
+
+    {{! Plugins computed styles }}
+
+    {{#if interaction }}
+    div.planner-card > .planner-card-drag {
+        text-align: center;
+        font-size: 10px;
+        bottom: 1px;
+        position: absolute;
+        right: 50%;
+    }
+    {{/if}}
+</style>
