@@ -10,7 +10,8 @@
 
         // Used during card generation
         this.currentCard = null;
-        this.generatedDom = null;
+        this.currentElement = null;
+        this.listReduced = [];
         this.initialIndex = null;
         this.initialY = null;
     };
@@ -19,8 +20,8 @@
         dragComponent: '---'
     };
 
-    // Plugin functionalities
-    // ----------------------
+    // Plugin attach events
+    // --------------------
 
     // Publish click event on Card DOM element
     Crud.prototype.attachClick = function() {
@@ -45,77 +46,37 @@
 
         self.$element.find('.planner-column > div').on({
             mousedown: function(event) {
-                // Start card creation
+                // Create a new card and draw DOM element
                 var $this = $(this);
                 var startAttribute = Planner.Helpers.indexToAttribute($this.index());
                 var endAttribute = Planner.Helpers.indexToAttribute($this.index() + 1);
                 var assignee = [$this.parent().index() + 1];
+                var card = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
+                card.drawCard();
 
-                // Create a Card object with relative DOM element
-                self.currentCard = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
-                self.currentCard.drawCard();
+                // Start interaction with created objects
+                self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.clientY);
 
-                // Store temporary values
-                self.generatedDom = Planner.mapCard.get(self.currentCard)[0];
-                self.initialIndex = $this.index();
-                self.initialY = event.clientY;
-
-                // Avoid other actions
-                event.preventDefault();
-            },
-            mouseup: function(event) {
-                // Propagate Card creation event
-                Planner.Events.publish('cardCreated', [self, self.generatedDom]);
-
-                // Reset temporary values
-                self.currentCard = null;
-                self.generatedDom = null;
-                self.initialIndex = null;
-                self.initialY = null;
-
-                // Avoid other actions
                 event.preventDefault();
             },
             mousemove: function(event) {
                 if (self.currentCard !== null) {
-                    var currentCardPosition = Math.floor((event.clientY - self.initialY) / self.options.timeslotHeight) + 1;
+                    self._resize(event.clientY);
 
-                    self.currentCard.end = Planner.Helpers.indexToAttribute(self.initialIndex + currentCardPosition);
-                    self.currentCard.titleHeader = self.currentCard._generateTitle();
-
-                    // Calculate new length
-                    var startIndex = Planner.Helpers.attributeToIndex(self.currentCard.start);
-                    var endIndex = Planner.Helpers.attributeToIndex(self.currentCard.end);
-                    var cardLength = (endIndex - startIndex) * self.options.timeslotHeight - self.options.cardTitleMargin;
-
-                    // Update DOM values
-                    self.generatedDom.data('end', endIndex);
-                    self.generatedDom.find('.planner-card-time').html(self.currentCard.titleHeader);
-                    self.generatedDom.height(cardLength);
-
-                    // Avoid other actions
                     event.preventDefault();
                 }
+            },
+            mouseup: function(event) {
+                self._stopInteraction();
+                event.preventDefault();
+
+                Planner.Events.publish('cardCreated', [self, self.currentElement]);
             }
         });
     };
 
     Crud.prototype.attachDragAndDrop = function() {
         var self = this;
-        var $draggedElement = null;
-        var listReduced = [];
-
-        /**
-         * Reset all variables and classes to starting values
-         */
-        var resetDrag = function() {
-            $draggedElement = null;
-            listReduced.forEach(function(node) {
-                node.removeClass('card-small');
-            });
-
-            listReduced = [];
-        };
 
         // Add jQuery event 'dataTransfer' property as
         // stated in: http://api.jquery.com/category/events/event-object/
@@ -124,46 +85,23 @@
         // Happend drag events to timeslots
         self.$element.find('.planner-column > div').on({
             dragover:  function(event) {
-                // Needed otherwise drop will not work
                 event.preventDefault();
             },
             drop: function() {
-                var card = Planner.mapDom.get($draggedElement);
-                var length = $draggedElement.data('end') - $draggedElement.data('start');
+                self._drag(this);
+                self._resetDrag();
+                self._stopInteraction();
 
-                $draggedElement.appendTo(this);
-                var assignee = $draggedElement.parent().parent().index() + 1;
-                var startPosition = $draggedElement.parent().index();
-
-                // Update Card object
-                card.assignees = [assignee];
-                card.start = Planner.Helpers.indexToAttribute(startPosition);
-                card.end = Planner.Helpers.indexToAttribute(startPosition + length);
-
-                // Update DOM object
-                card.titleHeader = card._generateTitle();
-                $draggedElement.find('.planner-card-time').html(card.titleHeader);
-                $draggedElement.data('start', startPosition);
-                $draggedElement.data('end', startPosition + length);
-                $draggedElement.data('column', assignee);
-
-                Planner.Events.publish('cardUpdated', [card, $draggedElement]);
-                resetDrag();
+                Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
             }
         });
 
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
             $element.attr('draggable', true);
             $element.on({
-                drop: function(event) {
-                    // Avoid to drop a card on another card
-                    event.preventDefault();
-                    event.stopPropagation();
-                    resetDrag();
-                },
                 dragstart: function(event) {
-                    // Store current element
-                    $draggedElement = $element;
+                    // Start interaction with created objects
+                    self._startInteraction(card, $element);
 
                     // Required for Firefox
                     event.dataTransfer.effectAllowed = 'move';
@@ -177,8 +115,14 @@
                     // and store the node to remove this effect later
                     if (!$element.hasClass('card-small')) {
                         $element.addClass('card-small');
-                        listReduced.push($element);
+                        self.listReduced.push($element);
                     }
+                },
+                drop: function(event) {
+                    // Avoid to drop a card over another card
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self._resetDrag();
                 },
                 dragend: function() {
                     // Remove ghost effect
@@ -195,6 +139,70 @@
             var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent}));
             $element.find('.planner-card-title').after(draggableDom);
         });
+    };
+
+    // Plugin helpers
+    // --------------
+
+    Crud.prototype._startInteraction = function(card, $element, initialIndex, initialY) {
+        // Store variables for further interactions
+        this.currentCard = card;
+        this.currentElement = $element;
+        this.initialIndex = initialIndex;
+        this.initialY = initialY;
+    };
+
+    Crud.prototype._stopInteraction = function() {
+        this.currentCard = null;
+        this.currentElement = null;
+        this.listReduced = [];
+        this.initialIndex = null;
+        this.initialY = null;
+    };
+
+    Crud.prototype._drag = function(destination) {
+        var card = Planner.mapDom.get(this.currentElement);
+        var length = this.currentElement.data('end') - this.currentElement.data('start');
+
+        this.currentElement.appendTo(destination);
+        var assignee = this.currentElement.parent().parent().index() + 1;
+        var startPosition = this.currentElement.parent().index();
+
+        // Update Card object
+        card.assignees = [assignee];
+        card.start = Planner.Helpers.indexToAttribute(startPosition);
+        card.end = Planner.Helpers.indexToAttribute(startPosition + length);
+
+        // Update DOM object
+        card.titleHeader = card._generateTitle();
+        this.currentElement.find('.planner-card-time').html(card.titleHeader);
+        this.currentElement.data('start', startPosition);
+        this.currentElement.data('end', startPosition + length);
+        this.currentElement.data('column', assignee);
+
+    };
+
+    Crud.prototype._resize = function(pointerY) {
+        var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight) + 1;
+
+        this.currentCard.end = Planner.Helpers.indexToAttribute(this.initialIndex + currentCardPosition);
+        this.currentCard.titleHeader = this.currentCard._generateTitle();
+
+        // Calculate new length
+        var startIndex = Planner.Helpers.attributeToIndex(this.currentCard.start);
+        var endIndex = Planner.Helpers.attributeToIndex(this.currentCard.end);
+        var cardLength = (endIndex - startIndex) * this.options.timeslotHeight - this.options.cardTitleMargin;
+
+        // Update DOM values
+        this.currentElement.data('end', endIndex);
+        this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
+        this.currentElement.height(cardLength);
+    };
+
+    Crud.prototype._resetDrag = function() {
+        while (this.listReduced.length > 0) {
+            this.listReduced.pop().removeClass('card-small');
+        }
     };
 
     // Crud plugin definition
