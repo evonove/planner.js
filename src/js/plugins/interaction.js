@@ -137,9 +137,11 @@
 
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
             var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent})).on({
-                mousedown: function() {
+                mousedown: function(event) {
                     self._startInteraction(card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
                     self.currentElement.addClass('resizable');
+
+                    event.preventDefault();
                 }
             });
 
