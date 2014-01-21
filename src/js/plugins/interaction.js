@@ -136,8 +136,38 @@
         var self = this;
 
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
-            var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent}));
+            var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent})).on({
+                mousedown: function() {
+                    self._startInteraction(card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
+                    self.currentElement.addClass('resizable');
+                }
+            });
+
+            // Append element after latest DOM object of a Card
             $element.find('.planner-card-title').after(draggableDom);
+
+            // Attach resize listeners
+            $element.on({
+                mousemove: function(event) {
+                    if ($element.hasClass('resizable')) {
+                        self._resize();
+
+                        // Avoid other actions
+                        event.preventDefault();
+                    }
+                },
+                mouseup: function(event) {
+                    if ($element.hasClass('resizable')) {
+                        self.currentElement.removeClass('resizable');
+                        self._stopInteraction();
+                        event.preventDefault();
+
+                        Planner.Events.publish('cardUpdated', [card, $element]);
+                    }
+                }
+            });
+
+
         });
     };
 
