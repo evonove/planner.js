@@ -8,6 +8,6 @@
             slice = -2;
         }
         return ('0' + text).slice(slice);
-    }
+    };
 
 })(Planner);
