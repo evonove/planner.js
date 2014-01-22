@@ -67,10 +67,10 @@
                 }
             },
             mouseup: function(event) {
+                Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
+
                 self._stopInteraction();
                 event.preventDefault();
-
-                Planner.Events.publish('cardCreated', [self, self.currentElement]);
             }
         });
     };
@@ -87,12 +87,13 @@
             dragover:  function(event) {
                 event.preventDefault();
             },
-            drop: function() {
+            drop: function(event) {
                 self._drag(this);
                 self._resetDrag();
-                self._stopInteraction();
-
                 Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
+
+                self._stopInteraction();
+                event.preventDefault();
             }
         });
 
@@ -160,11 +161,12 @@
                 },
                 mouseup: function(event) {
                     if ($element.hasClass('resizable')) {
+                        Planner.Events.publish('cardUpdated', [card, $element]);
                         self.currentElement.removeClass('resizable');
+
+
                         self._stopInteraction();
                         event.preventDefault();
-
-                        Planner.Events.publish('cardUpdated', [card, $element]);
                     }
                 }
             });
