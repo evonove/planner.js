@@ -76,13 +76,12 @@
             var options = Planner.options;
             var index;
 
-            // Duck typing: if it has hours and minutes, it's a Date object
             if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
                 index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots) + 1;
             } else if (typeof attribute === 'string') {
                 index = options.rowLabels.indexOf(attribute) + 1;
             } else {
-                console.error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
+                throw new Error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
             }
 
             return index;
