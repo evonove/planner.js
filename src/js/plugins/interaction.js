@@ -153,7 +153,7 @@
             $element.on({
                 mousemove: function(event) {
                     if ($element.hasClass('resizable')) {
-                        self._resize();
+                        self._resize(event.clientY);
 
                         // Avoid other actions
                         event.preventDefault();
