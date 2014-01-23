@@ -195,7 +195,6 @@
     };
 
     Crud.prototype._drag = function(destination) {
-        var card = Planner.mapDom.get(this.currentElement);
         var length = this.currentElement.data('end') - this.currentElement.data('start');
 
         this.currentElement.appendTo(destination);
@@ -203,13 +202,13 @@
         var startPosition = this.currentElement.parent().index();
 
         // Update Card object
-        card.assignees = [assignee];
-        card.start = Planner.Helpers.indexToAttribute(startPosition);
-        card.end = Planner.Helpers.indexToAttribute(startPosition + length);
+        this.currentCard.assignees = [assignee];
+        this.currentCard.start = Planner.Helpers.indexToAttribute(startPosition);
+        this.currentCard.end = Planner.Helpers.indexToAttribute(startPosition + length + 1);
 
         // Update DOM object
-        card.titleHeader = card._generateTitle();
-        this.currentElement.find('.planner-card-time').html(card.titleHeader);
+        this.currentCard.titleHeader = this.currentCard._generateTitle();
+        this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
         this.currentElement.data('start', startPosition);
         this.currentElement.data('end', startPosition + length);
         this.currentElement.data('column', assignee);
