@@ -4,12 +4,14 @@
     // ---------------------
 
     var Card = function(object) {
-        this.id = object.id;
-        this.title = object.title;
-        this.content = object.content;
-        this.start = object.start;
-        this.end = object.end;
-        this.assignees = Array.isArray(object.assignees) ? object.assignees : [object.assignees];
+        this.id = object.id || null;
+        this.title = object.title || null;
+        this.content = object.content || null;
+        this.start = object.start || null;
+        this.end = object.end || null;
+        this.assignees = object.assignees || [];
+
+        this.titleHeader = this._generateTitle();
 
         // Object assignment to a global hash map
         Planner.mapCard.put(this, []);
@@ -19,50 +21,70 @@
     // ----------------------
 
     Card.prototype._generateTitle = function() {
-        var self = this;
         var title = '';
 
-        if (typeof self.start.getHours === 'function' && typeof self.start.getMinutes === 'function' && typeof self.end.getHours === 'function' && typeof self.end.getMinutes === 'function') {
-            title = Planner.Utils.pad(self.start.getHours()) + ':' + Planner.Utils.pad(self.start.getMinutes()) + ' - ' + Planner.Utils.pad(self.end.getHours()) + ':' + Planner.Utils.pad(self.end.getMinutes());
-        } else if (self.start === self.end) {
-            title = self.start;
-        } else {
-            title = self.start + '-' + self.end;
+        if(typeof this.start !== 'null' && typeof this.end !== 'null') {
+            if (typeof this.start.getHours === 'function' && typeof this.start.getMinutes === 'function' && typeof this.end.getHours === 'function' && typeof this.end.getMinutes === 'function') {
+                title = Planner.Utils.pad(this.start.getHours()) + ':' + Planner.Utils.pad(this.start.getMinutes()) + ' - ' + Planner.Utils.pad(this.end.getHours()) + ':' + Planner.Utils.pad(this.end.getMinutes());
+            } else if (this.start === this.end) {
+                title = this.start;
+            } else {
+                title = this.start + '-' + this.end;
+            }
         }
 
         return title;
     };
 
-    Card.prototype._generateDOM = function(assignee) {
-        var options = Planner.options;
+    Card.prototype._generateDom = function(assignee) {
         var self = this;
-        self.titleHeader = self._generateTitle();
 
         // Generate a standard Card DOM object
-        var cardDOM = $(Planner.Templates.card(self));
-        var $element = cardDOM.clone();
+        var $element = $(Planner.Templates.card(self));
+        self.updateDom($element, assignee);
 
-        // Convert Card attributes to DOM attributes
-        // TODO: +1/-1 used only to maintain the same behaviour on interaction plugin
-        var start = Planner.Helpers.attributeToIndex(self.start);
-        var end = Planner.Helpers.attributeToIndex(self.end) - 1;
-        var cardLength = (end - start + 1) * options.timeslotHeight - options.cardTitleMargin;
-
-        // Set DOM values
-        $element.data('column', assignee);
-        $element.data('start', start);
-        $element.data('end', end);
-        $element.height(cardLength);
-
-        // Map DOM with Card
+        // Bidirectional mapping between Card and DOM object
         Planner.mapDom.put($element, self);
-
-        // Map Card with DOM
-        var registeredDoms = Planner.mapCard.get(self);
-        registeredDoms.push($element);
-        Planner.mapCard.put(self, registeredDoms);
+        Planner.mapCard.get(self).push($element);
 
         return $element;
+    };
+
+    Card.prototype.updateDom = function($element, assignee) {
+        var options = Planner.options;
+
+        var self = this;
+        var start = Planner.Helpers.attributeToIndex(self.start);
+        var end = Planner.Helpers.attributeToIndex(self.end) - 1;
+
+        // TODO: corner case for last timeslot caused by not managing multiple days
+        if (end < 0) {
+            end = options.timeslots * options.rowLabels.length - 1;
+        }
+
+        if (start <= end) {
+            var cardLength = (end - start + 1) * options.timeslotHeight - options.cardTitleMargin;
+
+            // Update data attributes
+            if (typeof assignee !== 'undefined') $element.data('column', assignee);
+            $element.data('start', start);
+            $element.data('end', end);
+
+            // Update DOM attributes
+            $element.find('.planner-card-time').html(self.titleHeader);
+            $element.height(cardLength);
+        }
+    };
+
+    Card.prototype.updateCard = function(values) {
+        this.id = values.id || this.id;
+        this.title = values.title || this.title;
+        this.content = values.content || this.content;
+        this.start = values.start || this.start;
+        this.end = values.end || this.end;
+        this.assignees = values.assignees || this.assignees;
+
+        this.titleHeader = this._generateTitle();
     };
 
     Card.prototype.drawCard = function() {
@@ -70,15 +92,16 @@
 
         self.assignees.forEach(function(assignee) {
             // Get data-attributes element from card DOM
-            var cardDOM = self._generateDOM(assignee);
-            var column = cardDOM.data('column');
-            var start = cardDOM.data('start');
+            var cardDom = self._generateDom(assignee);
+
+            var column = cardDom.data('column');
+            var start = cardDom.data('start');
 
             // TODO: this function doesn't support multi day events and collisions
             // Find the right column and search starting div to append created object
             // Note: (start + 1) is used because of CSS selector and not because index() function
-            Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + (start + 1) + ')').append(cardDOM);
-            Planner.Events.publish('cardDrawn', [self, cardDOM]);
+            Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + (start + 1) + ')').append(cardDom);
+            Planner.Events.publish('cardDrawn', [self, cardDom]);
         });
     };
 

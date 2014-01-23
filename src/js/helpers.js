@@ -69,6 +69,10 @@
         plannerWeekday: function() {
             var options = Planner.options;
 
+            // Set default behaviour
+            options.columnLabels = dayColumns;
+            options.rowLabels = hourRows;
+
             return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: options.timeslots});
         },
         // Transform start or end attributes to a valid planner interval (index) according to attribute type

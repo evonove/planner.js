@@ -189,7 +189,6 @@
     Crud.prototype._stopInteraction = function() {
         this.currentCard = null;
         this.currentElement = null;
-        this.listReduced = [];
         this.initialIndex = null;
         this.initialY = null;
     };
@@ -201,38 +200,24 @@
         var assignee = this.currentElement.parent().parent().index() + 1;
         var startPosition = this.currentElement.parent().index();
 
-        // Update Card object
-        this.currentCard.assignees = [assignee];
-        this.currentCard.start = Planner.Helpers.indexToAttribute(startPosition);
-        this.currentCard.end = Planner.Helpers.indexToAttribute(startPosition + length + 1);
+        // Update Card  and DOM object
+        this.currentCard.updateCard({
+            assignees: [assignee],
+            start: Planner.Helpers.indexToAttribute(startPosition),
+            end: Planner.Helpers.indexToAttribute(startPosition + length + 1)
+        });
 
-        // Update DOM object
-        this.currentCard.titleHeader = this.currentCard._generateTitle();
-        this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
-        this.currentElement.data('start', startPosition);
-        this.currentElement.data('end', startPosition + length);
-        this.currentElement.data('column', assignee);
-
+        this.currentCard.updateDom(this.currentElement, assignee);
     };
 
     Crud.prototype._resize = function(pointerY) {
         // Calculate new length
         var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight);
-        var startIndex = this.initialIndex;
         var endIndex = this.initialIndex + currentCardPosition;
 
-        // Be sure that endIndex is not minor than startIndex
-        if (startIndex <= endIndex) {
-            var cardLength = (endIndex - startIndex + 1) * this.options.timeslotHeight - this.options.cardTitleMargin;
-
-            // Update DOM values
-            this.currentElement.data('end', endIndex);
-            this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
-            this.currentElement.height(cardLength);
-
-            this.currentCard.end = Planner.Helpers.indexToAttribute(endIndex + 1);
-            this.currentCard.titleHeader = this.currentCard._generateTitle();
-        }
+        // Update Card  and DOM object
+        this.currentCard.updateCard({end: Planner.Helpers.indexToAttribute(endIndex + 1)});
+        this.currentCard.updateDom(this.currentElement);
     };
 
     Crud.prototype._resetDrag = function() {
