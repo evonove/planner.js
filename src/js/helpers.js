@@ -77,9 +77,9 @@
             var index;
 
             if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
-                index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots) + 1;
+                index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots);
             } else if (typeof attribute === 'string') {
-                index = options.rowLabels.indexOf(attribute) + 1;
+                index = options.rowLabels.indexOf(attribute);
             } else {
                 throw new Error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
             }

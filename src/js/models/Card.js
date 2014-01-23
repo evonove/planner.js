@@ -43,9 +43,10 @@
         var $element = cardDOM.clone();
 
         // Convert Card attributes to DOM attributes
+        // TODO: +1/-1 used only to maintain the same behaviour on interaction plugin
         var start = Planner.Helpers.attributeToIndex(self.start);
-        var end = Planner.Helpers.attributeToIndex(self.end);
-        var cardLength = (end - start) * options.timeslotHeight - options.cardTitleMargin;
+        var end = Planner.Helpers.attributeToIndex(self.end) - 1;
+        var cardLength = (end - start + 1) * options.timeslotHeight - options.cardTitleMargin;
 
         // Set DOM values
         $element.data('column', assignee);
@@ -75,7 +76,8 @@
 
             // TODO: this function doesn't support multi day events and collisions
             // Find the right column and search starting div to append created object
-            Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + start + ')').append(cardDOM);
+            // Note: (start + 1) is used because of CSS selector and not because index() function
+            Planner.$element.find('.planner-column:nth-child(' + column + ') > div:nth-child(' + (start + 1) + ')').append(cardDOM);
             Planner.Events.publish('cardDrawn', [self, cardDOM]);
         });
     };

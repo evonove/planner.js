@@ -216,20 +216,23 @@
     };
 
     Crud.prototype._resize = function(pointerY) {
-        var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight) + 1;
-
-        this.currentCard.end = Planner.Helpers.indexToAttribute(this.initialIndex + currentCardPosition);
-        this.currentCard.titleHeader = this.currentCard._generateTitle();
-
         // Calculate new length
-        var startIndex = Planner.Helpers.attributeToIndex(this.currentCard.start);
-        var endIndex = Planner.Helpers.attributeToIndex(this.currentCard.end);
-        var cardLength = (endIndex - startIndex) * this.options.timeslotHeight - this.options.cardTitleMargin;
+        var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight);
+        var startIndex = this.initialIndex;
+        var endIndex = this.initialIndex + currentCardPosition;
 
-        // Update DOM values
-        this.currentElement.data('end', endIndex);
-        this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
-        this.currentElement.height(cardLength);
+        // Be sure that endIndex is not minor than startIndex
+        if (startIndex <= endIndex) {
+            var cardLength = (endIndex - startIndex + 1) * this.options.timeslotHeight - this.options.cardTitleMargin;
+
+            // Update DOM values
+            this.currentElement.data('end', endIndex);
+            this.currentElement.find('.planner-card-time').html(this.currentCard.titleHeader);
+            this.currentElement.height(cardLength);
+
+            this.currentCard.end = Planner.Helpers.indexToAttribute(endIndex + 1);
+            this.currentCard.titleHeader = this.currentCard._generateTitle();
+        }
     };
 
     Crud.prototype._resetDrag = function() {
