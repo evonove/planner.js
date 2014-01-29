@@ -46,15 +46,10 @@
 
         self.$element.find('.planner-column > div').on({
             mousedown: function(event) {
-                // Create a new card and draw DOM element
                 var $this = $(this);
-                var startAttribute = Planner.Helpers.indexToAttribute($this.index());
-                var endAttribute = Planner.Helpers.indexToAttribute($this.index() + 1);
-                var assignee = [$this.parent().index() + 1];
-                var card = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
-                card.drawCard();
 
                 // Start interaction with created objects
+                var card = self._createCard($this);
                 self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.clientY);
 
                 event.preventDefault();
@@ -170,13 +165,23 @@
                     }
                 }
             });
-
-
         });
     };
 
     // Plugin helpers
     // --------------
+
+    Crud.prototype._createCard = function($element) {
+        // Create a new card and draw DOM element
+        var startAttribute = Planner.Helpers.indexToAttribute($element.index());
+        var endAttribute = Planner.Helpers.indexToAttribute($element.index() + 1);
+        var assignee = [$element.parent().index() + 1];
+        var card = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
+        card.drawCard();
+
+        return card;
+    };
+
 
     Crud.prototype._startInteraction = function(card, $element, initialIndex, initialY) {
         // Store variables for further interactions
