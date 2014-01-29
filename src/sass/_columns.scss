@@ -9,6 +9,7 @@
     height: $header-height;
     background-color: #FFF;
     display: inline-block;
+    overflow: hidden;
     z-index: 1030;
 
     font-size: $text-size;
@@ -38,11 +39,11 @@
         display: inline-block;
 
         > div {
-          border-bottom: 1px dotted #cccccc;
+            border-bottom: 1px dotted #cccccc;
         }
 
         > div:nth-child(1) {
-          border-top: 2px solid #cccccc;
+            border-top: 2px solid #cccccc;
         }
     }
 }
