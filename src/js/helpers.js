@@ -52,16 +52,12 @@
             var timeslotSize = options.timeslotHeight * options.timeslots;
             var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
 
-            // Plugins related
-            var interaction = options.plugins.indexOf('interaction') !== -1;
-
             var cssContext = {
                 timeslots: options.timeslots,
                 timeslotHeight: options.timeslotHeight,
                 timeslotPadding: timeslotSize - options.timeslotPadding,
                 lastTimeslotPadding: timeslotPadding,
-                sliderWidth: 100 / options.visibileColumns,
-                interaction: interaction
+                sliderWidth: 100 / options.visibileColumns
             };
 
             return $(Planner.Templates.styles(cssContext));

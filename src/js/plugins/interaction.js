@@ -286,6 +286,9 @@
             if (Planner.Plugins.isRegistered('mobile')) {
                 data.attachMobileListeners();
             }
+
+            // Add interaction styles
+            $('head').append(Planner.Templates.interaction());
         });
     };
 

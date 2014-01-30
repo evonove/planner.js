@@ -21,6 +21,7 @@
             mobileWidth: 100 / this.options.mobileVisibleColumns
         };
 
+        // Add mobile styles
         $('head').append(Planner.Templates.mobile(context));
     };
 
