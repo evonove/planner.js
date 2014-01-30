@@ -168,8 +168,37 @@
         });
     };
 
-    // Plugin helpers
-    // --------------
+    Crud.prototype.attachMobileListeners = function() {
+        var self = this;
+
+        self.$element.find('.planner-column > div').on({
+            touchstart: function(event) {
+                var $this = $(this);
+
+                // Start interaction with created objects
+                var card = self._createCard($this);
+                self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.originalEvent.touches[0].clientY);
+
+                event.preventDefault();
+            },
+            touchmove: function(event) {
+                if (self.currentCard !== null) {
+                    self._resize(event.originalEvent.touches[0].clientY);
+
+                    event.preventDefault();
+                }
+            },
+            touchend: function(event) {
+                Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
+
+                self._stopInteraction();
+                event.preventDefault();
+            }
+        });
+    };
+
+    // Private plugin helpers
+    // ----------------------
 
     Crud.prototype._createCard = function($element) {
         // Create a new card and draw DOM element
@@ -253,6 +282,10 @@
             data.attachDragCreation();
             data.attachDragAndDrop();
             data.attachResize();
+
+            if (Planner.Plugins.isRegistered('mobile')) {
+                data.attachMobileListeners();
+            }
         });
     };
 
