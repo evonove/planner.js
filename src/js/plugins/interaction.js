@@ -27,15 +27,11 @@
     Crud.prototype.attachClick = function() {
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
             $element.on({
-                mouseclick: function(event) {
-                    Planner.Events.publish('cardClicked', [card, $element]);
-
-                    // Avoid propagation of element on child/parent elements
-                    event.stopPropagation();
-                },
-                mousedown: function(event) {
-                    // Avoid propagation of element on child/parent elements
-                    event.stopPropagation();
+                mouseup: function(event) {
+                    // Avoid this action on event propagation from children
+                    if (event.currentTarget === event.target) {
+                        Planner.Events.publish('cardClicked', [card, $element]);
+                    }
                 }
             });
         });
@@ -46,13 +42,15 @@
 
         self.$element.find('.planner-column > div').on({
             mousedown: function(event) {
-                var $this = $(this);
+                // Avoid this action on event propagation from children
+                if (event.currentTarget === event.target) {
+                    var $this = $(this);
 
-                // Start interaction with created objects
-                var card = self._createCard($this);
-                self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.clientY);
-
-                event.preventDefault();
+                    // Start interaction with created objects
+                    var card = self._createCard($this);
+                    self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.clientY);
+                    event.preventDefault();
+                }
             },
             mousemove: function(event) {
                 if (self.currentCard !== null) {
@@ -62,10 +60,12 @@
                 }
             },
             mouseup: function(event) {
-                Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
+                if (self.currentCard !== null) {
+                    Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
 
-                self._stopInteraction();
-                event.preventDefault();
+                    self._stopInteraction();
+                    event.preventDefault();
+                }
             }
         });
     };
@@ -172,19 +172,9 @@
         var self = this;
 
         self.$element.find('.planner-column > div').on({
-            touchstart: function(event) {
-                var $this = $(this);
-
-                // Start interaction with created objects
-                var card = self._createCard($this);
-                self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.originalEvent.touches[0].clientY);
-
-                event.preventDefault();
-            },
             touchmove: function(event) {
                 if (self.currentCard !== null) {
                     self._resize(event.originalEvent.touches[0].clientY);
-
                     event.preventDefault();
                 }
             },
@@ -194,6 +184,16 @@
                 self._stopInteraction();
                 event.preventDefault();
             }
+        });
+
+        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+            $element.on({
+                touchend: function(event) {
+                    Planner.Events.publish('cardClicked', [card, $element]);
+                    // Avoid propagation of element on child/parent elements
+                    event.stopPropagation();
+                }
+            });
         });
     };
 
