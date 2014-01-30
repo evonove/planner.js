@@ -28,21 +28,6 @@
         rowLabels: []
     };
 
-    // Prototype functions
-    // -------------------
-
-    PlanningChart.prototype.pluginsLoader = function() {
-        var self = this;
-
-        if (typeof self.options.plugins.forEach === 'function') {
-            this.options.plugins.forEach(function(pluginName) {
-                Planner.Plugins.call(pluginName, self);
-            });
-        } else {
-            throw new Error('"Plugins" option on Planner.js should be a list of string');
-        }
-    };
-
     // PlanningChart widget definition
     // -------------------------------
 
@@ -77,7 +62,7 @@
             $('head').append(Planner.Helpers.computedCSS());
 
             // Load attached plugins
-            data.pluginsLoader();
+            Planner.Plugins.load(options.plugins, data);
         });
     };
 
