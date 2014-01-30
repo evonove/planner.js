@@ -25,7 +25,8 @@
         cardTitleMargin: 6,
         centered: PlanningChart.CONST.ALIGNMENT.TOP,
         columnLabels: [],
-        rowLabels: []
+        rowLabels: [],
+        visibileColumns: 7
     };
 
     // PlanningChart widget definition

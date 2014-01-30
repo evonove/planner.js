@@ -60,6 +60,7 @@
                 timeslotHeight: options.timeslotHeight,
                 timeslotPadding: timeslotSize - options.timeslotPadding,
                 lastTimeslotPadding: timeslotPadding,
+                sliderWidth: 100 / options.visibileColumns,
                 interaction: interaction
             };
 
