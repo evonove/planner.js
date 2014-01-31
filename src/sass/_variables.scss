@@ -7,12 +7,13 @@
 
 $line-height: 1.42858;
 $text-size: 14px;
+
+// Generic planner variables
+// -------------------------
+
 $timeslots-width: 10%;
+$timeslots-background-color: #FFF;
 $slider-width: 100 - $timeslots-width;
-
-// Header
-// ------
-
 $header-height: 60px;
 
 // Container

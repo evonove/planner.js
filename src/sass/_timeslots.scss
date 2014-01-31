@@ -5,11 +5,13 @@
 .planner-timeslots-header {
     width: 10%;
     min-width: 60px;
+    min-height: 35px;
     float: left;
     position: relative;
 
-    background-color: #FFF;
+    background-color: $timeslots-background-color;
     padding-bottom: 20px;
+    z-index: 1030;
 }
 
 .planner-timeslots {
@@ -19,6 +21,9 @@
     position: relative;
     padding-right: 15px;
     text-align: center;
+
+    background-color: $timeslots-background-color;
+    z-index: 1030;
 
     > div:first-child {
         padding-top: 10px;

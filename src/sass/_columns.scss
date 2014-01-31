@@ -7,7 +7,7 @@
     position: fixed;
     width: 99%;
     height: $header-height;
-    background-color: #FFF;
+    background-color: $timeslots-background-color;
     display: inline-block;
     overflow: hidden;
     z-index: 1030;
@@ -51,7 +51,6 @@
 .planner-slider {
     @include animate-ease;
 
-    width: 14%;
     position: relative;
     white-space: nowrap;
 }
