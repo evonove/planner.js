@@ -2,8 +2,12 @@
 // Arrows classes
 // ==============
 
+$degree: 45deg;
+
 .arrow-switcher {
     @include animate-ease-fast;
+
+    cursor:pointer;
     width: $arrow-width;
     height: $arrow-height;
     top: $arrow-position-top;
@@ -13,96 +17,75 @@
     z-index: 2030;
 
     background-color: $arrow-background;
+    font: {
+        family: Arial, sans-serif;
+        size: $arrow-size;
+        weight: bold;
+    }
 
     &:hover {
         opacity: 1.0;
+    }
+
+    &:after {
+        @include rotate(-$degree);
+    }
+
+    &:before {
+        @include rotate($degree);
+    }
+
+    &:before, &:after {
+        background: $arrow-foreground;
+        -moz-border-radius: 0.25em;
+        -webkit-border-radius: 0.25em;
+        border-radius: 0.25em;
+        content: "";
+        display: block;
+        height: 0.5em;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 1em;
+    }
+
+    @media screen and (max-width: 768px) {
+        display: none;
     }
 }
 
 .arrow-left {
     @extend .arrow-switcher;
     @include border-radius($arrow-flat-radius $arrow-flat-round $arrow-flat-round $arrow-flat-radius);
-    @media screen and (max-width: 768px) {
-        display: none;
-    }
-
-    left: -30px;
+    left: -($arrow-width - 45);
 
     &:hover {
-        opacity: 1.0;
         left: 0;
+    }
+
+    &:after {
+        margin-top: -.36em
+    }
+
+    &:before, &:after {
+        left: 5px;
     }
 }
 
 .arrow-right {
     @extend .arrow-switcher;
     @include border-radius($arrow-flat-round $arrow-flat-radius $arrow-flat-radius $arrow-flat-round);
-    @media screen and (max-width: 768px) {
-        display: none;
-    }
-
-    right: -30px;
+    right: -($arrow-width - 45);
 
     &:hover {
-        opacity: 1.0;
         right: 0;
     }
-}
 
-.next {
-    font: normal bold 40px Arial, sans-serif;
-}
+    &:before {
+        margin-top: -.36em
+    }
 
-.prev {
-    font: normal bold 40px Arial,sans-serif;
-}
-
-.next:before,
-.next:after,
-.prev:before,
-.prev:after {
-    background: #FFFFFF;
-    -moz-border-radius: 0.25em;
-    -webkit-border-radius: 0.25em;
-    border-radius: 0.25em;
-    content: "";
-    display: block;
-    height: 0.5em;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 1em;
-}
-
-.next:before,
-.prev:before {
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-.next:after,
-.prev:after {
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
-
-.prev:before,
-.prev:after {
-  left: 5px;
-}
-
-.next:before,
-.next:after {
-  right: 5px;
-}
-
-.prev:after,
-.next:before {
-  margin-top: -.36em
+    &:before, &:after {
+        right: 5px;
+    }
 }
