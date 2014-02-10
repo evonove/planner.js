@@ -44,7 +44,10 @@
     };
 
     Slider.prototype._slideRight = function() {
-        if (this.currentIndex < (this.options.columnLabels.length - this.options.visibileColumns)) {
+        // TODO: this behaviour should be optimized with better options passing
+        var visibleColumns = document.documentElement.clientWidth <= 768 ? this.$element.data('pl.plugins.mobile').options.mobileVisibleColumns : this.options.visibileColumns;
+
+        if (this.currentIndex < (this.options.columnLabels.length - visibleColumns)) {
             // Column width (includes header padding)
             var columnWidth = this.$element.find('.planner-column').width() + 5;
 
