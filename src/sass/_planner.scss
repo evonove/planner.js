@@ -7,3 +7,8 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+div[data-planner=container] {
+    font-size: $text-size;
+    line-height: $line-height;
+}

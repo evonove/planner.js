@@ -37,7 +37,7 @@ div.planner-card.card-small {
     width: 40%;
 }
 
-[draggable] {
+*[draggable=true] {
     cursor: move;
 
     -moz-user-select: none;

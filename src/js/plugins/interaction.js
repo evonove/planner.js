@@ -73,10 +73,6 @@
     Crud.prototype.attachDragAndDrop = function() {
         var self = this;
 
-        // Add jQuery event 'dataTransfer' property as
-        // stated in: http://api.jquery.com/category/events/event-object/
-        $.event.props.push('dataTransfer');
-
         // Happend drag events to timeslots
         self.$element.find('.planner-column > div').on({
             dragover:  function(event) {
@@ -85,6 +81,12 @@
             drop: function(event) {
                 self._drag(this);
                 self._resetDrag();
+
+                // Note: remove all temporary clones because of webkit bug/feature
+                if (!!window.webkitURL) {
+                    $('[data-planner=container] > .planner-card').remove();
+                }
+
                 Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
 
                 self._stopInteraction();
@@ -100,8 +102,21 @@
                     self._startInteraction(card, $element);
 
                     // Required for Firefox
-                    event.dataTransfer.effectAllowed = 'move';
-                    event.dataTransfer.setData('text/html', '[Object] Card');
+                    event.originalEvent.dataTransfer.effectAllowed = 'move';
+                    event.originalEvent.dataTransfer.setData('text/html', '[Object] Card');
+
+                    // Note: in webkit browsers, drag-n-drop doesn't create a ghost image if the original
+                    // object is placed inside a container with -webkit-transform attribute. The only available
+                    // solution (at the moment) is to clone the object and put it inside an upper container.
+                    var draggedNode = this;
+                    if (!!window.webkitURL) {
+                        draggedNode = this.cloneNode(true);
+                        $(draggedNode).width($(this).width());
+                        $(draggedNode).addClass('dragging');
+                        $('[data-planner=container]').append(draggedNode);
+                    }
+
+                    event.originalEvent.dataTransfer.setDragImage(draggedNode, 20, 20);
 
                     // Add a ghost effect
                     $element.addClass('dragging');

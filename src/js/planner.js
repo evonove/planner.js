@@ -86,9 +86,12 @@
 
             // Allows plugins definition with data attributes
             var plugins = $planner.data('plugins') && $planner.data('plugins').split(' ');
-            $planner.data('plugins', plugins);
+
+            // Load default plugins
+            plugins.push('slider');
 
             // Planner initialization
+            $planner.data('plugins', plugins);
             $planner.planner($planner.data());
         });
     });
