@@ -66,7 +66,10 @@
             var cardLength = (end - start + 1) * options.timeslotHeight - options.cardTitleMargin;
 
             // Update data attributes
-            if (typeof assignee !== 'undefined') $element.data('column', assignee);
+            if (typeof assignee !== 'undefined')  {
+                $element.data('column', assignee);
+            }
+
             $element.data('start', start);
             $element.data('end', end);
 
