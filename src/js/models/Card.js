@@ -23,7 +23,7 @@
     Card.prototype._generateTitle = function() {
         var title = '';
 
-        if(typeof this.start !== 'null' && typeof this.end !== 'null') {
+        if(this.start !== null && this.end !== null) {
             if (typeof this.start.getHours === 'function' && typeof this.start.getMinutes === 'function' && typeof this.end.getHours === 'function' && typeof this.end.getMinutes === 'function') {
                 title = Planner.Utils.pad(this.start.getHours()) + ':' + Planner.Utils.pad(this.start.getMinutes()) + ' - ' + Planner.Utils.pad(this.end.getHours()) + ':' + Planner.Utils.pad(this.end.getMinutes());
             } else if (this.start === this.end) {
