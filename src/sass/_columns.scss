@@ -46,8 +46,6 @@
 }
 
 .planner-slider {
-    @include animate-ease;
-
     position: relative;
     white-space: nowrap;
 }

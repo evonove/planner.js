@@ -1,3 +1,13 @@
 // ===============
 // Utility classes
 // ===============
+
+.animate {
+    @media screen and (max-width: 991px) {
+        @include animate-ease-fast;
+    }
+
+    @media screen and (min-width: 992px) {
+        @include animate-ease;
+    }
+}

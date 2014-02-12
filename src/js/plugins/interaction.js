@@ -203,10 +203,10 @@
 
         Planner.Events.subscribe('cardDrawn', function(card, $element) {
             $element.on({
-                touchend: function(event) {
+                touchend: function() {
                     Planner.Events.publish('cardClicked', [card, $element]);
-                    // Avoid propagation of element on child/parent elements
-                    event.stopPropagation();
+                    // TODO: check if this is required to "Avoid propagation of element on child/parent elements"
+                    // event.stopPropagation();
                 }
             });
         });
