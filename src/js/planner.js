@@ -26,7 +26,7 @@
         centered: PlanningChart.CONST.ALIGNMENT.TOP,
         columnLabels: [],
         rowLabels: [],
-        visibileColumns: 7
+        visibleColumns: 7
     };
 
     // PlanningChart widget definition
