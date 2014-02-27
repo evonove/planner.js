@@ -116,7 +116,7 @@
 
     Slider.prototype._slideRight = function() {
         // TODO: this behaviour should be optimized with better options passing
-        var visibleColumns = document.documentElement.clientWidth <= 768 ? this.$element.data('pl.plugins.mobile').options.mobileVisibleColumns : this.options.visibileColumns;
+        var visibleColumns = document.documentElement.clientWidth <= 768 ? this.$element.data('pl.plugins.mobile').options.mobileVisibleColumns : this.options.visibleColumns;
 
         if (this.currentIndex < (this.options.columnLabels.length - visibleColumns)) {
             this.cacheSlider.addClass('animate');
