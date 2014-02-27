@@ -18,6 +18,7 @@
     };
 
     PlanningChart.DEFAULTS = {
+        show: true,
         plugins: [],
         timeslots: 4,
         timeslotHeight: 25,
@@ -62,8 +63,12 @@
             Planner.mapCard = data.mapCard;
             Planner.mapDom = data.mapDom;
 
-            // Initialize planner template and computed CSS
-            $this.html(Planner.Templates.body(options));
+            // Initialize planner template only if required
+            if (options.show) {
+                $this.html(Planner.Templates.body(options));
+            }
+
+            // Append all computed CSS
             $('head').append(Planner.Helpers.computedCSS());
 
             // Load attached plugins
