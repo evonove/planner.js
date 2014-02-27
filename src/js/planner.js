@@ -42,6 +42,7 @@
             var options = $.extend({}, PlanningChart.DEFAULTS, $this.data(), typeof option === 'object' && option);
 
             // Check if columns and rows are set otherwise use a default planner
+            options.visibleColumns = options.visibleColumns > options.columnLabels.length ? options.columnLabels.length : options.visibleColumns;
             if (options.columnLabels.length === 0) {
                 options.columnLabels = Planner.Helpers.getDefaultColumns();
             }
