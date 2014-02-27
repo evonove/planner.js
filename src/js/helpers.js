@@ -64,7 +64,7 @@
                 timeslotHeight: options.timeslotHeight,
                 timeslotPadding: timeslotSize - options.timeslotPadding,
                 lastTimeslotPadding: timeslotPadding,
-                sliderWidth: 100 / options.visibileColumns
+                sliderWidth: 100 / options.visibleColumns
             };
 
             return $(Planner.Templates.styles(cssContext));
