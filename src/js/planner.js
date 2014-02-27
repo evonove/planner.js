@@ -40,9 +40,19 @@
             var data = $this.data('pl.planner');
             var options = $.extend({}, PlanningChart.DEFAULTS, $this.data(), typeof option === 'object' && option);
 
+            // Check if columns and rows are set otherwise use a default planner
+            if (options.columnLabels.length === 0) {
+                options.columnLabels = Planner.Helpers.getDefaultColumns();
+            }
+
+            if (options.rowLabels.length === 0) {
+                options.rowLabels = Planner.Helpers.getDefaultRows();
+            }
+
             // If this node isn't initialized, call the constructor
             if (!data) {
                 $this.data('pl.planner', (data = new PlanningChart(this, options)));
+                this.setAttribute('data-planner', 'container');
             }
 
             // TODO: better implementation required
@@ -52,14 +62,8 @@
             Planner.mapCard = data.mapCard;
             Planner.mapDom = data.mapDom;
 
-            // Check if columns and rows are set otherwise use a default planner
-            if (options.columnLabels.length > 0 && options.rowLabels.length > 0) {
-                $this.html(Planner.Templates.body(options));
-            } else {
-                $this.html(Planner.Helpers.plannerWeekday(options));
-            }
-
-            // Add computed styles
+            // Initialize planner template and computed CSS
+            $this.html(Planner.Templates.body(options));
             $('head').append(Planner.Helpers.computedCSS());
 
             // Load attached plugins

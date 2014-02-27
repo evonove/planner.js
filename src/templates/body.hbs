@@ -1,7 +1,7 @@
 <div class="planner-header">
     <div class="planner-timeslots-header"></div>
     <div class="planner-slider">
-        {{#each columns}}
+        {{#each columnLabels}}
             <div class="planner-column-header">{{name}}</div>
         {{/each}}
     </div>
@@ -10,14 +10,14 @@
 <div class="planner-container">
     <div class="arrow-switcher arrow-left"></div>
     <div class="planner-timeslots">
-        {{#each rows}}
+        {{#each rowLabels}}
             {{> timeslot}}
         {{/each}}
     </div>
     <div class="planner-slider">
-        {{#each columns}}
+        {{#each columnLabels}}
             <div class="planner-column">
-                {{#each ../rows}}
+                {{#each ../rowLabels}}
                     {{#times ../../timeslots}}
                         <div></div>
                     {{/times}}

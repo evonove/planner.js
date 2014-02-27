@@ -44,6 +44,13 @@
     // ---------------
 
     Planner.Helpers = {
+        // Default constructor options
+        getDefaultColumns: function() {
+            return dayColumns;
+        },
+        getDefaultRows: function() {
+            return hourRows;
+        },
         // Generate a computed style node
         computedCSS: function() {
             var options = Planner.options;
@@ -61,16 +68,6 @@
             };
 
             return $(Planner.Templates.styles(cssContext));
-        },
-        // Create HTML string using a default columns configuration
-        plannerWeekday: function() {
-            var options = Planner.options;
-
-            // Set default behaviour
-            options.columnLabels = dayColumns;
-            options.rowLabels = hourRows;
-
-            return Planner.Templates.body({columns: dayColumns, rows: hourRows, timeslots: options.timeslots});
         },
         // Transform start or end attributes to a valid planner interval (index) according to attribute type
         attributeToIndex: function(attribute) {
