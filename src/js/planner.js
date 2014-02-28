@@ -19,6 +19,7 @@
 
     PlanningChart.DEFAULTS = {
         show: true,
+        model: Planner.Models.Card,
         plugins: [],
         timeslots: 4,
         timeslotHeight: 25,

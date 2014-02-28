@@ -219,9 +219,9 @@
         // Create a new card and draw DOM element
         var startAttribute = Planner.Helpers.indexToAttribute($element.index());
         var endAttribute = Planner.Helpers.indexToAttribute($element.index() + 1);
-        var assignee = [$element.parent().index() + 1];
-        var card = new Planner.Model.Card({start: startAttribute, end: endAttribute, assignees: assignee});
-        card.drawCard();
+        var column = [$element.parent().index() + 1];
+        var card = this.options.model({start: startAttribute, end: endAttribute, columns: column});
+        card.draw();
 
         return card;
     };
@@ -246,17 +246,17 @@
         var length = this.currentElement.data('end') - this.currentElement.data('start');
 
         this.currentElement.appendTo(destination);
-        var assignee = this.currentElement.parent().parent().index() + 1;
+        var column = this.currentElement.parent().parent().index() + 1;
         var startPosition = this.currentElement.parent().index();
 
         // Update Card  and DOM object
-        this.currentCard.updateCard({
-            assignees: [assignee],
+        this.currentCard.refresh({
+            columns: [column],
             start: Planner.Helpers.indexToAttribute(startPosition),
             end: Planner.Helpers.indexToAttribute(startPosition + length + 1)
         });
 
-        this.currentCard.updateDom(this.currentElement, assignee);
+        this.currentCard.refreshDom(this.currentElement, column);
     };
 
     Crud.prototype._resize = function(pointerY) {
@@ -265,8 +265,8 @@
         var endIndex = this.initialIndex + currentCardPosition;
 
         // Update Card  and DOM object
-        this.currentCard.updateCard({end: Planner.Helpers.indexToAttribute(endIndex + 1)});
-        this.currentCard.updateDom(this.currentElement);
+        this.currentCard.refresh({end: Planner.Helpers.indexToAttribute(endIndex + 1)});
+        this.currentCard.refreshDom(this.currentElement);
     };
 
     Crud.prototype._resetDrag = function() {
