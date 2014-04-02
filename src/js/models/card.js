@@ -77,6 +77,33 @@
         }.bind(this));
     };
 
+    // TODO: map requires polyfill in IE8 (check https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+    var _removeDom = function(cardDom) {
+        var domList = Planner.mapCard.get(this);
+        var elementPos = domList.map(function(x) {return x._hash; }).indexOf(cardDom._hash);
+
+        if (elementPos !== -1) {
+            domList.splice(elementPos, 1);
+            cardDom.remove();
+
+            this.columns.splice(this.columns.indexOf(cardDom.data('column')), 1);
+            Planner.Events.publish('cardDomDeleted', [this, cardDom]);
+        }
+    };
+
+    var _remove = function() {
+        var domList = Planner.mapCard.get(this);
+
+        // Remove all related dom objects
+        domList.forEach(function(domElement) {
+            this.removeDom(domElement);
+        }.bind(this));
+
+        // Remove Card object from hash table
+        Planner.mapCard.remove(this);
+        Planner.Events.publish('cardDeleted', [this]);
+    };
+
     // Card class definition
     // ---------------------
 
@@ -98,6 +125,8 @@
         object.refresh = _refresh;
         object.refreshDom = _updateDom;
         object.draw = _drawCard;
+        object.removeDom = _removeDom;
+        object.remove = _remove;
 
         // Object assignment to a global hash map
         Planner.mapCard.put(object, []);
