@@ -119,7 +119,7 @@
         object.columns = attrs.columns || [];
 
         // Computed properties
-        Object.defineProperty(object, "header", {get: _generateHeader});
+        Object.defineProperty(object, 'header', {get: _generateHeader});
 
         // Public methods
         object.refresh = _refresh;
