@@ -1,7 +1,10 @@
-;(function(Planner) { 'use strict';
+'use strict';
+
+var HashMap = (function() {
 
     // Hash map implementation
-    // ----------------------
+    // TODO: this implementation is generic; create a new library for hash tables and remove this
+    // -----------------------
 
     var HashMap = function() {
         this._hashCounter = 0;
@@ -64,9 +67,6 @@
         return this;
     };
 
-    // Hash map registration on Planner utils
-    // --------------------------------------
+    return HashMap;
 
-    Planner.Utils.HashMap = HashMap;
-
-})(Planner);
+})();
