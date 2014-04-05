@@ -77,6 +77,15 @@
         }.bind(this));
     };
 
+    var _undrawCard = function() {
+      var domList = Planner.mapCard.get(this);
+
+      // Remove all related dom objects
+      domList.forEach(function(domElement) {
+        this.removeDom(domElement);
+      }.bind(this));
+    };
+
     var _removeDom = function(cardDom) {
         var domList = Planner.mapCard.get(this);
         var elementPos = domList.map(function(x) {return x._hash; }).indexOf(cardDom._hash);
@@ -125,6 +134,7 @@
         object.refresh = _refresh;
         object.refreshDom = _updateDom;
         object.draw = _drawCard;
+        object.undraw = _undrawCard;
         object.removeDom = _removeDom;
         object.remove = _remove;
 
