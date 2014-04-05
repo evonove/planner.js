@@ -77,7 +77,6 @@
         }.bind(this));
     };
 
-    // TODO: map requires polyfill in IE8 (check https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
     var _removeDom = function(cardDom) {
         var domList = Planner.mapCard.get(this);
         var elementPos = domList.map(function(x) {return x._hash; }).indexOf(cardDom._hash);
