@@ -94,7 +94,6 @@
             domList.splice(elementPos, 1);
             cardDom.remove();
 
-            this.columns.splice(this.columns.indexOf(cardDom.data('column')), 1);
             Planner.mapDom.remove(cardDom);
             Planner.Events.publish('cardDomDeleted', [this, cardDom]);
         }
