@@ -25,7 +25,7 @@
 
     // Publish click event on Card DOM element
     Crud.prototype.attachClick = function() {
-        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             $element.on({
                 mouseup: function(event) {
                     // Avoid this action on event propagation from children
@@ -48,7 +48,10 @@
 
                     // Start interaction with created objects
                     var card = self._createCard($this);
-                    self._startInteraction(card, Planner.mapCard.get(card)[0], $this.index(), event.clientY);
+
+                    // TODO: $this.index() doesn't match domId. After full migration to data-attribute, we can use this value to find the correct domId
+                    var domId = card.columns[0];
+                    self._startInteraction(card, Planner.mapCard.get(card)[domId], $this.index(), event.clientY);
                     event.preventDefault();
                 }
             },
@@ -94,7 +97,7 @@
             }
         });
 
-        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             $element.attr('draggable', true);
             $element.on({
                 dragstart: function(event) {
@@ -146,7 +149,7 @@
     Crud.prototype.attachResize = function() {
         var self = this;
 
-        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent})).on({
                 mousedown: function(event) {
                     self._startInteraction(card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
@@ -201,7 +204,7 @@
             }
         });
 
-        Planner.Events.subscribe('cardDrawn', function(card, $element) {
+        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             $element.on({
                 touchend: function() {
                     Planner.Events.publish('cardClicked', [card, $element]);

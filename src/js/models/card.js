@@ -33,12 +33,13 @@
             var cardLength = (end - start + 1) * options.timeslotHeight - options.cardTitleMargin;
 
             // Update data attributes
+            // TODO: use a Data warehouse like one explained here (http://jsperf.com/data-dataset) for a better performance
             if (typeof column !== 'undefined')  {
-                $element.data('column', column);
+                $element.get(0).setAttribute('data-column', column);
             }
 
-            $element.data('start', start);
-            $element.data('end', end);
+            $element.get(0).setAttribute('data-start', start);
+            $element.get(0).setAttribute('data-end', end);
 
             // Update DOM attributes
             $element.find('.planner-card-time').html(this.header);
@@ -55,61 +56,102 @@
         this.columns = attrs.columns || this.columns;
     };
 
+    // Card and DOM draw/undraw methods
+    // --------------------------------
+
     var _drawCard = function() {
+        var _cachedDomList = Planner.mapCard.get(this);
+        var _cardDom;
+
         this.columns.forEach(function(column) {
-            // Generate a standard Card DOM object
-            var cardDom = $(Planner.Templates.card(this));
-            _updateDom.apply(this, [cardDom, column]);
+            // Check if DOM was already drawn in the past otherwise return old instance
+            _cardDom = _cachedDomList[column];
+            if (typeof _cardDom === 'undefined') {
+                _cardDom = _createDomElement.apply(this, [_cachedDomList, column]);
+            }
 
-            // Bidirectional mapping between Card and DOM object
-            Planner.mapDom.put(cardDom, this);
-            Planner.mapCard.get(this).push(cardDom);
-
-            // Get data-attributes element from card DOM
-            var dataColumn = cardDom.data('column');
-            var dataStart = cardDom.data('start');
-
-            // TODO: this function doesn't support multi day events and collisions
-            // Find the right column and search starting div to append created object
-            // Note: (start + 1) is used because of CSS selector and not because index() function
-            Planner.$element.find('.planner-column:nth-child(' + dataColumn + ') > div:nth-child(' + (dataStart + 1) + ')').append(cardDom);
-            Planner.Events.publish('cardDrawn', [this, cardDom]);
+            _drawDom.apply(this, [_cardDom]);
         }.bind(this));
+
+        Planner.Events.publish('cardDrawn', [this]);
+    };
+
+    var _createDomElement = function(cachedDomList, column) {
+        // Generate a standard Card DOM object
+        var cardDom = $(Planner.Templates.card(this));
+        _updateDom.apply(this, [cardDom, column]);
+
+        // Bidirectional mapping between Card and DOM object using a key/value
+        // literal to store all DOM objects
+        Planner.mapDom.put(cardDom, this);
+        cachedDomList[column] = cardDom;
+
+        return cardDom;
+    };
+
+    var _drawDom = function(cardDom) {
+        // Get data-attributes element from card DOM
+        // TODO: provide an utility for a better data attribute access
+        var dataColumn = parseInt(cardDom.get(0).getAttribute('data-column'), 10);
+        var dataStart = parseInt(cardDom.get(0).getAttribute('data-start'), 10);
+
+        // TODO: this function doesn't support multi day events and collisions
+        // Find the right column and search starting div to append created object
+        // Note: (start + 1) is used because of CSS selector and not because index() function
+        Planner.$element.find('.planner-column:nth-child(' + dataColumn + ') > div:nth-child(' + (dataStart + 1) + ')').append(cardDom);
+        Planner.Events.publish('cardDomDrawn', [this, cardDom]);
     };
 
     var _undrawCard = function() {
-      var domList = Planner.mapCard.get(this);
+      var _cachedDomList = Planner.mapCard.get(this);
+      var _cardDom;
 
-      // Remove all related dom objects
-      domList.forEach(function(domElement) {
-        this.removeDom(domElement);
-      }.bind(this));
-    };
-
-    var _removeDom = function(cardDom) {
-        var domList = Planner.mapCard.get(this);
-        var elementPos = domList.map(function(x) {return x._hash; }).indexOf(cardDom._hash);
-
-        if (elementPos !== -1) {
-            domList.splice(elementPos, 1);
-            cardDom.remove();
-
-            Planner.mapDom.remove(cardDom);
-            Planner.Events.publish('cardDomDeleted', [this, cardDom]);
+      // Undraw all related DOM objects
+      for (var cardId in _cachedDomList) {
+        if (_cachedDomList.hasOwnProperty(cardId)) {
+          _cardDom = _cachedDomList[cardId];
+          _undrawDom.apply(this, [_cardDom]);
         }
+      }
+
+      Planner.Events.publish('cardUndrawn', [this]);
     };
 
-    var _remove = function() {
-        var domList = Planner.mapCard.get(this);
+    var _undrawDom = function(cardDom) {
+      // Remove Card column representation from the DOM
+      cardDom.remove();
+      Planner.Events.publish('cardDomUndrawn', [this, cardDom]);
+    };
 
-        // Remove all related dom objects
-        domList.forEach(function(domElement) {
-            this.removeDom(domElement);
-        }.bind(this));
+    // Card and DOM data structure operations
+    // --------------------------------------
 
-        // Remove Card object from hash table
+    var _removeCard = function() {
+        var _cachedDomList = Planner.mapCard.get(this);
+        var _cardDom;
+
+        // Remove all related DOM objects
+        for (var cardId in _cachedDomList) {
+          if (_cachedDomList.hasOwnProperty(cardId)) {
+            _cardDom = _cachedDomList[cardId];
+            _removeDom.apply(this, [_cachedDomList, _cardDom]);
+          }
+        }
+
+        // Removing all bidirectional mapping
         Planner.mapCard.remove(this);
         Planner.Events.publish('cardDeleted', [this]);
+    };
+
+    var _removeDom = function(cachedDomList, cardDom) {
+      var columnId = cardDom.data('column');
+
+      _undrawDom.apply(this, [cardDom]);
+
+      // Removing all bidirectional mapping
+      delete cachedDomList[columnId];
+      Planner.mapDom.remove(cardDom);
+      Planner.Events.publish('cardDomDeleted', [this, cardDom]);
     };
 
     // Card class definition
@@ -134,11 +176,10 @@
         object.refreshDom = _updateDom;
         object.draw = _drawCard;
         object.undraw = _undrawCard;
-        object.removeDom = _removeDom;
-        object.remove = _remove;
+        object.remove = _removeCard;
 
         // Object assignment to a global hash map
-        Planner.mapCard.put(object, []);
+        Planner.mapCard.put(object, {});
 
         return object;
     };
