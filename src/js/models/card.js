@@ -164,7 +164,6 @@
       var _cachedDomList = Planner.mapCard.get(this);
 
       _clearDomCache.apply(this, [_cachedDomList]);
-      _drawCard.apply(this);
     };
 
     // Card class definition
