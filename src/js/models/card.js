@@ -66,7 +66,7 @@
           _removeDom.apply(this, [cachedDomList, _cardDom]);
         }
       }
-    }
+    };
 
     // Card and DOM draw/undraw methods
     // --------------------------------
