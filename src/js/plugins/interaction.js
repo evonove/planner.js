@@ -28,8 +28,9 @@
         Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             $element.on({
                 mouseup: function(event) {
-                    // Avoid this action on event propagation from children
-                    if (event.currentTarget === event.target) {
+                    // Avoid this action on event propagation from children or if
+                    // another interaction is active
+                    if (event.currentTarget === event.target && this.currentCard === null) {
                         Planner.Events.publish('cardClicked', [card, $element]);
                     }
                 }
