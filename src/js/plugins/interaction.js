@@ -33,7 +33,7 @@
                 mouseup: function(event) {
                     // Avoid this action on event propagation from children or if
                     // another interaction is active
-                    if (event.currentTarget === event.target && self.currentInteraction === null) {
+                    if (self.currentInteraction === null) {
                         Planner.Events.publish('cardClicked', [card, $element]);
                     }
                 }
