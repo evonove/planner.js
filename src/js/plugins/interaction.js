@@ -26,12 +26,14 @@
 
     // Publish click event on Card DOM element
     Crud.prototype.attachClick = function() {
+        var self = this;
+
         Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             $element.on({
                 mouseup: function(event) {
                     // Avoid this action on event propagation from children or if
                     // another interaction is active
-                    if (event.currentTarget === event.target && this.currentInteraction === null) {
+                    if (event.currentTarget === event.target && self.currentInteraction === null) {
                         Planner.Events.publish('cardClicked', [card, $element]);
                     }
                 }
