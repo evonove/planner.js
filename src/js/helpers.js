@@ -102,6 +102,7 @@
             attribute = new Date();
             attribute.setHours(hours);
             attribute.setMinutes(minutes);
+            attribute.setSeconds(0);
 
             return attribute;
         }
