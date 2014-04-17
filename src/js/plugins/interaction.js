@@ -9,6 +9,7 @@
         this.options = options;
 
         // Used during card generation
+        this.currentInteraction = null;
         this.currentCard = null;
         this.currentElement = null;
         this.listReduced = [];
@@ -30,7 +31,7 @@
                 mouseup: function(event) {
                     // Avoid this action on event propagation from children or if
                     // another interaction is active
-                    if (event.currentTarget === event.target && this.currentCard === null) {
+                    if (event.currentTarget === event.target && this.currentInteraction === null) {
                         Planner.Events.publish('cardClicked', [card, $element]);
                     }
                 }
@@ -52,20 +53,27 @@
 
                     // TODO: $this.index() doesn't match domId. After full migration to data-attribute, we can use this value to find the correct domId
                     var domId = card.columns[0];
-                    self._startInteraction(card, Planner.mapCard.get(card)[domId], $this.index(), event.clientY);
+                    self._startInteraction('dragCreation', card, Planner.mapCard.get(card)[domId], $this.index(), event.clientY);
                     event.preventDefault();
                 }
             },
             mousemove: function(event) {
-                if (self.currentCard !== null) {
+                if (self.currentInteraction === 'dragCreation' || self.currentInteraction === 'resize') {
                     self._resize(event.clientY);
 
                     event.preventDefault();
                 }
             },
             mouseup: function(event) {
-                if (self.currentCard !== null) {
+                if (self.currentInteraction === 'dragCreation') {
                     Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
+
+                    self._stopInteraction();
+                    event.preventDefault();
+                } else if (self.currentInteraction === 'resize') {
+                    // TODO: fix this interaction because this way is terribly WRONG!
+                    Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
+                    self.currentElement.removeClass('resizable');
 
                     self._stopInteraction();
                     event.preventDefault();
@@ -103,7 +111,7 @@
             $element.on({
                 dragstart: function(event) {
                     // Start interaction with created objects
-                    self._startInteraction(card, $element);
+                    self._startInteraction('dragMove', card, $element);
 
                     // Required for Firefox
                     event.originalEvent.dataTransfer.effectAllowed = 'move';
@@ -153,7 +161,7 @@
         Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
             var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent})).on({
                 mousedown: function(event) {
-                    self._startInteraction(card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
+                    self._startInteraction('resize', card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
                     self.currentElement.addClass('resizable');
 
                     event.preventDefault();
@@ -166,7 +174,7 @@
             // Attach resize listeners
             $element.on({
                 mousemove: function(event) {
-                    if ($element.hasClass('resizable')) {
+                    if ($element.hasClass('resizable') && self.currentInteraction === 'resize') {
                         self._resize(event.clientY);
 
                         // Avoid other actions
@@ -174,7 +182,7 @@
                     }
                 },
                 mouseup: function(event) {
-                    if ($element.hasClass('resizable')) {
+                    if ($element.hasClass('resizable') && self.currentInteraction === 'resize') {
                         Planner.Events.publish('cardUpdated', [card, $element]);
                         self.currentElement.removeClass('resizable');
 
@@ -231,8 +239,9 @@
     };
 
 
-    Crud.prototype._startInteraction = function(card, $element, initialIndex, initialY) {
+    Crud.prototype._startInteraction = function(type, card, $element, initialIndex, initialY) {
         // Store variables for further interactions
+        this.currentInteraction = type;
         this.currentCard = card;
         this.currentElement = $element;
         this.initialIndex = initialIndex;
@@ -240,6 +249,7 @@
     };
 
     Crud.prototype._stopInteraction = function() {
+        this.currentInteraction = null;
         this.currentCard = null;
         this.currentElement = null;
         this.initialIndex = null;
