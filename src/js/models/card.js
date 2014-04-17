@@ -56,6 +56,18 @@
         this.columns = attrs.columns || this.columns;
     };
 
+    var _clearDomCache = function(cachedDomList) {
+      var _cardDom;
+
+      // Clear all cached objects
+      for (var cardId in cachedDomList) {
+        if (cachedDomList.hasOwnProperty(cardId)) {
+          _cardDom = cachedDomList[cardId];
+          _removeDom.apply(this, [cachedDomList, _cardDom]);
+        }
+      }
+    }
+
     // Card and DOM draw/undraw methods
     // --------------------------------
 
@@ -130,15 +142,8 @@
         var _cachedDomList = Planner.mapCard.get(this);
         var _cardDom;
 
-        // Remove all related DOM objects
-        for (var cardId in _cachedDomList) {
-          if (_cachedDomList.hasOwnProperty(cardId)) {
-            _cardDom = _cachedDomList[cardId];
-            _removeDom.apply(this, [_cachedDomList, _cardDom]);
-          }
-        }
-
-        // Removing all bidirectional mapping
+        // Removing all mappings
+        _clearDomCache.apply(this, [_cachedDomList]);
         Planner.mapCard.remove(this);
         Planner.Events.publish('cardDeleted', [this]);
     };
@@ -152,6 +157,14 @@
       delete cachedDomList[columnId];
       Planner.mapDom.remove(cardDom);
       Planner.Events.publish('cardDomDeleted', [this, cardDom]);
+    };
+
+    var _setDirty = function() {
+      // Clearing cache and redraw
+      var _cachedDomList = Planner.mapCard.get(this);
+
+      _clearDomCache.apply(this, [_cachedDomList]);
+      _drawCard.apply(this);
     };
 
     // Card class definition
@@ -177,6 +190,7 @@
         object.draw = _drawCard;
         object.undraw = _undrawCard;
         object.remove = _removeCard;
+        object.setDirty = _setDirty;
 
         // Object assignment to a global hash map
         Planner.mapCard.put(object, {});
