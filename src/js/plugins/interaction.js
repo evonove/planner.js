@@ -92,7 +92,6 @@
             },
             drop: function(event) {
                 self._drag(this);
-                self._resetDrag();
 
                 // Note: remove all temporary clones because of webkit bug/feature
                 if (!!window.webkitURL) {
@@ -150,6 +149,7 @@
                 dragend: function() {
                     // Remove ghost effect
                     $element.removeClass('dragging');
+                    self._resetDrag();
                 }
             });
         });
