@@ -57,13 +57,10 @@
     };
 
     var _clearDomCache = function(cachedDomList) {
-      var _cardDom;
-
       // Clear all cached objects
       for (var cardId in cachedDomList) {
         if (cachedDomList.hasOwnProperty(cardId)) {
-          _cardDom = cachedDomList[cardId];
-          _removeDom.apply(this, [cachedDomList, _cardDom]);
+          _removeDom.apply(this, [cachedDomList, cardId]);
         }
       }
     };
@@ -148,13 +145,13 @@
         Planner.Events.publish('cardDeleted', [this]);
     };
 
-    var _removeDom = function(cachedDomList, cardDom) {
-      var columnId = cardDom.data('column');
+    var _removeDom = function(cachedDomList, cardId) {
+      var cardDom = cachedDomList[cardId];
 
       _undrawDom.apply(this, [cardDom]);
 
       // Removing all bidirectional mapping
-      delete cachedDomList[columnId];
+      delete cachedDomList[cardId];
       Planner.mapDom.remove(cardDom);
       Planner.Events.publish('cardDomDeleted', [this, cardDom]);
     };
