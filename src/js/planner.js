@@ -1,11 +1,14 @@
-;(function($, Planner) { 'use strict';
+;(function(window) { 'use strict';
 
-    // PlanningChart class definition with defaults
-    // --------------------------------------------
+    // PlanningChart class
+    // -------------------
 
     var PlanningChart = function (element, options) {
-        this.$element = $(element);
-        this.options = options;
+        // Merge options with defaults
+        options = window.Planner.Utils.extend(PlanningChart.DEFAULTS, options);
+
+        // Return instance
+        return new window.Planner.Instance(element, options);
     };
 
     PlanningChart.CONST = {
@@ -16,6 +19,7 @@
     };
 
     PlanningChart.DEFAULTS = {
+        // TODO: use a better strategy to block planner draw
         show: true,
         model: Planner.Models.Card,
         plugins: [],
@@ -29,80 +33,26 @@
         visibleColumns: 7
     };
 
-    // PlanningChart widget definition
-    // -------------------------------
+    // Initialize with data-api
+    // ------------------------
 
-    var old = $.fn.planner;
+    document.addEventListener('DOMContentLoaded', function(){
+        var plannerElements = document.querySelectorAll('[data-planner="container"]');
 
-    $.fn.planner = function(option) {
-        return this.each(function() {
-            var $this = $(this);
-            var data = $this.data('pl.planner');
-            var options = $.extend({}, PlanningChart.DEFAULTS, $this.data(), typeof option === 'object' && option);
-
-            // Check if columns and rows are set otherwise use a default planner
-            if (options.columnLabels.length === 0) {
-                options.columnLabels = Planner.Helpers.getDefaultColumns();
-            }
-
-            if (options.rowLabels.length === 0) {
-                options.rowLabels = Planner.Helpers.getDefaultRows();
-            }
-
-            // Edit some properties
-            options.visibleColumns = options.visibleColumns > options.columnLabels.length ? options.columnLabels.length : options.visibleColumns;
-
-            // If this node isn't initialized, call the constructor
-            if (!data) {
-                $this.data('pl.planner', (data = new PlanningChart(this, options)));
-                this.setAttribute('data-planner', 'container');
-            }
-
-            // TODO: better implementation required
-            // Planner attributes available on whole namespace
-            Planner.$element = data.$element;
-            Planner.options = data.options;
-
-            // Initialize planner template only if required
-            if (options.show) {
-                $this.html(Planner.Templates.body(options));
-            }
-
-            // Append all computed CSS
-            $('head').append(Planner.Helpers.computedCSS());
-
-            // Load attached plugins
-            Planner.Plugins.load(options.plugins, data);
-        });
-    };
-
-    $.fn.planner.constructor = PlanningChart;
-
-    // PlanningChart no conflict
-    // -------------------------
-
-    $.fn.planner.noConflict = function() {
-        $.fn.planner = old;
-        return this;
-    };
-
-    // PlanningChart DATA-API
-    // ----------------------
-
-    $(document).ready(function() {
-        $('[data-planner="container"]').each(function() {
-            var $planner = $(this);
-
-            // Allows plugins definition with data attributes
-            var plugins = ($planner.data('plugins') && $planner.data('plugins').split(' ')) || [];
+        plannerElements.forEach(function(item, i) {
+            // Get all params from selectors
+            var plugins = item.getAttribute('data-plugins');
+            plugins = (plugins && plugins.split(' ')) || [];
 
             // Load default plugins
             plugins.push('slider');
 
-            // Planner initialization
-            $planner.data('plugins', plugins);
-            $planner.planner($planner.data());
+            // TODO: Planner initialization
+            // $planner.data('plugins', plugins);
+            // $planner.planner($planner.data());
         });
     });
 
-})(jQuery, Planner);
+    window.Planner = PlanningChart;
+
+})(window);
