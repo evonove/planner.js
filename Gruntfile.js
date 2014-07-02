@@ -30,11 +30,11 @@ module.exports = function (grunt) {
             },
             compass: {
                 files: ['<%= yeoman.app %>/sass/{,*/}*.{scss,sass}'],
-                tasks: ['compass:server', 'autoprefixer']
+                tasks: ['compass:server']
             },
             styles: {
                 files: ['<%= yeoman.app %>/sass/{,*/}*.css'],
-                tasks: ['newer:copy:styles', 'autoprefixer']
+                tasks: ['newer:copy:styles']
             },
             handlebars: {
                 files: [
@@ -156,43 +156,6 @@ module.exports = function (grunt) {
             }
         },
 
-        // Add vendor prefixed styles
-        autoprefixer: {
-            options: {
-                browsers: ['last 1 version']
-            },
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '.tmp/css/',
-                    src: '{,*/}*.css',
-                    dest: '.tmp/css/'
-                }]
-            }
-        },
-
-        // Automatically inject Bower components into the HTML file
-        'bower-install': {
-            app: {
-                html: '<%= yeoman.app %>/index.html',
-                ignorePath: '<%= yeoman.app %>/'
-            }
-        },
-
-        // Renames files for browser caching purposes
-        rev: {
-            dist: {
-                files: {
-                    src: [
-                        '<%= yeoman.dist %>/js/{,*/}*.js',
-                        '<%= yeoman.dist %>/css/{,*/}*.css',
-                        '<%= yeoman.dist %>/images/{,*/}*.{gif,jpeg,jpg,png,webp}',
-                        '<%= yeoman.dist %>/css/fonts/{,*/}*.*'
-                    ]
-                }
-            }
-        },
-
         // Reads HTML for usemin blocks to enable smart builds that automatically
         // concat, minify and revision files. Creates configurations in memory so
         // additional tasks can operate on them
@@ -203,7 +166,7 @@ module.exports = function (grunt) {
             html: '<%= yeoman.app %>/index.html'
         },
 
-        // Performs rewrites based on rev and the useminPrepare configuration
+        // Performs rewrites based on useminPrepare configuration
         usemin: {
             options: {
                 assetsDirs: ['<%= yeoman.dist %>']
@@ -212,47 +175,6 @@ module.exports = function (grunt) {
             css: ['<%= yeoman.dist %>/css/{,*/}*.css']
         },
 
-        // The following *-min tasks produce minified files in the dist folder
-        imagemin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.{gif,jpeg,jpg,png}',
-                    dest: '<%= yeoman.dist %>/images'
-                }]
-            }
-        },
-        svgmin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.svg',
-                    dest: '<%= yeoman.dist %>/images'
-                }]
-            }
-        },
-        htmlmin: {
-            dist: {
-                options: {
-                    collapseBooleanAttributes: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true,
-                    removeCommentsFromCDATA: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.dist %>',
-                    src: '{,*/}*.html',
-                    dest: '<%= yeoman.dist %>'
-                }]
-            }
-        },
         copy: {
             dist: {
                 files: [{
@@ -286,9 +208,7 @@ module.exports = function (grunt) {
             ],
             dist: [
                 'compass',
-                'copy:styles',
-                'imagemin',
-                'svgmin'
+                'copy:styles'
             ]
         },
         handlebars: {
@@ -325,7 +245,6 @@ module.exports = function (grunt) {
             'clean:server',
             'concurrent:server',
             'handlebars',
-            'autoprefixer',
             'connect:livereload',
             'watch'
         ]);
@@ -340,8 +259,7 @@ module.exports = function (grunt) {
         if (target !== 'watch') {
             grunt.task.run([
                 'clean:server',
-                'concurrent:test',
-                'autoprefixer'
+                'concurrent:test'
             ]);
         }
 
@@ -356,14 +274,11 @@ module.exports = function (grunt) {
         'useminPrepare',
         'handlebars',
         'concurrent:dist',
-        'autoprefixer',
         'concat',
         'cssmin',
         'uglify',
         'copy:dist',
-        //'rev',
         'usemin'
-        //'htmlmin'
     ]);
 
     grunt.registerTask('default', [
