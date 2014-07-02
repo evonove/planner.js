@@ -1,4 +1,4 @@
-;(function($, Planner, Handlebars) { 'use strict';
+;(function($, Helpers, Handlebars, undefined) { 'use strict';
 
     // Local data useful for some helpers
     // ----------------------------------
@@ -43,73 +43,75 @@
     // Planner helpers
     // ---------------
 
-    Planner.Helpers = {
-        // Default constructor options
-        getDefaultColumns: function() {
-            return dayColumns;
-        },
-        getDefaultRows: function() {
-            return hourRows;
-        },
-        // Generate a computed style node
-        computedCSS: function() {
-            var options = Planner.options;
-
-            // Planner related
-            var timeslotSize = options.timeslotHeight * options.timeslots;
-            var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
-
-            var cssContext = {
-                timeslots: options.timeslots,
-                timeslotHeight: options.timeslotHeight,
-                timeslotPadding: timeslotSize - options.timeslotPadding,
-                lastTimeslotPadding: timeslotPadding,
-                sliderWidth: 100 / options.visibleColumns
-            };
-
-            return $(Planner.Templates.styles(cssContext));
-        },
-        // Transform start or end attributes to a valid planner interval (index) according to attribute type
-        attributeToIndex: function(attribute) {
-            var options = Planner.options;
-            var index;
-
-            if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
-                index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots);
-            } else if (typeof attribute === 'string') {
-                index = options.rowLabels.indexOf(attribute);
-            } else {
-                throw new Error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
-            }
-
-            return index;
-        },
-        // Transform $element index to a valid card start/end object
-        indexToAttribute: function(index) {
-            var options = Planner.options;
-            var attribute;
-
-            // Convert date time object
-            var hours = Math.floor((index - 1) / options.timeslots);
-            var minutes = 15 * (index % options.timeslots);
-
-            if (minutes === index % options.timeslots) {
-                hours += 1;
-            }
-
-            // TODO convert string object
-
-            attribute = new Date();
-            attribute.setHours(hours);
-            attribute.setMinutes(minutes);
-            attribute.setSeconds(0);
-
-            return attribute;
-        }
+    // Default constructor options
+    Helpers.getDefaultColumns = function() {
+        return dayColumns;
     };
 
-    // Handlebars helpers
-    // ------------------
+    Helpers.getDefaultRows = function() {
+        return dayColumns;
+    };
+
+    // Generate a computed style node
+    Helpers.computedCSS = function() {
+        var options = Planner.options;
+
+        // Planner related
+        var timeslotSize = options.timeslotHeight * options.timeslots;
+        var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
+
+        var cssContext = {
+            timeslots: options.timeslots,
+            timeslotHeight: options.timeslotHeight,
+            timeslotPadding: timeslotSize - options.timeslotPadding,
+            lastTimeslotPadding: timeslotPadding,
+            sliderWidth: 100 / options.visibleColumns
+        };
+
+        return $(Planner.Templates.styles(cssContext));
+    };
+
+    // Transform start or end attributes to a valid planner interval (index) according to attribute type
+    Helpers.attributeToIndex = function(attribute) {
+        var options = Planner.options;
+        var index;
+
+        if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
+            index = attribute.getHours() * options.timeslots + attribute.getMinutes() / (60 / options.timeslots);
+        } else if (typeof attribute === 'string') {
+            index = options.rowLabels.indexOf(attribute);
+        } else {
+            throw new Error('Unable to find a valid index from start/end card attribute. Define your own implementation.');
+        }
+
+        return index;
+    };
+
+    // Transform $element index to a valid card start/end object
+    Helpers.indexToAttribute = function(index) {
+        var options = Planner.options;
+        var attribute;
+
+        // Convert date time object
+        var hours = Math.floor((index - 1) / options.timeslots);
+        var minutes = 15 * (index % options.timeslots);
+
+        if (minutes === index % options.timeslots) {
+            hours += 1;
+        }
+
+        // TODO convert string object
+
+        attribute = new Date();
+        attribute.setHours(hours);
+        attribute.setMinutes(minutes);
+        attribute.setSeconds(0);
+
+        return attribute;
+    };
+
+    // Register Handlebars helpers
+    // ---------------------------
 
     Handlebars.registerHelper('times', function(n, block) {
         var accumulator = '';
@@ -121,4 +123,4 @@
         return accumulator;
     });
 
-})(jQuery, Planner, Handlebars);
+})(jQuery, Planner.Helpers = Planner.Helpers || {}, Handlebars);

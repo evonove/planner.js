@@ -1,49 +1,48 @@
-;(function(Planner) { 'use strict';
+;(function(Plugins) { 'use strict';
 
-    Planner.Plugins = Planner.Plugins || {};
-    Planner.Plugins.fn = [];
-    Planner.Plugins.registered = [];
-    Planner.Plugins.loaded = [];
+    Plugins.fn = [];
+    Plugins.registered = [];
+    Plugins.loaded = [];
 
     // Register plugins callback
     // -------------------------
 
-    Planner.Plugins.load = function(pluginsList, context) {
-        Planner.Plugins.registered = pluginsList;
+    Plugins.load = function(pluginsList, context) {
+        Plugins.registered = pluginsList;
         if (typeof pluginsList.forEach === 'function') {
             pluginsList.forEach(function(pluginName) {
-                Planner.Plugins.call(pluginName, context);
+                Plugins.call(pluginName, context);
             });
         } else {
             throw new Error('"Plugins" option on Planner.js should be a list of string');
         }
     };
 
-    Planner.Plugins.register = function(pluginName, fn) {
-        Planner.Plugins.fn[pluginName] = fn;
+    Plugins.register = function(pluginName, fn) {
+        Plugins.fn[pluginName] = fn;
     };
 
-    Planner.Plugins.call = function(pluginName, context, params) {
-        var fn = Planner.Plugins.fn[pluginName];
+    Plugins.call = function(pluginName, context, params) {
+        var fn = Plugins.fn[pluginName];
 
         if (typeof fn === 'function') {
             fn.apply(context, params);
-            Planner.Plugins.loaded[pluginName] = true;
+            Plugins.loaded[pluginName] = true;
         } else {
             throw new Error('Chosen plugin is not available: ' + pluginName);
         }
     };
 
-    Planner.Plugins.isRegistered = function(pluginName) {
-        return Planner.Plugins.registered.indexOf(pluginName) !== -1;
+    Plugins.isRegistered = function(pluginName) {
+        return Plugins.registered.indexOf(pluginName) !== -1;
     };
 
-    Planner.Plugins.requires = function(pluginName) {
-        if (!Planner.Plugins.loaded[pluginName]) {
+    Plugins.requires = function(pluginName) {
+        if (!Plugins.loaded[pluginName]) {
             throw new Error('"' + pluginName + '" plugin is required.');
         }
 
         return true;
     };
 
-})(Planner);
+})(Planner.Plugins = Planner.Plugins || {});

@@ -1,4 +1,4 @@
-;(function(Planner) { 'use strict';
+;(function(Planner, undefined) { 'use strict';
 
     // Defines Planner.js instance
     // ---------------------------
@@ -12,4 +12,4 @@
         this.mapDom = new HashMap();
     };
 
-})(Planner);
+})(window.Planner = window.Planner || {});

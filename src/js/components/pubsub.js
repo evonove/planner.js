@@ -1,4 +1,4 @@
-;(function (Events) { 'use strict';
+;(function (Events, undefined) { 'use strict';
 
     // Publisher / Subscribe pattern
     // -----------------------------
@@ -50,4 +50,4 @@
         return this;
     };
 
-})(Planner.Events);
+})(Planner.Events = Planner.Events || {});

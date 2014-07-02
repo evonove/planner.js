@@ -1,4 +1,4 @@
-;(function(Utils) { 'use strict';
+;(function(Utils, undefined) { 'use strict';
 
     // Javascript utilities
     // --------------------

@@ -1,4 +1,4 @@
-;(function(window) { 'use strict';
+;(function(window, undefined) { 'use strict';
 
     // PlanningChart class
     // -------------------

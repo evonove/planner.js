@@ -1,4 +1,4 @@
-;(function(Planner, undefined) { 'use strict';
+;(function(Models, undefined) { 'use strict';
 
     // Private methods
     // ---------------
@@ -166,7 +166,7 @@
     // Card class definition
     // ---------------------
 
-    Planner.Models.Card = function(attrs) {
+    Models.Card = function(attrs) {
         var object = {};
 
         // Base attributes
@@ -194,4 +194,4 @@
         return object;
     };
 
-})(Planner);
+})(Planner.Models = Planner.Models || {});
