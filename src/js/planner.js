@@ -94,7 +94,7 @@
             var $planner = $(this);
 
             // Allows plugins definition with data attributes
-            var plugins = $planner.data('plugins') && $planner.data('plugins').split(' ');
+            var plugins = ($planner.data('plugins') && $planner.data('plugins').split(' ')) || [];
 
             // Load default plugins
             plugins.push('slider');
