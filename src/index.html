@@ -18,44 +18,32 @@
     <body>
         <div class="js-planner" data-planner="container"></div>
 
-        <!-- Polyfills -->
-        <!-- build:js js/ext/polyfill.js -->
-        <script src="js/polyfill/array-map.js"></script>
-        <!-- endbuild -->
-
         <!-- External framework or libraries -->
         <!-- build:js js/ext/vendors.js -->
-        <!-- bower:js -->
         <script src="modules/jquery/jquery.js"></script>
         <script src="modules/handlebars/handlebars.runtime.js"></script>
-        <!-- endbower -->
         <!-- endbuild -->
 
         <!-- Planner.js -->
-        <!-- build:js js/bootstrap.js -->
+        <!-- build:js(.tmp) js/planner.js -->
+        <script src="js/polyfill/array-map.js"></script>
+
+        <script src="js/planner.js"></script>
+        <script src="js/instance.js"></script>
+
         <script src="js/components/map.js"></script>
         <script src="js/components/pubsub.js"></script>
-        <!-- endbuild -->
 
-        <!-- build:js js/planner.js -->
         <script src="js/utils.js"></script>
         <script src="js/helpers.js"></script>
 
         <script src="js/models/card.js"></script>
 
-        <script src="js/planner.js"></script>
-        <!-- endbuild -->
-
-        <!-- Planner plugins -->
-        <!-- build:js js/plugins.js -->
         <script src="js/plugins/manager.js"></script>
         <script src="js/plugins/slider.js"></script>
         <script src="js/plugins/interaction.js"></script>
         <script src="js/plugins/mobile.js"></script>
-        <!-- endbuild -->
 
-        <!-- Planner templates -->
-        <!-- build:js(.tmp) js/ext/templates.js -->
         <script src="js/compiled-styles.js"></script>
         <script src="js/compiled-templates.js"></script>
         <!-- endbuild -->
