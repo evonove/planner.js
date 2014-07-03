@@ -31,7 +31,7 @@
 
         // Append all computed CSS
         var head = document.querySelector('head');
-        head.appendChild(Planner.Helpers.computedCSS());
+        head.appendChild(Planner.Helpers.computedCSS(options));
 
         // Load attached plugins
         Planner.Plugins.load(options.plugins, this);

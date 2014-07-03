@@ -53,10 +53,7 @@
     };
 
     // Generate a computed style node
-    Helpers.computedCSS = function() {
-        var options = Planner.options;
-
-        // Planner related
+    Helpers.computedCSS = function(options) {
         var timeslotSize = options.timeslotHeight * options.timeslots;
         var timeslotPadding = options.centered ? timeslotSize / 2 : timeslotSize;
 
@@ -68,7 +65,9 @@
             sliderWidth: 100 / options.visibleColumns
         };
 
-        return $(Planner.Templates.styles(cssContext));
+        var style = document.createElement('style');
+        style.innerHTML = Planner.Templates.styles(cssContext);
+        return style;
     };
 
     // Transform start or end attributes to a valid planner interval (index) according to attribute type

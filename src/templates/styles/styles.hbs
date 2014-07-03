@@ -1,25 +1,23 @@
-<style>
-    {{! Column computed styles }}
+{{! Column computed styles }}
 
-    .planner-column > div {
-        height: {{timeslotHeight}}px;
-    }
+.planner-column > div {
+    height: {{timeslotHeight}}px;
+}
 
-    .planner-column > div:nth-child({{timeslots}}n) {
-        border-bottom: 2px solid #cccccc;
-    }
+.planner-column > div:nth-child({{timeslots}}n) {
+    border-bottom: 2px solid #cccccc;
+}
 
-    {{! Timeslot computed styles }}
+{{! Timeslot computed styles }}
 
-    .planner-timeslots > div:not(:first-child) {
-        padding-top: {{timeslotPadding}}px;
-    }
+.planner-timeslots > div:not(:first-child) {
+    padding-top: {{timeslotPadding}}px;
+}
 
-    .planner-timeslots > div:last-child {
-        padding-bottom: {{lastTimeslotPadding}}px;
-    }
+.planner-timeslots > div:last-child {
+    padding-bottom: {{lastTimeslotPadding}}px;
+}
 
-    .planner-slider {
-        width: {{sliderWidth}}%;
-    }
-</style>
+.planner-slider {
+    width: {{sliderWidth}}%;
+}
