@@ -49,7 +49,7 @@
     };
 
     Helpers.getDefaultRows = function() {
-        return dayColumns;
+        return hourRows;
     };
 
     // Generate a computed style node
