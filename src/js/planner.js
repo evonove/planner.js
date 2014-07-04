@@ -8,6 +8,7 @@
         options = window.Planner.Utils.extend(PlanningChart.DEFAULTS, options);
 
         // Return instance
+        // TODO: plugins?
         return new window.Planner.Instance(element, options);
     };
 

@@ -99,7 +99,7 @@
             hours += 1;
         }
 
-        // TODO convert string object
+        // TODO: missing conversion from string object (ex: 'lunch')
 
         attribute = new Date();
         attribute.setHours(hours);
