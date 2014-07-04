@@ -1,4 +1,4 @@
-;(function($, Helpers, Handlebars, undefined) { 'use strict';
+;(function(Helpers, Handlebars, undefined) { 'use strict';
 
     // Local data useful for some helpers
     // ----------------------------------
@@ -86,7 +86,7 @@
         return index;
     };
 
-    // Transform $element index to a valid card start/end object
+    // Transform element index to a valid card start/end object
     Helpers.indexToAttribute = function(index) {
         var options = Planner.options;
         var attribute;
@@ -122,4 +122,4 @@
         return accumulator;
     });
 
-})(jQuery, Planner.Helpers = Planner.Helpers || {}, Handlebars);
+})(Planner.Helpers = Planner.Helpers || {}, Handlebars);
