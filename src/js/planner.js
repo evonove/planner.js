@@ -4,6 +4,7 @@
     // -------------------
 
     var PlanningChart = function (element, options) {
+        // TODO: if [data-planner="container"], raise an error for twice initialization
         // Merge options with defaults
         options = window.Planner.Utils.extend(PlanningChart.DEFAULTS, options);
 
@@ -38,7 +39,7 @@
     // ------------------------
 
     document.addEventListener('DOMContentLoaded', function(){
-        var plannerElements = document.querySelectorAll('[data-planner="container"]');
+        var plannerElements = document.querySelectorAll('[data-planner=""]');
 
         for (var i = 0; i < plannerElements.length; i++) {
             // Get all params from selectors

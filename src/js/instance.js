@@ -22,6 +22,7 @@
 
         // Edit some properties
         options.visibleColumns = options.visibleColumns > options.columnLabels.length ? options.columnLabels.length : options.visibleColumns;
+        element.setAttribute('data-planner', 'container');
 
         // Initialize planner template only if required
         // TODO: better implementation required
