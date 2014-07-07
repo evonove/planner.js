@@ -28,4 +28,11 @@
         return out;
     };
 
+  Utils.createElement = function(html) {
+    var el = document.createElement('div');
+    el.innerHTML = html;
+
+    return el.childNodes[0];
+  };
+
 })(Planner.Utils = Planner.Utils || {});
