@@ -15,7 +15,7 @@
   // Some card mocks
   // ---------------
 
-  $(document).ready(function () {
+  document.addEventListener('DOMContentLoaded', function() {
     var card1 = new Planner.Models.Card({
       id: 1,
       title: 'Having a long dinner',
@@ -52,4 +52,5 @@
     planner.drawCard(card2);
     planner.drawCard(card3);
   });
+
 })();
