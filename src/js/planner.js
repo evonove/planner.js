@@ -5,11 +5,23 @@
 
     var PlanningChart = function (element, options) {
         // TODO: if [data-planner="container"], raise an error for twice initialization
-        // Merge options with defaults
-        options = window.Planner.Utils.extend(PlanningChart.DEFAULTS, options);
+
+        // Get all options from data-attributes and merge them with ALL defaults
+        var attributes = window.Planner.Utils.getAttributes(element);
+        options = window.Planner.Utils.extend(
+          {},
+          PlanningChart.DEFAULTS,
+          window.Planner.Plugins.DEFAULTS,
+          attributes,
+          options);
+
+        // Plugins loading
+        options.plugins = (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
+
+        // Put there all default plugins
+        options.plugins.push('slider');
 
         // Return instance
-        // TODO: plugins?
         return new window.Planner.Instance(element, options);
     };
 
@@ -42,16 +54,7 @@
         var plannerElements = document.querySelectorAll('[data-planner=""]');
 
         for (var i = 0; i < plannerElements.length; i++) {
-            // Get all params from selectors
-            var plugins = plannerElements[i].getAttribute('data-plugins');
-            plugins = (plugins && plugins.split(' ')) || [];
-
-            // Load default plugins
-            plugins.push('slider');
-
-            // Planner initialization
-            // TODO: how to get options from there?
-            new window.Planner.Instance(plannerElements[i], PlanningChart.DEFAULTS);
+            PlanningChart(plannerElements[i]);
         }
     });
 

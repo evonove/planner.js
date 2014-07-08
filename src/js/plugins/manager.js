@@ -1,8 +1,9 @@
-;(function(Plugins) { 'use strict';
+;(function(Plugins, Utils) { 'use strict';
 
     Plugins.fn = [];
     Plugins.registered = [];
     Plugins.loaded = [];
+    Plugins.DEFAULTS = {};
 
     // Register plugins callback
     // -------------------------
@@ -19,6 +20,9 @@
     };
 
     Plugins.register = function(pluginName, fn) {
+        // During plugin registration, store all plugins DEFAULTS so it's fast to
+        // reuse them during instance creation
+        Plugins.DEFAULTS = Utils.extend({}, Plugins.DEFAULTS, fn.DEFAULTS);
         Plugins.fn[pluginName] = fn;
     };
 
@@ -26,7 +30,8 @@
         var fn = Plugins.fn[pluginName];
 
         if (typeof fn === 'function') {
-            fn.apply(context, params);
+            context.plugins = context.plugins || {};
+            context.plugins[pluginName] = new (fn.bind(context, context.element, context.options, params));
             Plugins.loaded[pluginName] = true;
         } else {
             throw new Error('Chosen plugin is not available: ' + pluginName);
@@ -45,4 +50,4 @@
         return true;
     };
 
-})(Planner.Plugins = Planner.Plugins || {});
+})(Planner.Plugins = Planner.Plugins || {}, Planner.Utils);
