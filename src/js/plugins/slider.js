@@ -19,12 +19,12 @@
     this._attachArrowsEvents();
 
     if (Planner.Plugins.isRegistered('mobile')) {
-      // this._attachSlidingTouch(); // TODO: disabled for now
+      this._attachSlidingTouch();
     }
   };
 
   Slider.DEFAULTS = {
-    minMovement: 8,
+    minMovement: 15,
     minSwipe: 100,
     headerOffset: 5
   };
@@ -34,9 +34,11 @@
 
   Slider.prototype._attachArrowsEvents = function () {
     var arrowLeft = this.element.querySelector('.arrow-left');
+    // TODO: avoid bind() use
     arrowLeft.addEventListener('click', this._slideLeft.bind(this));
 
     var arrowRight = this.element.querySelector('.arrow-right');
+    // TODO: avoid bind() use
     arrowRight.addEventListener('click', this._slideRight.bind(this));
   };
 
@@ -45,56 +47,70 @@
     var lastClientX = 0;
     var currentOffset = 0;
     var started = false;
+
+    // TODO: avoid use of that=this pattern
     var self = this;
 
-    self.cacheSlider.on({
-      'touchstart': function (event) {
-        // If is a touch event, use just the first touch property (i.e. the first finger)
-        event = event.originalEvent.touches[0];
-        startClientX = event.clientX;
-      },
-      'touchmove': function (event) {
-        // Calculate delta movement
-        var eventTouch = event.originalEvent.touches[0];
-        lastClientX = eventTouch.clientX - startClientX;
-
-        // Start touch sliding with not too much swipe
-        if (!started && (lastClientX < -self.options.minMovement || lastClientX > self.options.minMovement)) {
-          event.preventDefault();
-          started = true;
-        }
-
-        // Avoid column sliding when user has reached the border
-        // Note: 'started' check is required to increase performance on slower mobile devices
-        if (started &&
-          (self.currentIndex === 0 && lastClientX < 0 ||
-            (self.currentIndex !== 0 && self.currentIndex !== self.options.columnLabels.length - 1) ||
-            (self.currentIndex === self.options.columnLabels.length - 1 && lastClientX > 0))) {
-
-          self._appendTranslate3d(currentOffset + lastClientX);
-        }
-      },
-      'touchend': function () {
-        if (started) {
-          started = false;
-
-          if (lastClientX > self.options.minSwipe) {
-            self._slideLeft();
-          } else if (lastClientX < -self.options.minSwipe) {
-            self._slideRight();
-          } else {
-            self.cacheSlider.addClass('animate');
-            self._appendTranslate3d(currentOffset);
-          }
-
-          lastClientX = 0;
-          currentOffset = self._columnOffset();
-        }
-      },
-      'transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd': function () {
-        self.cacheSlider.removeClass('animate');
+    var _touchStart = function (event) {
+      // If is a touch event, use just the first touch property (i.e. the first finger)
+      event = event.touches[0];
+      startClientX = event.clientX;
+      for (var i = 0; i < self.cacheSliders.length; i++) {
+        Utils.removeClass(self.cacheSliders[i], 'animate');
       }
-    });
+    };
+
+    var _touchMove = function (event) {
+      // Calculate delta movement
+      var eventTouch = event.touches[0];
+      lastClientX = eventTouch.clientX - startClientX;
+
+      // Start sliding without too much swipe
+      if (!started && (lastClientX < -self.options.minMovement || lastClientX > self.options.minMovement)) {
+        event.preventDefault();
+        started = true;
+      }
+
+      // Avoid column sliding when user has reached the border
+      // Note: 'started' check is required to increase performance on slower mobile devices
+      if (started &&
+        (self.currentIndex === 0 && lastClientX < 0 ||
+          (self.currentIndex !== 0 && self.currentIndex !== self.options.columnLabels.length - 1) ||
+          (self.currentIndex === self.options.columnLabels.length - 1 && lastClientX > 0))) {
+
+        self._appendTranslate3d(currentOffset + lastClientX);
+      }
+    };
+
+    var _touchEnd = function () {
+      if (started) {
+        started = false;
+
+        for (var i = 0; i < self.cacheSliders.length; i++) {
+          Utils.addClass(self.cacheSliders[i], 'animate');
+        }
+
+        if (lastClientX > self.options.minSwipe) {
+          self._slideLeft();
+        } else if (lastClientX < -self.options.minSwipe) {
+          self._slideRight();
+        } else {
+          self._appendTranslate3d(currentOffset);
+        }
+
+        lastClientX = 0;
+        currentOffset = self._columnOffset();
+      }
+    };
+
+    // Add listeners
+    // -------------
+
+    for (var i = 0; i < this.cacheSliders.length; i++) {
+      this.cacheSliders[i].addEventListener('touchstart', _touchStart);
+      this.cacheSliders[i].addEventListener('touchmove', _touchMove);
+      this.cacheSliders[i].addEventListener('touchend', _touchEnd);
+    }
   };
 
   Slider.prototype._columnOffset = function () {
