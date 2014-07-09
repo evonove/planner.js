@@ -43,11 +43,16 @@
       columns: [2, 4]
     });
 
-    // Create planner instance
+    // Planner options
     var element = document.querySelector('.js-planner');
-    var planner = new Planner(element);
+    var options = {
+      plugins: [
+        'mobile'
+      ]
+    };
 
-    // Draw some cards
+    // Init and draw cards
+    var planner = new Planner(element, options);
     planner.drawCard(card1);
     planner.drawCard(card2);
     planner.drawCard(card3);
