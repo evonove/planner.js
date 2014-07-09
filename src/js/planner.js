@@ -16,7 +16,7 @@
           options);
 
         // Plugins loading
-        options.plugins = (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
+        options.plugins = options.plugins || (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
 
         // Put there all default plugins
         options.plugins.push('slider');
