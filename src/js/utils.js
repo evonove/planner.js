@@ -57,7 +57,7 @@
 
     for (var attr in attributes) {
       if (attributes.hasOwnProperty(attr) && attributes[attr].name && attributes[attr].name.indexOf('data-') > -1) {
-        var camelCaseName = Utils.camelCase(attributes[attr].name.split('data-')[1]);
+        var camelCaseName = _camelCase(attributes[attr].name.split('data-')[1]);
         var data = attributes[attr].value;
         if (typeof data === 'string') {
           // Try to cast all main types or leave string if all casts fail
@@ -75,14 +75,17 @@
     return out;
   };
 
-  var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
-  var MOZ_HACK_REGEXP = /^moz([A-Z])/;
-  Utils.camelCase = function (name) {
+  // Internal helpers
+  // ----------------
+
+  var _SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
+  var _MOZ_HACK_REGEXP = /^moz([A-Z])/;
+  var _camelCase = function (name) {
     return name.
-      replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
+      replace(_SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
         return offset ? letter.toUpperCase() : letter;
       }).
-      replace(MOZ_HACK_REGEXP, 'Moz$1');
+      replace(_MOZ_HACK_REGEXP, 'Moz$1');
   }
 
 })(Planner.Utils = Planner.Utils || {});
