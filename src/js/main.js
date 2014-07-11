@@ -47,7 +47,8 @@
     var element = document.querySelector('.js-planner');
     var options = {
       plugins: [
-        'mobile'
+        'mobile',
+        'interaction',
       ]
     };
 
