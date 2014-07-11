@@ -1,341 +1,331 @@
-;(function($, Planner) { 'use strict';
+;(function (Plugins, Utils) { 'use strict';
 
-    // Plugin constructor and defaults
-    // -------------------------------
+  // Plugin constructor and defaults
+  // -------------------------------
 
-    var Crud = function(planner, options) {
-        this.planner = planner;
-        this.$element = planner.$element;
-        this.options = options;
+  var Crud = function (element, options, planner) {
+    this.instance = planner;
+    this.element = element;
+    this.options = options;
 
-        // Used during card generation
-        this.currentInteraction = null;
-        this.currentCard = null;
-        this.currentElement = null;
-        this.listReduced = [];
-        this.initialIndex = null;
-        this.initialY = null;
+    // Used during card generation
+    this.currentInteraction = null;
+    this.currentCard = null;
+    this.currentElement = null;
+    this.listReduced = [];
+    this.initialIndex = null;
+    this.initialY = null;
+
+    // Adds all required components and attach all interactions
+    this.addResize();
+    this.attachClick();
+    this.attachCreateResize();
+    this.attachDragAndDrop();
+
+    // Extends default behaviour according to other plugins
+    if (Planner.Plugins.isRegistered('mobile')) {
+      this.attachMobileListeners();
+    }
+
+    // Add interaction styles
+    var style = Utils.createElement(Planner.Templates.interaction());
+    document.querySelector('head').appendChild(style);
+  };
+
+  Crud.DEFAULTS = {
+    dragComponent: '---'
+  };
+
+  // Plugin attach events
+  // --------------------
+
+  // Publish click event on Card DOM element
+  Crud.prototype.attachClick = function () {
+    var that = this;
+
+    var cardHandler = function (card, element) {
+      element.addEventListener('mouseup', mouseHandler(card, element));
     };
 
-    Crud.DEFAULTS = {
-        dragComponent: '---'
+    var mouseHandler = function (card, element) {
+      // Avoid this action on event propagation from children or if
+      // another interaction is active
+      if (that.currentInteraction === null) {
+        Planner.Events.publish('cardClicked', [card, element]);
+      }
     };
 
-    // Plugin attach events
-    // --------------------
+    Planner.Events.subscribe('cardDomDrawn', cardHandler);
+  };
 
-    // Publish click event on Card DOM element
-    Crud.prototype.attachClick = function() {
-        var self = this;
+  Crud.prototype.attachCreateResize = function () {
+    var that = this;
 
-        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
-            $element.on({
-                mouseup: function(event) {
-                    // Avoid this action on event propagation from children or if
-                    // another interaction is active
-                    if (self.currentInteraction === null) {
-                        Planner.Events.publish('cardClicked', [card, $element]);
-                    }
-                }
-            });
-        });
+    var mouseDownHandler = function (event) {
+      // Avoid this action on event propagation from children
+      if (event.currentTarget === event.target) {
+        // Start interaction with created objects
+        var card = that._createCard(this);
+
+        // TODO: fix me
+        // Utils.index(this) doesn't match strictly domId. After full migration to data-attribute,
+        // we can use this value to find the correct domId
+        var domId = card.columns[0];
+        that._startInteraction('dragCreation', card, that.instance.mapCard.get(card)[domId], Utils.index(this), event.clientY);
+        event.preventDefault();
+      }
     };
 
-    Crud.prototype.attachDragCreation = function() {
-        var self = this;
+    var mouseMoveHandler = function (event) {
+      if (that.currentInteraction === 'dragCreation' || that.currentInteraction === 'resize') {
+        that._resize(event.clientY);
 
-        self.$element.find('.planner-column > div').on({
-            mousedown: function(event) {
-                // Avoid this action on event propagation from children
-                if (event.currentTarget === event.target) {
-                    var $this = $(this);
-
-                    // Start interaction with created objects
-                    var card = self._createCard($this);
-
-                    // TODO: $this.index() doesn't match domId. After full migration to data-attribute, we can use this value to find the correct domId
-                    var domId = card.columns[0];
-                    self._startInteraction('dragCreation', card, Planner.mapCard.get(card)[domId], $this.index(), event.clientY);
-                    event.preventDefault();
-                }
-            },
-            mousemove: function(event) {
-                if (self.currentInteraction === 'dragCreation' || self.currentInteraction === 'resize') {
-                    self._resize(event.clientY);
-
-                    event.preventDefault();
-                }
-            },
-            mouseup: function(event) {
-                if (self.currentInteraction === 'dragCreation') {
-                    Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
-
-                    self._stopInteraction();
-                    event.preventDefault();
-                } else if (self.currentInteraction === 'resize') {
-                    // TODO: fix this interaction because this way is terribly WRONG!
-                    Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
-                    self.currentElement.removeClass('resizable');
-
-                    self._stopInteraction();
-                    event.preventDefault();
-                }
-            }
-        });
+        event.preventDefault();
+      }
     };
 
-    Crud.prototype.attachDragAndDrop = function() {
-        var self = this;
+    var mouseUpHandler = function (event) {
+      if (that.currentInteraction === 'dragCreation') {
+        Planner.Events.publish('cardCreated', [that.currentCard, that.currentElement]);
 
-        // Happend drag events to timeslots
-        self.$element.find('.planner-column > div').on({
-            dragover:  function(event) {
-                event.preventDefault();
-            },
-            drop: function(event) {
-                self._drag(this);
+        that._stopInteraction();
+        event.preventDefault();
+      } else if (that.currentInteraction === 'resize') {
+        // TODO: fix this interaction because this way is terribly WRONG!
+        Planner.Events.publish('cardUpdated', [that.currentCard, that.currentElement]);
+        Utils.removeClass(that.currentElement, 'resizable');
 
-                // Note: remove all temporary clones because of webkit bug/feature
-                if (!!window.webkitURL) {
-                    $('[data-planner=container] > .planner-card').remove();
-                }
-
-                Planner.Events.publish('cardUpdated', [self.currentCard, self.currentElement]);
-
-                self._stopInteraction();
-                event.preventDefault();
-            }
-        });
-
-        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
-            $element.attr('draggable', true);
-            $element.on({
-                dragstart: function(event) {
-                    // Start interaction with created objects
-                    self._startInteraction('dragMove', card, $element);
-
-                    // Required for Firefox
-                    event.originalEvent.dataTransfer.effectAllowed = 'move';
-                    event.originalEvent.dataTransfer.setData('text/html', '[Object] Card');
-
-                    // Note: in webkit browsers, drag-n-drop doesn't create a ghost image if the original
-                    // object is placed inside a container with -webkit-transform attribute. The only available
-                    // solution (at the moment) is to clone the object and put it inside an upper container.
-                    var draggedNode = this;
-                    if (!!window.webkitURL) {
-                        draggedNode = this.cloneNode(true);
-                        $(draggedNode).width($(this).width());
-                        $(draggedNode).addClass('dragging');
-                        $('[data-planner=container]').append(draggedNode);
-                    }
-
-                    event.originalEvent.dataTransfer.setDragImage(draggedNode, 20, 20);
-
-                    // Add a ghost effect
-                    $element.addClass('dragging');
-                },
-                dragenter: function() {
-                    // Reduce card size if draggedElement goes upfront another card
-                    // and store the node to remove this effect later
-                    if (!$element.hasClass('card-small')) {
-                        $element.addClass('card-small');
-                        self.listReduced.push($element);
-                    }
-                },
-                drop: function(event) {
-                    // Avoid to drop a card over another card
-                    event.preventDefault();
-                    event.stopPropagation();
-                    self._resetDrag();
-                },
-                dragend: function() {
-                    // Remove ghost effect
-                    $element.removeClass('dragging');
-                    self._resetDrag();
-                }
-            });
-        });
+        that._stopInteraction();
+        event.preventDefault();
+      }
     };
 
-    Crud.prototype.attachResize = function() {
-        var self = this;
+    // Append listeners to all planner timeslots
+    var timeslots = that.element.querySelectorAll('.planner-column > div');
 
-        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
-            var draggableDom = $(Planner.Templates.drag({dragComponent: self.options.dragComponent})).on({
-                mousedown: function(event) {
-                    self._startInteraction('resize', card, $element, Planner.Helpers.attributeToIndex(card.start), $element.offset().top - $(window).scrollTop());
-                    self.currentElement.addClass('resizable');
+    for (var i = 0; i < timeslots.length; i++) {
+      timeslots[i].addEventListener('mousedown', mouseDownHandler);
+      timeslots[i].addEventListener('mousemove', mouseMoveHandler);
+      timeslots[i].addEventListener('mouseup', mouseUpHandler);
+    }
+  };
 
-                    event.preventDefault();
-                }
-            });
+  Crud.prototype.attachDragAndDrop = function () {
+    var that = this;
 
-            // Append element after latest DOM object of a Card
-            $element.find('.planner-card-title').after(draggableDom);
-
-            // Attach resize listeners
-            $element.on({
-                mousemove: function(event) {
-                    if ($element.hasClass('resizable') && self.currentInteraction === 'resize') {
-                        self._resize(event.clientY);
-
-                        // Avoid other actions
-                        event.preventDefault();
-                    }
-                },
-                mouseup: function(event) {
-                    if ($element.hasClass('resizable') && self.currentInteraction === 'resize') {
-                        Planner.Events.publish('cardUpdated', [card, $element]);
-                        self.currentElement.removeClass('resizable');
-
-
-                        self._stopInteraction();
-                        event.preventDefault();
-                    }
-                }
-            });
-        });
+    var dragOverHandler = function (event) {
+      event.preventDefault();
     };
 
-    Crud.prototype.attachMobileListeners = function() {
-        var self = this;
+    var dropHandler = function (event) {
+      that._drag(this);
 
-        self.$element.find('.planner-column > div').on({
-            touchmove: function(event) {
-                if (self.currentCard !== null) {
-                    self._resize(event.originalEvent.touches[0].clientY);
-                    event.preventDefault();
-                }
-            },
-            touchend: function(event) {
-                Planner.Events.publish('cardCreated', [self.currentCard, self.currentElement]);
+      // TODO: fix me
+      // Note: remove all temporary clones because of a webkit bug/feature
+      if (!!window.webkitURL) {
+        var el = document.querySelector('[data-planner=container] > .planner-card');
+        el.parentNode.removeChild(el);
+      }
 
-                self._stopInteraction();
-                event.preventDefault();
-            }
-        });
+      Planner.Events.publish('cardUpdated', [that.currentCard, that.currentElement]);
 
-        Planner.Events.subscribe('cardDomDrawn', function(card, $element) {
-            $element.on({
-                touchend: function() {
-                    Planner.Events.publish('cardClicked', [card, $element]);
-                    // TODO: check if this is required to "Avoid propagation of element on child/parent elements"
-                    // event.stopPropagation();
-                }
-            });
-        });
+      that._stopInteraction();
+      event.preventDefault();
     };
 
-    // Private plugin helpers
-    // ----------------------
+    // Append drag events to timeslots
+    var timeslots = that.element.querySelectorAll('.planner-column > div');
 
-    Crud.prototype._createCard = function($element) {
-        // Create a new card and draw DOM element
-        var startAttribute = Planner.Helpers.indexToAttribute($element.index());
-        var endAttribute = Planner.Helpers.indexToAttribute($element.index() + 1);
-        var column = [$element.parent().index() + 1];
-        var card = this.options.model({start: startAttribute, end: endAttribute, columns: column});
-        card.draw();
+    for (var i = 0; i < timeslots.length; i++) {
+      timeslots[i].addEventListener('dragover', dragOverHandler);
+      timeslots[i].addEventListener('drop', dropHandler);
+    }
 
-        return card;
-    };
+    var cardHandler = function (card, element) {
+      element.setAttribute('draggable', true);
 
+      var dragStartHandler = function (event) {
+        // Start interaction with created objects
+        that._startInteraction('dragMove', card, element);
 
-    Crud.prototype._startInteraction = function(type, card, $element, initialIndex, initialY) {
-        // Store variables for further interactions
-        this.currentInteraction = type;
-        this.currentCard = card;
-        this.currentElement = $element;
-        this.initialIndex = initialIndex;
-        this.initialY = initialY;
-    };
+        // Required for Firefox
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/html', '[Object] Card');
 
-    Crud.prototype._stopInteraction = function() {
-        this.currentInteraction = null;
-        this.currentCard = null;
-        this.currentElement = null;
-        this.initialIndex = null;
-        this.initialY = null;
-    };
-
-    Crud.prototype._drag = function(destination) {
-        var length = this.currentElement.data('end') - this.currentElement.data('start');
-
-        this.currentElement.appendTo(destination);
-        var column = this.currentElement.parent().parent().index() + 1;
-        var startPosition = this.currentElement.parent().index();
-
-        // Update Card  and DOM object
-        this.currentCard.refresh({
-            columns: [column],
-            start: Planner.Helpers.indexToAttribute(startPosition),
-            end: Planner.Helpers.indexToAttribute(startPosition + length + 1)
-        });
-
-        this.currentCard.refreshDom(this.currentElement, column);
-    };
-
-    Crud.prototype._resize = function(pointerY) {
-        // Calculate new length
-        var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight);
-        var endIndex = this.initialIndex + currentCardPosition;
-
-        // Update Card  and DOM object
-        this.currentCard.refresh({end: Planner.Helpers.indexToAttribute(endIndex + 1)});
-        this.currentCard.refreshDom(this.currentElement);
-    };
-
-    Crud.prototype._resetDrag = function() {
-        while (this.listReduced.length > 0) {
-            this.listReduced.pop().removeClass('card-small');
+        // TODO: fix me
+        // Note: in webkit browsers, drag-n-drop doesn't create a ghost image if the original
+        // object is placed inside a container with -webkit-transform attribute. The only available
+        // solution (at the moment) is to clone the object and put it inside an upper container.
+        var draggedNode = this;
+        if (!!window.webkitURL) {
+          draggedNode = this.cloneNode(true);
+          draggedNode.style.width = element.offsetWidth + 'px';
+          Utils.addClass(draggedNode, 'dragging');
+          that.element.appendChild(draggedNode);
         }
+
+        event.dataTransfer.setDragImage(draggedNode, 20, 20);
+
+        // Add a ghost effect
+        Utils.addClass(element, 'dragging');
+      };
+
+      var dragEnterHandler = function () {
+        // Reduce card size if draggedElement goes upfront another card
+        // and store the node to remove this effect later
+        if (!Utils.hasClass(element, 'card-small')) {
+          Utils.addClass(element, 'card-small');
+          that.listReduced.push(element);
+        }
+      };
+
+      var dropHandler = function () {
+        // Avoid to drop a card over another card
+        event.preventDefault();
+        event.stopPropagation();
+        that._resetDrag();
+      };
+
+      var dragEndHandler = function () {
+        // Remove ghost effect
+        Utils.removeClass(element, 'dragging');
+        that._resetDrag();
+      };
+
+      element.addEventListener('dragstart', dragStartHandler);
+      element.addEventListener('dragenter', dragEnterHandler);
+      element.addEventListener('drop', dropHandler);
+      element.addEventListener('dragend', dragEndHandler);
     };
 
-    // Crud plugin definition
-    // ----------------------
+    Planner.Events.subscribe('cardDomDrawn', cardHandler);
+  };
 
-    var old = $.fn.crud;
+  Crud.prototype.addResize = function () {
+    var that = this;
 
-    $.fn.crud = function(option) {
-        var planner = this;
+    Planner.Events.subscribe('cardDomDrawn', function (card, element) {
+      var resizableDom = Utils.createElement(Planner.Templates.drag({dragComponent: that.options.dragComponent}));
 
-        return this.$element.each(function() {
-            var $this = $(this);
-            var data = $this.data('pl.plugins.crud');
-            var options = $.extend({}, Crud.DEFAULTS, $this.data('pl.planner').options, typeof option === 'object' && option);
+      var mouseDownHandler = function (event) {
+        that._startInteraction('resize', card, element, that.instance._attributeToIndex(card.start), Utils.offset(element).top - document.body.scrollTop);
+        Utils.addClass(that.currentElement, 'resizable');
 
-            // If this node isn't initialized, call the constructor
-            if (!data) {
-                $this.data('pl.plugins.crud', (data = new Crud(planner, options)));
-            }
+        event.preventDefault();
+      };
 
-            data.attachClick();
-            data.attachDragCreation();
-            data.attachDragAndDrop();
-            data.attachResize();
+      resizableDom.addEventListener('mousedown', mouseDownHandler);
 
-            if (Planner.Plugins.isRegistered('mobile')) {
-                data.attachMobileListeners();
-            }
+      // Append element after latest DOM object of a Card
+      var cardDoms = element.querySelectorAll('.planner-card-title');
+      for (var i = 0; i < cardDoms.length; i++) {
+        cardDoms[i].parentNode.appendChild(resizableDom)
+      }
+    });
+  };
 
-            // Add interaction styles
-            $('head').append(Planner.Templates.interaction());
-        });
+  Crud.prototype.attachMobileListeners = function () {
+    var that = this;
+    var timeslots = that.element.querySelectorAll('.planner-column > div');
+
+    var touchMoveHandler = function (event) {
+      if (that.currentCard !== null) {
+        that._resize(event.touches[0].clientY);
+        event.preventDefault();
+      }
     };
 
-    $.fn.crud.constructor = Crud;
+    var touchEndHandler = function (event) {
+      Planner.Events.publish('cardCreated', [that.currentCard, that.currentElement]);
 
-    // Crud no conflict
-    // ----------------
-
-    $.fn.crud.noConflict = function() {
-        $.fn.crud = old;
-        return this;
+      that._stopInteraction();
+      event.preventDefault();
     };
 
-    // Register this plugin to plugins list
-    // ------------------------------------
+    for (var i = 0; i < timeslots.length; i++) {
+      timeslots[i].addEventListener('touchmove', touchMoveHandler);
+      timeslots[i].addEventListener('touchend', touchEndHandler);
+    }
 
-    Planner.Plugins.register('interaction', $.fn.crud);
+    Planner.Events.subscribe('cardDomDrawn', function (card, element) {
+      var touchEndHandler = function () {
+        Planner.Events.publish('cardClicked', [card, element]);
+        // TODO: check if this is required to "Avoid propagation of element on child/parent elements"
+        // event.stopPropagation();
+      };
 
-})(jQuery, Planner);
+      element.addEventListener('touchend', touchEndHandler);
+    });
+  };
+
+  // Private plugin helpers
+  // ----------------------
+
+  Crud.prototype._createCard = function (element) {
+    // Create a new card and draw DOM element
+    var startAttribute = this.instance._indexToAttribute(Utils.index(element));
+    var endAttribute = this.instance._indexToAttribute(Utils.index(element) + 1);
+    var column = [Utils.index(element.parentNode) + 1];
+    var card = this.options.model({start: startAttribute, end: endAttribute, columns: column});
+    this.instance.drawCard(card);
+
+    return card;
+  };
+
+
+  Crud.prototype._startInteraction = function (type, card, element, initialIndex, initialY) {
+    // Store variables for further interactions
+    this.currentInteraction = type;
+    this.currentCard = card;
+    this.currentElement = element;
+    this.initialIndex = initialIndex;
+    this.initialY = initialY;
+  };
+
+  Crud.prototype._stopInteraction = function () {
+    this.currentInteraction = null;
+    this.currentCard = null;
+    this.currentElement = null;
+    this.initialIndex = null;
+    this.initialY = null;
+  };
+
+  Crud.prototype._drag = function (destination) {
+    var length = this.currentElement.getAttribute('data-end') - this.currentElement.getAttribute('data-start');
+
+    destination.appendChild(this.currentElement);
+    var column = Utils.index(this.currentElement.parentNode.parentNode) + 1;
+    var startPosition = Utils.index(this.currentElement.parentNode);
+
+    // Update Card  and DOM object
+    this.currentCard.update({
+      columns: [column],
+      start: this.instance._indexToAttribute(startPosition),
+      end: this.instance._indexToAttribute(startPosition + length + 1)
+    });
+
+    this.instance.updateDom(this.currentElement, this.currentCard, column);
+  };
+
+  Crud.prototype._resize = function (pointerY) {
+    // Calculate new length
+    var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight);
+    var endIndex = this.initialIndex + currentCardPosition;
+
+    // Update Card  and DOM object
+    this.currentCard.update({end: this.instance._indexToAttribute(endIndex + 1)});
+    this.instance.updateDom(this.currentElement, this.currentCard);
+  };
+
+  Crud.prototype._resetDrag = function () {
+    while (this.listReduced.length > 0) {
+      Utils.removeClass(this.listReduced.pop(), 'card-small');
+    }
+  };
+
+  // Register this plugin to plugins list
+  // ------------------------------------
+
+  Planner.Plugins.register('interaction', Crud);
+
+})(Planner.Plugins, Planner.Utils);
