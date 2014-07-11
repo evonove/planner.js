@@ -1,49 +1,53 @@
-;(function(Planner) { 'use strict';
+;(function(Plugins, Utils) { 'use strict';
 
-    Planner.Plugins = Planner.Plugins || {};
-    Planner.Plugins.fn = [];
-    Planner.Plugins.registered = [];
-    Planner.Plugins.loaded = [];
+    Plugins.DEFAULTS = {};
+    Plugins.registry = {};
+    Plugins.loaded = {};
 
     // Register plugins callback
     // -------------------------
 
-    Planner.Plugins.load = function(pluginsList, context) {
-        Planner.Plugins.registered = pluginsList;
-        if (typeof pluginsList.forEach === 'function') {
-            pluginsList.forEach(function(pluginName) {
-                Planner.Plugins.call(pluginName, context);
-            });
+    Plugins.load = function(pluginsList, context) {
+        if (Array.isArray(pluginsList)) {
+            for (var i = 0; i < pluginsList.length; i++) {
+                Plugins.call(pluginsList[i], context);
+            }
         } else {
             throw new Error('"Plugins" option on Planner.js should be a list of string');
         }
     };
 
-    Planner.Plugins.register = function(pluginName, fn) {
-        Planner.Plugins.fn[pluginName] = fn;
+    Plugins.register = function(pluginName, fn) {
+        // During plugin registration, store all plugins DEFAULTS so it's fast to
+        // reuse them during instance creation
+        Plugins.DEFAULTS = Utils.extend({}, Plugins.DEFAULTS, fn.DEFAULTS);
+        Plugins.registry[pluginName] = fn;
     };
 
-    Planner.Plugins.call = function(pluginName, context, params) {
-        var fn = Planner.Plugins.fn[pluginName];
+    Plugins.call = function(pluginName, context, params) {
+        var fn = Plugins.registry[pluginName];
 
         if (typeof fn === 'function') {
-            fn.apply(context, params);
-            Planner.Plugins.loaded[pluginName] = true;
+            context.plugins = context.plugins || {};
+            context.plugins[pluginName] = new (fn.bind(context, context.element, context.options, context, params));
+            Plugins.loaded[pluginName] = true;
         } else {
             throw new Error('Chosen plugin is not available: ' + pluginName);
         }
     };
 
-    Planner.Plugins.isRegistered = function(pluginName) {
-        return Planner.Plugins.registered.indexOf(pluginName) !== -1;
+    // TODO: check the instance and not the registry
+    Plugins.isRegistered = function(pluginName) {
+        return typeof Plugins.registry[pluginName] !== 'undefined';
     };
 
-    Planner.Plugins.requires = function(pluginName) {
-        if (!Planner.Plugins.loaded[pluginName]) {
+  // TODO: check the instance and not the registry
+    Plugins.requires = function(pluginName) {
+        if (!Plugins.loaded[pluginName]) {
             throw new Error('"' + pluginName + '" plugin is required.');
         }
 
         return true;
     };
 
-})(Planner);
+})(Planner.Plugins = Planner.Plugins || {}, Planner.Utils);

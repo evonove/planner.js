@@ -1,11 +1,29 @@
-;(function($, Planner) { 'use strict';
+;(function(window, undefined) { 'use strict';
 
-    // PlanningChart class definition with defaults
-    // --------------------------------------------
+    // PlanningChart class
+    // -------------------
 
     var PlanningChart = function (element, options) {
-        this.$element = $(element);
-        this.options = options;
+        // TODO: if [data-planner="container"], raise an error for twice initialization
+
+        // Get all options from data-attributes and merge them with ALL defaults
+        var attributes = window.Planner.Utils.getAttributes(element);
+        options = window.Planner.Utils.extend(
+          {},
+          PlanningChart.DEFAULTS,
+          window.Planner.Plugins.DEFAULTS,
+          attributes,
+          options);
+
+        // Plugins loading
+        options.plugins = options.plugins || (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
+
+        // Put there all defaults
+        options.plugins.push('slider');
+        options.model = options.model || Planner.Models.Card;
+
+        // Return instance
+        return new window.Planner.Instance(element, options);
     };
 
     PlanningChart.CONST = {
@@ -16,9 +34,9 @@
     };
 
     PlanningChart.DEFAULTS = {
-        show: true,
-        model: Planner.Models.Card,
+        show: true,                                   // TODO: use a better strategy to avoid planner draw
         plugins: [],
+        model: null,
         timeslots: 4,
         timeslotHeight: 25,
         timeslotPadding: 20,
@@ -29,80 +47,18 @@
         visibleColumns: 7
     };
 
-    // PlanningChart widget definition
-    // -------------------------------
+    // Initialize with data-api
+    // ------------------------
 
-    var old = $.fn.planner;
+    document.addEventListener('DOMContentLoaded', function(){
+        var plannerElements = document.querySelectorAll('[data-planner=""]');
 
-    $.fn.planner = function(option) {
-        return this.each(function() {
-            var $this = $(this);
-            var data = $this.data('pl.planner');
-            var options = $.extend({}, PlanningChart.DEFAULTS, $this.data(), typeof option === 'object' && option);
-
-            // Check if columns and rows are set otherwise use a default planner
-            if (options.columnLabels.length === 0) {
-                options.columnLabels = Planner.Helpers.getDefaultColumns();
-            }
-
-            if (options.rowLabels.length === 0) {
-                options.rowLabels = Planner.Helpers.getDefaultRows();
-            }
-
-            // Edit some properties
-            options.visibleColumns = options.visibleColumns > options.columnLabels.length ? options.columnLabels.length : options.visibleColumns;
-
-            // If this node isn't initialized, call the constructor
-            if (!data) {
-                $this.data('pl.planner', (data = new PlanningChart(this, options)));
-                this.setAttribute('data-planner', 'container');
-            }
-
-            // TODO: better implementation required
-            // Planner attributes available on whole namespace
-            Planner.$element = data.$element;
-            Planner.options = data.options;
-
-            // Initialize planner template only if required
-            if (options.show) {
-                $this.html(Planner.Templates.body(options));
-            }
-
-            // Append all computed CSS
-            $('head').append(Planner.Helpers.computedCSS());
-
-            // Load attached plugins
-            Planner.Plugins.load(options.plugins, data);
-        });
-    };
-
-    $.fn.planner.constructor = PlanningChart;
-
-    // PlanningChart no conflict
-    // -------------------------
-
-    $.fn.planner.noConflict = function() {
-        $.fn.planner = old;
-        return this;
-    };
-
-    // PlanningChart DATA-API
-    // ----------------------
-
-    $(document).ready(function() {
-        $('[data-planner="container"]').each(function() {
-            var $planner = $(this);
-
-            // Allows plugins definition with data attributes
-            var plugins = ($planner.data('plugins') && $planner.data('plugins').split(' ')) || [];
-
-            // Load default plugins
-            plugins.push('slider');
-
-            // Planner initialization
-            $planner.data('plugins', plugins);
-            $planner.planner($planner.data());
-        });
+        for (var i = 0; i < plannerElements.length; i++) {
+            // TODO: save references to Planner.instances['plannerId']
+            PlanningChart(plannerElements[i]);
+        }
     });
 
-})(jQuery, Planner);
+    window.Planner = PlanningChart;
+
+})(window);
