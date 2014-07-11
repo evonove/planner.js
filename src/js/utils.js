@@ -44,6 +44,14 @@
     }
   };
 
+  Utils.hasClass = function (el, className) {
+    if (el.classList) {
+      el.classList.contains(className);
+    } else {
+      new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+    }
+  };
+
   Utils.createElement = function (html) {
     var el = document.createElement('div');
     el.innerHTML = html;
@@ -73,6 +81,20 @@
       }
     }
     return out;
+  };
+
+  Utils.index = function (child) {
+    var parent = child.parentNode;
+    return Array.prototype.indexOf.call(parent.children, child);
+  };
+
+  Utils.offset = function (el) {
+    var rect = el.getBoundingClientRect();
+
+    return {
+      top: rect.top + document.body.scrollTop,
+      left: rect.left + document.body.scrollLeft
+    }
   };
 
   // Internal helpers
