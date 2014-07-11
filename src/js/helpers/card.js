@@ -71,7 +71,7 @@
           dom.setAttribute('data-end', end);
 
           // Update DOM attributes
-          dom.querySelector('.planner-card-time').innerhtml = card.header;
+          dom.querySelector('.planner-card-time').innerHTML = card.header;
 
           dom.style.height = cardLength + 'px';
       }
