@@ -18,8 +18,9 @@
         // Plugins loading
         options.plugins = options.plugins || (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
 
-        // Put there all default plugins
+        // Put there all defaults
         options.plugins.push('slider');
+        options.model = options.model || Planner.Models.Card;
 
         // Return instance
         return new window.Planner.Instance(element, options);
@@ -33,10 +34,9 @@
     };
 
     PlanningChart.DEFAULTS = {
-        // TODO: use a better strategy to avoid planner draw
-        show: true,
-        // model: Planner.Models.Card, TODO: disabled for now
+        show: true,                                   // TODO: use a better strategy to avoid planner draw
         plugins: [],
+        model: null,
         timeslots: 4,
         timeslotHeight: 25,
         timeslotPadding: 20,
@@ -54,6 +54,7 @@
         var plannerElements = document.querySelectorAll('[data-planner=""]');
 
         for (var i = 0; i < plannerElements.length; i++) {
+            // TODO: save references to Planner.instances['plannerId']
             PlanningChart(plannerElements[i]);
         }
     });
