@@ -29,7 +29,7 @@
 
         if (typeof fn === 'function') {
             context.plugins = context.plugins || {};
-            context.plugins[pluginName] = new (fn.bind(context, context.element, context.options, params));
+            context.plugins[pluginName] = new (fn.bind(context, context.element, context.options, context, params));
             Plugins.loaded[pluginName] = true;
         } else {
             throw new Error('Chosen plugin is not available: ' + pluginName);
