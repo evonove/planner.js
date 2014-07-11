@@ -1,4 +1,5 @@
-;(function (Utils, undefined) { 'use strict';
+(function (Utils, undefined) {
+  'use strict';
 
   // Javascript utilities
   // --------------------
@@ -94,7 +95,7 @@
     return {
       top: rect.top + document.body.scrollTop,
       left: rect.left + document.body.scrollLeft
-    }
+    };
   };
 
   // Internal helpers
@@ -108,6 +109,6 @@
         return offset ? letter.toUpperCase() : letter;
       }).
       replace(_MOZ_HACK_REGEXP, 'Moz$1');
-  }
+  };
 
 })(Planner.Utils = Planner.Utils || {});

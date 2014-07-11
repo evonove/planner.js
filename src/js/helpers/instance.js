@@ -1,4 +1,5 @@
-;(function(Instance, Utils, undefined) { 'use strict';
+(function (Instance, Utils, undefined) {
+  'use strict';
 
   var Mixin = {};
 
@@ -6,7 +7,7 @@
   // -----------
 
   // Generate a computed style node
-  Mixin._computedCSS = function() {
+  Mixin._computedCSS = function () {
     var timeslotSize = this.options.timeslotHeight * this.options.timeslots;
     var timeslotPadding = this.options.centered ? timeslotSize / 2 : timeslotSize;
 
@@ -27,7 +28,7 @@
   // -----------------
 
   // Transform start or end attributes to a valid planner interval (index) according to attribute type
-  Mixin._attributeToIndex = function(attribute) {
+  Mixin._attributeToIndex = function (attribute) {
     var index;
 
     if (typeof attribute.getHours === 'function' && typeof attribute.getMinutes === 'function') {
@@ -42,7 +43,7 @@
   };
 
   // Transform element index to a valid card start/end object
-  Mixin._indexToAttribute = function(index) {
+  Mixin._indexToAttribute = function (index) {
     var attribute;
 
     // Convert date time object

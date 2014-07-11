@@ -1,4 +1,5 @@
-;(function () { 'use strict';
+(function (undefined) {
+  'use strict';
 
   // Auxiliar functions
   // ------------------
@@ -15,7 +16,7 @@
   // Some card mocks
   // ---------------
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     var card1 = new Planner.Models.Card({
       id: 1,
       title: 'Having a long dinner',

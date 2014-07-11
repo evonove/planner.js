@@ -1,4 +1,5 @@
-;(function (Plugins, Utils, undefined) { 'use strict';
+(function (Plugins, Utils, undefined) {
+  'use strict';
 
   // Slider plugin to change visible columns
   // ---------------------------------------

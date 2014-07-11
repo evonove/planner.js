@@ -7,20 +7,19 @@
     "curly": true,
     "eqeqeq": true,
     "immed": true,
+    "indent": 2,
     "latedef": true,
     "newcap": true,
     "noarg": true,
     "quotmark": "single",
-    "regexp": true,
     "undef": true,
-    "unused": false,
+    "unused": true,
     "strict": true,
     "trailing": true,
     "smarttabs": true,
-    "jquery": true,
     "globals": {
         "Planner": true,
         "HashMap": true,
-        "Handlebars": false
+        "Handlebars": true
     }
 }

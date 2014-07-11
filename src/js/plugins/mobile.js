@@ -1,24 +1,25 @@
-;(function(Plugins, Utils, undefined) { 'use strict';
+(function (Plugins, Utils, undefined) {
+  'use strict';
 
-    // Plugin constructor and defaults
-    // -------------------------------
+  // Plugin constructor and defaults
+  // -------------------------------
 
-    var Mobile = function(element, options) {
-        var context = {
-          mobileWidth: 100 / options.mobileVisibleColumns
-        };
-
-        // Add mobile styles
-        document.querySelector('head').appendChild(Utils.createElement(Planner.Templates.mobile(context)));
+  var Mobile = function (element, options) {
+    var context = {
+      mobileWidth: 100 / options.mobileVisibleColumns
     };
 
-    Mobile.DEFAULTS = {
-        mobileVisibleColumns: 1
-    };
+    // Add mobile styles
+    document.querySelector('head').appendChild(Utils.createElement(Planner.Templates.mobile(context)));
+  };
 
-    // Register this plugin to plugins list
-    // ------------------------------------
+  Mobile.DEFAULTS = {
+    mobileVisibleColumns: 1
+  };
 
-    Plugins.register('mobile', Mobile);
+  // Register this plugin to plugins list
+  // ------------------------------------
+
+  Plugins.register('mobile', Mobile);
 
 })(Planner.Plugins, Planner.Utils);

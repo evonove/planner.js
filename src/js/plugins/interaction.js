@@ -1,4 +1,5 @@
-;(function (Plugins, Utils) { 'use strict';
+(function (Plugins, Utils, undefined) {
+  'use strict';
 
   // Plugin constructor and defaults
   // -------------------------------
@@ -219,7 +220,7 @@
       // Append element after latest DOM object of a Card
       var cardDoms = element.querySelectorAll('.planner-card-title');
       for (var i = 0; i < cardDoms.length; i++) {
-        cardDoms[i].parentNode.appendChild(resizableDom)
+        cardDoms[i].parentNode.appendChild(resizableDom);
       }
     });
   };

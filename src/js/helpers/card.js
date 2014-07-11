@@ -1,11 +1,12 @@
-;(function(Instance, Utils, undefined) { 'use strict';
+(function (Instance, Utils, undefined) {
+  'use strict';
 
   var Mixin = {};
 
   // Card and DOM operations
   // -----------------------
 
-  Mixin.drawCard = function(card) {
+  Mixin.drawCard = function (card) {
     var _cardDom;
     var _cachedDomList = this.mapCard.get(card);
 
@@ -15,7 +16,7 @@
       this.mapCard.put(card, _cachedDomList);
     }
 
-    for (var i = 0; i< card.columns.length; i++) {
+    for (var i = 0; i < card.columns.length; i++) {
       var column = card.columns[i];
 
       // Check if DOM was already drawn in the past otherwise return old instance
@@ -36,7 +37,7 @@
     Planner.Events.publish('cardDrawn', [card]);
   };
 
-  Mixin._drawDom = function(cardDom) {
+  Mixin._drawDom = function (cardDom) {
     // Get data-attributes element from card DOM
     // TODO: provide an utility for a better data attribute access
     var dataColumn = parseInt(cardDom.getAttribute('data-column'), 10);
@@ -49,32 +50,32 @@
     Planner.Events.publish('cardDomDrawn', [this.mapDom.get(cardDom), cardDom]);
   };
 
-  Mixin.updateDom = function(dom, card, column) {
-      var start = this._attributeToIndex(card.start);
-      var end = this._attributeToIndex(card.end) - 1;
+  Mixin.updateDom = function (dom, card, column) {
+    var start = this._attributeToIndex(card.start);
+    var end = this._attributeToIndex(card.end) - 1;
 
-      // TODO: corner case for last timeslot caused by not managing multiple days
-      if (end < 0) {
-          end = this.options.timeslots * this.options.rowLabels.length - 1;
+    // TODO: corner case for last timeslot caused by not managing multiple days
+    if (end < 0) {
+      end = this.options.timeslots * this.options.rowLabels.length - 1;
+    }
+
+    if (start <= end) {
+      var cardLength = (end - start + 1) * this.options.timeslotHeight - this.options.cardTitleMargin;
+
+      // Update data attributes
+      // TODO: use a Data warehouse like one explained here (http://jsperf.com/data-dataset) for a better performance
+      if (typeof column !== 'undefined') {
+        dom.setAttribute('data-column', column);
       }
 
-      if (start <= end) {
-          var cardLength = (end - start + 1) * this.options.timeslotHeight - this.options.cardTitleMargin;
+      dom.setAttribute('data-start', start);
+      dom.setAttribute('data-end', end);
 
-          // Update data attributes
-          // TODO: use a Data warehouse like one explained here (http://jsperf.com/data-dataset) for a better performance
-          if (typeof column !== 'undefined')  {
-              dom.setAttribute('data-column', column);
-          }
+      // Update DOM attributes
+      dom.querySelector('.planner-card-time').innerHTML = card.header;
 
-          dom.setAttribute('data-start', start);
-          dom.setAttribute('data-end', end);
-
-          // Update DOM attributes
-          dom.querySelector('.planner-card-time').innerHTML = card.header;
-
-          dom.style.height = cardLength + 'px';
-      }
+      dom.style.height = cardLength + 'px';
+    }
   };
 
   // Mixin for Instance
