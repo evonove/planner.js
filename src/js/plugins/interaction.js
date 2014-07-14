@@ -78,18 +78,10 @@
 
     var _dropHandler = function (event) {
       _drag(this);
-
-      // TODO: fix me
-      // Note: remove all temporary clones because of a webkit bug/feature
-      if (!!window.webkitURL) {
-        var el = document.querySelector('[data-planner=container] > .planner-card');
-        el.parentNode.removeChild(el);
-      }
-
-      Planner.Events.publish('cardUpdated', [currentCard, currentElement]);
-
       _stopInteraction();
       event.preventDefault();
+
+      Planner.Events.publish('cardUpdated', [currentCard, currentElement]);
     };
 
     var _dragCardHandler = function (card, element) {
@@ -102,20 +94,7 @@
         // Required for Firefox
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('text/html', '[Object] Card');
-
-        // TODO: fix me
-        // Note: in webkit browsers, drag-n-drop doesn't create a ghost image if the original
-        // object is placed inside a container with -webkit-transform attribute. The only available
-        // solution (at the moment) is to clone the object and put it inside an upper container.
-        var draggedNode = this;
-        if (!!window.webkitURL) {
-          draggedNode = this.cloneNode(true);
-          draggedNode.style.width = element.offsetWidth + 'px';
-          Utils.addClass(draggedNode, 'dragging');
-          element.appendChild(draggedNode);
-        }
-
-        event.dataTransfer.setDragImage(draggedNode, 20, 20);
+        event.dataTransfer.setDragImage(this, 20, 20);
 
         // Add a ghost effect
         Utils.addClass(element, 'dragging');
