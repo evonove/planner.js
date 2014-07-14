@@ -1,125 +1,83 @@
 (function (Plugins, Utils, undefined) {
   'use strict';
 
-  // Plugin constructor and defaults
-  // -------------------------------
+  // Plugin constructor
+  // ------------------
 
-  var Crud = function (element, options, planner) {
-    this.instance = planner;
-    this.element = element;
-    this.options = options;
+  var Interaction = function (element, options, planner) {
+      var timeslots = element.querySelectorAll('.planner-column > div')
 
-    // Used during card generation
-    this.currentInteraction = null;
-    this.currentCard = null;
-    this.currentElement = null;
-    this.listReduced = [];
-    this.initialIndex = null;
-    this.initialY = null;
+      // Used during interactions
+      , currentInteraction = null
+      , currentCard = null
+      , currentElement = null
+      , listReduced = []
+      , initialIndex = null
+      , initialY = null;
 
-    // Adds all required components and attach all interactions
-    this.addResize();
-    this.attachClick();
-    this.attachCreateResize();
-    this.attachDragAndDrop();
+    // Mouse handlers
+    // --------------
 
-    // Extends default behaviour according to other plugins
-    if (Planner.Plugins.isRegistered('mobile')) {
-      this.attachMobileListeners();
-    }
-
-    // Add interaction styles
-    var style = Utils.createElement(Planner.Templates.interaction());
-    document.querySelector('head').appendChild(style);
-  };
-
-  Crud.DEFAULTS = {
-    dragComponent: '---'
-  };
-
-  // Plugin attach events
-  // --------------------
-
-  // Publish click event on Card DOM element
-  Crud.prototype.attachClick = function () {
-    var that = this;
-
-    var cardHandler = function (card, element) {
-      element.addEventListener('mouseup', mouseHandler(card, element));
+    var _cardHandler = function (card, element) {
+      element.addEventListener('click', _mouseHandler(card, element));
     };
 
-    var mouseHandler = function (card, element) {
+    var _mouseHandler = function (card, element) {
       // Avoid this action on event propagation from children or if
       // another interaction is active
-      if (that.currentInteraction === null) {
+      if (currentInteraction === null) {
         Planner.Events.publish('cardClicked', [card, element]);
       }
     };
 
-    Planner.Events.subscribe('cardDomDrawn', cardHandler);
-  };
-
-  Crud.prototype.attachCreateResize = function () {
-    var that = this;
-
-    var mouseDownHandler = function (event) {
+    var _mouseDownHandler = function (event) {
       // Avoid this action on event propagation from children
       if (event.currentTarget === event.target) {
         // Start interaction with created objects
-        var card = that._createCard(this);
+        var card = _createCard(this);
 
         // TODO: fix me
         // Utils.index(this) doesn't match strictly domId. After full migration to data-attribute,
         // we can use this value to find the correct domId
         var domId = card.columns[0];
-        that._startInteraction('dragCreation', card, that.instance.mapCard.get(card)[domId], Utils.index(this), event.clientY);
+        _startInteraction('dragCreation', card, planner.mapCard.get(card)[domId], Utils.index(this), event.clientY);
         event.preventDefault();
       }
     };
 
-    var mouseMoveHandler = function (event) {
-      if (that.currentInteraction === 'dragCreation' || that.currentInteraction === 'resize') {
-        that._resize(event.clientY);
+    var _mouseMoveHandler = function (event) {
+      if (currentInteraction === 'dragCreation' || currentInteraction === 'resize') {
+        _resize(event.clientY);
 
         event.preventDefault();
       }
     };
 
-    var mouseUpHandler = function (event) {
-      if (that.currentInteraction === 'dragCreation') {
-        Planner.Events.publish('cardCreated', [that.currentCard, that.currentElement]);
+    var _mouseUpHandler = function (event) {
+      if (currentInteraction === 'dragCreation') {
+        Planner.Events.publish('cardCreated', [currentCard, currentElement]);
 
-        that._stopInteraction();
+        _stopInteraction();
         event.preventDefault();
-      } else if (that.currentInteraction === 'resize') {
+      } else if (currentInteraction === 'resize') {
         // TODO: fix this interaction because this way is terribly WRONG!
-        Planner.Events.publish('cardUpdated', [that.currentCard, that.currentElement]);
-        Utils.removeClass(that.currentElement, 'resizable');
+        Planner.Events.publish('cardUpdated', [currentCard, currentElement]);
+        Utils.removeClass(currentElement, 'resizable');
 
-        that._stopInteraction();
+        _stopInteraction();
         event.preventDefault();
       }
     };
 
-    // Append listeners to all planner timeslots
-    var timeslots = that.element.querySelectorAll('.planner-column > div');
+    // Drag and drop handlers
+    // ----------------------
 
-    for (var i = 0; i < timeslots.length; i++) {
-      timeslots[i].addEventListener('mousedown', mouseDownHandler);
-      timeslots[i].addEventListener('mousemove', mouseMoveHandler);
-      timeslots[i].addEventListener('mouseup', mouseUpHandler);
-    }
-  };
-
-  Crud.prototype.attachDragAndDrop = function () {
-    var that = this;
-
-    var dragOverHandler = function (event) {
+    var _dragOverHandler = function (event) {
       event.preventDefault();
     };
 
-    var dropHandler = function (event) {
-      that._drag(this);
+    var _dropHandler = function (event) {
+      _drag(this);
 
       // TODO: fix me
       // Note: remove all temporary clones because of a webkit bug/feature
@@ -128,26 +86,18 @@
         el.parentNode.removeChild(el);
       }
 
-      Planner.Events.publish('cardUpdated', [that.currentCard, that.currentElement]);
+      Planner.Events.publish('cardUpdated', [currentCard, currentElement]);
 
-      that._stopInteraction();
+      _stopInteraction();
       event.preventDefault();
     };
 
-    // Append drag events to timeslots
-    var timeslots = that.element.querySelectorAll('.planner-column > div');
-
-    for (var i = 0; i < timeslots.length; i++) {
-      timeslots[i].addEventListener('dragover', dragOverHandler);
-      timeslots[i].addEventListener('drop', dropHandler);
-    }
-
-    var cardHandler = function (card, element) {
+    var _dragCardHandler = function (card, element) {
       element.setAttribute('draggable', true);
 
       var dragStartHandler = function (event) {
         // Start interaction with created objects
-        that._startInteraction('dragMove', card, element);
+        _startInteraction('dragMove', card, element);
 
         // Required for Firefox
         event.dataTransfer.effectAllowed = 'move';
@@ -162,7 +112,7 @@
           draggedNode = this.cloneNode(true);
           draggedNode.style.width = element.offsetWidth + 'px';
           Utils.addClass(draggedNode, 'dragging');
-          that.element.appendChild(draggedNode);
+          element.appendChild(draggedNode);
         }
 
         event.dataTransfer.setDragImage(draggedNode, 20, 20);
@@ -176,7 +126,7 @@
         // and store the node to remove this effect later
         if (!Utils.hasClass(element, 'card-small')) {
           Utils.addClass(element, 'card-small');
-          that.listReduced.push(element);
+          listReduced.push(element);
         }
       };
 
@@ -184,13 +134,13 @@
         // Avoid to drop a card over another card
         event.preventDefault();
         event.stopPropagation();
-        that._resetDrag();
+        _resetReducedDom();
       };
 
       var dragEndHandler = function () {
         // Remove ghost effect
         Utils.removeClass(element, 'dragging');
-        that._resetDrag();
+        _resetReducedDom();
       };
 
       element.addEventListener('dragstart', dragStartHandler);
@@ -199,18 +149,42 @@
       element.addEventListener('dragend', dragEndHandler);
     };
 
-    Planner.Events.subscribe('cardDomDrawn', cardHandler);
-  };
+    // Touch handlers
+    // --------------
 
-  Crud.prototype.addResize = function () {
-    var that = this;
+    var _touchMoveHandler = function (event) {
+      if (currentCard !== null) {
+        _resize(event.touches[0].clientY);
+        event.preventDefault();
+      }
+    };
 
-    Planner.Events.subscribe('cardDomDrawn', function (card, element) {
-      var resizableDom = Utils.createElement(Planner.Templates.drag({dragComponent: that.options.dragComponent}));
+    var _touchEndHandler = function (event) {
+      Planner.Events.publish('cardCreated', [currentCard, currentElement]);
+
+      _stopInteraction();
+      event.preventDefault();
+    };
+
+    var _touchHandler = function (card, element) {
+      var touchEndHandler = function () {
+        Planner.Events.publish('cardClicked', [card, element]);
+        // TODO: check if this is required to "Avoid propagation of element on child/parent elements"
+        // event.stopPropagation();
+      };
+
+      element.addEventListener('touchend', touchEndHandler);
+    };
+
+    // Private methods
+    // ---------------
+
+    var _addResizeDom = function (card, element) {
+      var resizableDom = Utils.createElement(Planner.Templates.drag({dragComponent: options.dragComponent}));
 
       var mouseDownHandler = function (event) {
-        that._startInteraction('resize', card, element, that.instance._attributeToIndex(card.start), Utils.offset(element).top - document.body.scrollTop);
-        Utils.addClass(that.currentElement, 'resizable');
+        _startInteraction('resize', card, element, planner._attributeToIndex(card.start), Utils.offset(element).top - document.body.scrollTop);
+        Utils.addClass(currentElement, 'resizable');
 
         event.preventDefault();
       };
@@ -222,111 +196,116 @@
       for (var i = 0; i < cardDoms.length; i++) {
         cardDoms[i].parentNode.appendChild(resizableDom);
       }
-    });
-  };
+    };
 
-  Crud.prototype.attachMobileListeners = function () {
-    var that = this;
-    var timeslots = that.element.querySelectorAll('.planner-column > div');
+    // Private plugin helpers
+    // ----------------------
 
-    var touchMoveHandler = function (event) {
-      if (that.currentCard !== null) {
-        that._resize(event.touches[0].clientY);
-        event.preventDefault();
+    var _createCard = function (element) {
+      // Create a new card and draw DOM element
+      var startAttribute = planner._indexToAttribute(Utils.index(element));
+      var endAttribute = planner._indexToAttribute(Utils.index(element) + 1);
+      var column = [Utils.index(element.parentNode) + 1];
+      var card = options.model({start: startAttribute, end: endAttribute, columns: column});
+
+      // TODO: card draw inside card creation?
+      planner.drawCard(card);
+      return card;
+    };
+
+
+    var _startInteraction = function (type, card, element, index, y) {
+      // Store variables for further interactions
+      currentInteraction = type;
+      currentCard = card;
+      currentElement = element;
+      initialIndex = index;
+      initialY = y;
+    };
+
+    var _stopInteraction = function () {
+      currentInteraction = null;
+      currentCard = null;
+      currentElement = null;
+      initialIndex = null;
+      initialY = null;
+    };
+
+    var _drag = function (destination) {
+      var length = currentElement.getAttribute('data-end') - currentElement.getAttribute('data-start');
+
+      destination.appendChild(currentElement);
+      var column = Utils.index(currentElement.parentNode.parentNode) + 1;
+      var startPosition = Utils.index(currentElement.parentNode);
+
+      // Update Card  and DOM object
+      currentCard.update({
+        columns: [column],
+        start: planner._indexToAttribute(startPosition),
+        end: planner._indexToAttribute(startPosition + length + 1)
+      });
+
+      planner.updateDom(currentElement, currentCard, column);
+    };
+
+    var _resetReducedDom = function () {
+      while (listReduced.length > 0) {
+        Utils.removeClass(listReduced.pop(), 'card-small');
       }
     };
 
-    var touchEndHandler = function (event) {
-      Planner.Events.publish('cardCreated', [that.currentCard, that.currentElement]);
+    var _resize = function (pointerY) {
+      // Calculate new length
+      var currentCardPosition = Math.floor((pointerY - initialY) / options.timeslotHeight);
+      var endIndex = initialIndex + currentCardPosition;
 
-      that._stopInteraction();
-      event.preventDefault();
+      // Update Card  and DOM object
+      currentCard.update({end: planner._indexToAttribute(endIndex + 1)});
+      planner.updateDom(currentElement, currentCard);
     };
 
+    // Register components
+    // -------------------
+
+    // Subscribes handlers to all required channels
+    Planner.Events.subscribe('cardDomDrawn', _addResizeDom);
+    Planner.Events.subscribe('cardDomDrawn', _cardHandler);
+    Planner.Events.subscribe('cardDomDrawn', _dragCardHandler);
+
+    // Add listeners to all planner components
+    // TODO: create a generic 'main' loop where all interaction parts will register
     for (var i = 0; i < timeslots.length; i++) {
-      timeslots[i].addEventListener('touchmove', touchMoveHandler);
-      timeslots[i].addEventListener('touchend', touchEndHandler);
+      timeslots[i].addEventListener('mousedown', _mouseDownHandler);
+      timeslots[i].addEventListener('mousemove', _mouseMoveHandler);
+      timeslots[i].addEventListener('mouseup', _mouseUpHandler);
+      timeslots[i].addEventListener('dragover', _dragOverHandler);
+      timeslots[i].addEventListener('drop', _dropHandler);
     }
 
-    Planner.Events.subscribe('cardDomDrawn', function (card, element) {
-      var touchEndHandler = function () {
-        Planner.Events.publish('cardClicked', [card, element]);
-        // TODO: check if this is required to "Avoid propagation of element on child/parent elements"
-        // event.stopPropagation();
-      };
+    // Extends default behaviour according to other plugins
+    if (Planner.Plugins.isRegistered('mobile')) {
+      Planner.Events.subscribe('cardDomDrawn', _touchHandler);
 
-      element.addEventListener('touchend', touchEndHandler);
-    });
-  };
-
-  // Private plugin helpers
-  // ----------------------
-
-  Crud.prototype._createCard = function (element) {
-    // Create a new card and draw DOM element
-    var startAttribute = this.instance._indexToAttribute(Utils.index(element));
-    var endAttribute = this.instance._indexToAttribute(Utils.index(element) + 1);
-    var column = [Utils.index(element.parentNode) + 1];
-    var card = this.options.model({start: startAttribute, end: endAttribute, columns: column});
-    this.instance.drawCard(card);
-
-    return card;
-  };
-
-
-  Crud.prototype._startInteraction = function (type, card, element, initialIndex, initialY) {
-    // Store variables for further interactions
-    this.currentInteraction = type;
-    this.currentCard = card;
-    this.currentElement = element;
-    this.initialIndex = initialIndex;
-    this.initialY = initialY;
-  };
-
-  Crud.prototype._stopInteraction = function () {
-    this.currentInteraction = null;
-    this.currentCard = null;
-    this.currentElement = null;
-    this.initialIndex = null;
-    this.initialY = null;
-  };
-
-  Crud.prototype._drag = function (destination) {
-    var length = this.currentElement.getAttribute('data-end') - this.currentElement.getAttribute('data-start');
-
-    destination.appendChild(this.currentElement);
-    var column = Utils.index(this.currentElement.parentNode.parentNode) + 1;
-    var startPosition = Utils.index(this.currentElement.parentNode);
-
-    // Update Card  and DOM object
-    this.currentCard.update({
-      columns: [column],
-      start: this.instance._indexToAttribute(startPosition),
-      end: this.instance._indexToAttribute(startPosition + length + 1)
-    });
-
-    this.instance.updateDom(this.currentElement, this.currentCard, column);
-  };
-
-  Crud.prototype._resize = function (pointerY) {
-    // Calculate new length
-    var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight);
-    var endIndex = this.initialIndex + currentCardPosition;
-
-    // Update Card  and DOM object
-    this.currentCard.update({end: this.instance._indexToAttribute(endIndex + 1)});
-    this.instance.updateDom(this.currentElement, this.currentCard);
-  };
-
-  Crud.prototype._resetDrag = function () {
-    while (this.listReduced.length > 0) {
-      Utils.removeClass(this.listReduced.pop(), 'card-small');
+      // TODO: user handlers register to add all _touch* handler
+      for (var j = 0; j < timeslots.length; j++) {
+        timeslots[j].addEventListener('touchmove', _touchMoveHandler);
+        timeslots[j].addEventListener('touchend', _touchEndHandler);
+      }
     }
+
+    // Add interaction styles
+    // TODO: create a generic 'main' loop where all interaction styles will be loaded
+    var style = Utils.createElement(Planner.Templates.interaction());
+    document.querySelector('head').appendChild(style);
+  };
+
+  Interaction.DEFAULTS = {
+    dragComponent: '---'
   };
 
   // Register this plugin to plugins list
   // ------------------------------------
 
-  Planner.Plugins.register('interaction', Crud);
+  Planner.Plugins.register('interaction', Interaction);
 
 })(Planner.Plugins, Planner.Utils);
