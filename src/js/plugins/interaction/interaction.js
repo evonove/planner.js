@@ -1,4 +1,4 @@
-(function (Plugins, Events, Utils, undefined) {
+(function (Plugins, Events, Utils, Modernizr, undefined) {
   'use strict';
 
   // Plugin constructor
@@ -26,6 +26,7 @@
     var cachedTimeslots = element.querySelectorAll('.planner-column > div')
       , subscribers = {}
       , listeners = {}
+      , hammer
       , that = this;
 
     var addSubscriber = function(channel, handler) {
@@ -38,29 +39,25 @@
       listeners[listener].push(handler.bind(that));
     };
 
-    // Register subscribers
-    // --------------------
+    // Register subscribers and listeners
+    // ----------------------------------
 
-    addSubscriber('cardDomDrawn', this.addResizeDom);
-    addSubscriber('cardDomDrawn', this.cardClick);
-    addSubscriber('cardDomDrawn', this.dragCard);
-
-    // Register listeners
-    // ------------------
-
-    addListener('mousedown', this.mouseDown);
-    addListener('mousemove', this.mouseMove);
-    addListener('mouseup', this.mouseUp);
-    addListener('dragover', this.dragOver);
-    addListener('drop', this.drop);
-
-    // Extends default behaviour according to other plugins
-    // ----------------------------------------------------
-
-    if (Planner.Plugins.isRegistered('mobile')) {
+    if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
       addSubscriber('cardDomDrawn', this.touchTap);
+
+      addListener('press', this.touchPress);
       addListener('touchmove', this.touchMove);
       addListener('touchend', this.touchEnd);
+    } else {
+      addSubscriber('cardDomDrawn', this.addResizeDom);
+      addSubscriber('cardDomDrawn', this.cardClick);
+      addSubscriber('cardDomDrawn', this.dragCard);
+
+      addListener('mousedown', this.mouseDown);
+      addListener('mousemove', this.mouseMove);
+      addListener('mouseup', this.mouseUp);
+      addListener('dragover', this.dragOver);
+      addListener('drop', this.drop);
     }
 
     // Add subscribers and listeners
@@ -75,10 +72,19 @@
     }
 
     for (var i = 0; i < cachedTimeslots.length; i++) {
+      if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
+        hammer = new Hammer(cachedTimeslots[i]);
+      }
+
       for (var listener in listeners) {
         if (listeners.hasOwnProperty(listener)) {
           for (var j = 0; j < listeners[listener].length; j++) {
+            // Hammer.js events are automatically discarded
             cachedTimeslots[i].addEventListener(listener, listeners[listener][j]);
+
+            if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
+              hammer.on(listener, listeners[listener][j]);
+            }
           }
         }
       }
@@ -95,10 +101,10 @@
     dragComponent: '---'
   };
 
-  // Register this plugin to plugins list
-  // ------------------------------------
+  // Register plugin
+  // ---------------
 
   Plugins.Interaction = Interaction;
   Plugins.register('interaction', Interaction);
 
-})(Planner.Plugins, Planner.Events, Planner.Utils);
+})(Planner.Plugins, Planner.Events, Planner.Utils, Planner.Modernizr);

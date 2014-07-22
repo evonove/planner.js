@@ -32,7 +32,7 @@ div.planner-card {
 // ================
 
 div.planner-card.card-small {
-    @include animate-ease-fast;
+    @include transition-desktop;
 
     width: 40%;
 }
