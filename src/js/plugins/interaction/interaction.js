@@ -48,6 +48,8 @@
     // Register listeners
     // ------------------
 
+    // TODO: add features detection and choose the right listeners
+
     addListener('mousedown', this.mouseDown);
     addListener('mousemove', this.mouseMove);
     addListener('mouseup', this.mouseUp);
@@ -59,6 +61,7 @@
 
     if (Planner.Plugins.isRegistered('mobile')) {
       addSubscriber('cardDomDrawn', this.touchTap);
+      addListener('press', this.touchPress);
       addListener('touchmove', this.touchMove);
       addListener('touchend', this.touchEnd);
     }
@@ -75,10 +78,14 @@
     }
 
     for (var i = 0; i < cachedTimeslots.length; i++) {
+      var hammer = new Hammer(cachedTimeslots[i]);
+
       for (var listener in listeners) {
         if (listeners.hasOwnProperty(listener)) {
           for (var j = 0; j < listeners[listener].length; j++) {
+            // TODO: add features detection and use addEventListener or Hammer.on
             cachedTimeslots[i].addEventListener(listener, listeners[listener][j]);
+            hammer.on(listener, listeners[listener][j]);
           }
         }
       }
@@ -95,8 +102,8 @@
     dragComponent: '---'
   };
 
-  // Register this plugin to plugins list
-  // ------------------------------------
+  // Register plugin
+  // ---------------
 
   Plugins.Interaction = Interaction;
   Plugins.register('interaction', Interaction);
