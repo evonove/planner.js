@@ -7,6 +7,15 @@ $degree: 45deg;
 .arrow-switcher {
     @include transition-desktop;
 
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    /* Old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+
     cursor:pointer;
     width: $arrow-width;
     height: $arrow-height;
