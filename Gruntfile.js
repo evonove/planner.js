@@ -175,6 +175,12 @@ module.exports = function (grunt) {
             css: ['<%= yeoman.dist %>/css/{,*/}*.css']
         },
 
+        uglify: {
+            options: {
+                report: 'gzip'
+            }
+        },
+
         copy: {
             dist: {
                 files: [{
