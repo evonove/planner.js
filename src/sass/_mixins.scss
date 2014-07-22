@@ -5,10 +5,20 @@
 // Animation
 // ---------
 
-@mixin animate-ease() {
-    @include transition(all $transition ease-out)
+@mixin transition-desktop() {
+    @include transition(all $transition-desktop linear)
 }
 
-@mixin animate-ease-fast() {
-    @include transition(all $transition-fast ease-out)
+@mixin transition-mobile() {
+    @include transition(all $transition-mobile linear)
+}
+
+@mixin animate() {
+  @media screen and (max-width: 991px) {
+    @include transition-mobile;
+  }
+
+  @media screen and (min-width: 992px) {
+    @include transition-desktop;
+  }
 }

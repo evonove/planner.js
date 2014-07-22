@@ -5,7 +5,7 @@
 $degree: 45deg;
 
 .arrow-switcher {
-    @include animate-ease-fast;
+    @include transition-desktop;
 
     cursor:pointer;
     width: $arrow-width;
