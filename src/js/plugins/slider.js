@@ -46,7 +46,7 @@
 
     var _appendTranslate3d = function (value) {
       if (typeof value === 'number') {
-        var translate = 'translate3d(' + value + 'px, 0, 0)';
+        var translate = 'translateX(' + value + 'px)';
 
         for (var i = 0; i < that.cacheSliders.length; i++) {
           that.cacheSliders[i].style.webkitTransform = translate;
