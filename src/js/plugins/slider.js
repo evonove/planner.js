@@ -1,4 +1,4 @@
-(function (Plugins, undefined) {
+(function (Plugins, Modernizr, undefined) {
   'use strict';
 
   // Slider plugin to change visible columns
@@ -85,11 +85,10 @@
     // Attach all listeners
     // --------------------
 
-    // TODO: add features detection and choose the right listeners
-    _attachArrowsEvents();
-
-    if (Planner.Plugins.isRegistered('mobile')) {
+    if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
       _attachSlidingTouch();
+    } else {
+      _attachArrowsEvents();
     }
   };
 
@@ -103,4 +102,4 @@
   Plugins.Slider = Slider;
   Plugins.register('slider', Slider);
 
-})(Planner.Plugins, Planner.Utils);
+})(Planner.Plugins, Planner.Modernizr);
