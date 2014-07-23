@@ -34,7 +34,7 @@
       this._drawDom(_cardDom);
     }
 
-    Planner.Events.publish('cardDrawn', [card]);
+    this.events.publish('cardDrawn', [card]);
   };
 
   Mixin._drawDom = function (cardDom) {
@@ -47,7 +47,7 @@
     // Find the right column and search starting div to append created object
     // Note: (start + 1) is used because of CSS selector and not because index() function
     this.element.querySelector('.planner-column:nth-child(' + dataColumn + ') > div:nth-child(' + (dataStart + 1) + ')').appendChild(cardDom);
-    Planner.Events.publish('cardDomDrawn', [this.mapDom.get(cardDom), cardDom]);
+    this.events.publish('cardDomDrawn', [this.mapDom.get(cardDom), cardDom]);
   };
 
   Mixin.updateDom = function (dom, card, column) {

@@ -1,4 +1,4 @@
-(function (Interaction, Events, Utils, undefined) {
+(function (Interaction, Utils, undefined) {
   'use strict';
 
   var Mixin = {};
@@ -12,7 +12,7 @@
     this.stopInteraction();
     event.preventDefault();
 
-    Events.publish('cardUpdated', [this.currentCard, this.currentElement]);
+    this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
   };
 
   Mixin.dragCard = function (card, element) {
@@ -66,4 +66,4 @@
 
   Interaction.prototype = Utils.extend(Interaction.prototype, Mixin);
 
-})(Planner.Plugins.Interaction, Planner.Events, Planner.Utils);
+})(Planner.Plugins.Interaction, Planner.Utils);

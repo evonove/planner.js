@@ -12,6 +12,9 @@
     this.mapCard = new HashMap();
     this.mapDom = new HashMap();
 
+    // Initialize pub/sub channels
+    this.events = new Messenger();
+
     // Check if columns and rows are set otherwise use a default planner
     if (options.columnLabels.length === 0) {
       options.columnLabels = Planner.Helpers.getDefaultColumns();

@@ -1,4 +1,4 @@
-(function (Plugins, Events, Utils, Modernizr, undefined) {
+(function (Plugins, Utils, Modernizr, undefined) {
   'use strict';
 
   // Plugin constructor
@@ -66,7 +66,7 @@
     for (var channel in subscribers) {
       if (subscribers.hasOwnProperty(channel)) {
         for (var i = 0; i < subscribers[channel].length; i++) {
-          Events.subscribe(channel, subscribers[channel][i]);
+          this.planner.events.subscribe(channel, subscribers[channel][i]);
         }
       }
     }
@@ -107,4 +107,4 @@
   Plugins.Interaction = Interaction;
   Plugins.register('interaction', Interaction);
 
-})(Planner.Plugins, Planner.Events, Planner.Utils, Planner.Modernizr);
+})(Planner.Plugins, Planner.Utils, Planner.Modernizr);

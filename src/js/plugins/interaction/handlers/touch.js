@@ -1,4 +1,4 @@
-(function (Interaction, Events, Utils, undefined) {
+(function (Interaction, Utils, undefined) {
   'use strict';
 
   var Mixin = {};
@@ -23,14 +23,14 @@
   };
 
   Mixin.touchEnd = function () {
-    Events.publish('cardCreated', [this.currentCard, this.currentElement]);
+    this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
 
     this.stopInteraction();
   };
 
   Mixin.touchTap = function (card, element) {
     var touchEnd = function () {
-      Events.publish('cardClicked', [card, element]);
+      this.planner.events.publish('cardClicked', [card, element]);
     };
 
     // Add Hammer.js listener
@@ -43,4 +43,4 @@
 
   Interaction.prototype = Utils.extend(Interaction.prototype, Mixin);
 
-})(Planner.Plugins.Interaction, Planner.Events, Planner.Utils);
+})(Planner.Plugins.Interaction, Planner.Utils);

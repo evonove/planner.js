@@ -1,4 +1,4 @@
-(function (Interaction, Events, Utils, undefined) {
+(function (Interaction, Utils, undefined) {
   'use strict';
 
   var Mixin = {};
@@ -11,7 +11,7 @@
     // Avoid this action on event propagation from children or if
     // another interaction is active
     if (this.currentInteraction === null) {
-      Events.publish('cardClicked', [card, element]);
+      this.planner.events.publish('cardClicked', [card, element]);
     }
   };
 
@@ -48,7 +48,7 @@
 
   Mixin.mouseUp = function (event) {
     if (this.currentInteraction === 'dragCreation') {
-      Events.publish('cardCreated', [this.currentCard, this.currentElement]);
+      this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
 
       this.stopInteraction();
       event.preventDefault();
@@ -67,4 +67,4 @@
 
   Interaction.prototype = Utils.extend(Interaction.prototype, Mixin);
 
-})(Planner.Plugins.Interaction, Planner.Events, Planner.Utils);
+})(Planner.Plugins.Interaction, Planner.Utils);
