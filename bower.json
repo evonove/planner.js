@@ -4,7 +4,8 @@
   "dependencies": {
     "normalize-css": "~3.0.1",
     "handlebars": "~1.3.0",
-    "hammerjs": "~2.0.1"
+    "hammerjs": "~2.0.1",
+    "hashmapjs": "*"
   },
   "devDependencies": {}
 }
