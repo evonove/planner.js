@@ -54,7 +54,7 @@
       event.preventDefault();
     } else if (this.currentInteraction === 'resize') {
       // TODO: fix this interaction because this way is terribly WRONG!
-      Events.publish('cardUpdated', [this.currentCard, this.currentElement]);
+      this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
       Utils.removeClass(this.currentElement, 'resizable');
 
       this.stopInteraction();
