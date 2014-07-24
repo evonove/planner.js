@@ -49,12 +49,14 @@
   Mixin.mouseUp = function (event) {
     if (this.currentInteraction === 'dragCreation') {
       this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
+      this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
 
       this.stopInteraction();
       event.preventDefault();
     } else if (this.currentInteraction === 'resize') {
       // TODO: fix this interaction because this way is terribly WRONG!
       this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
+      this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
       Utils.removeClass(this.currentElement, 'resizable');
 
       this.stopInteraction();
