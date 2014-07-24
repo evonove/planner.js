@@ -4,13 +4,15 @@
   var Mixin = {};
 
   Mixin.drag = function (destination) {
+    // Appends current element to dragged position
+    destination.appendChild(this.currentElement);
+
+    // Calculate new values
     var length = this.currentElement.getAttribute('data-end') - this.currentElement.getAttribute('data-start')
       , column = Utils.index(this.currentElement.parentNode.parentNode) + 1
       , startPosition = Utils.index(this.currentElement.parentNode);
 
-    destination.appendChild(this.currentElement);
-
-    // Update Card  and DOM object
+    // Update Card and DOM object
     this.currentCard.update({
       columns: [column],
       start: this.planner._indexToAttribute(startPosition),
