@@ -68,6 +68,7 @@
         dom.setAttribute('data-column', column);
       }
 
+      dom.setAttribute('data-id', card.id);
       dom.setAttribute('data-start', start);
       dom.setAttribute('data-end', end);
 
