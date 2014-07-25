@@ -13,6 +13,9 @@
   };
 
   Mixin.stopInteraction = function () {
+    // Publish card dom creation
+    this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
+
     this.currentInteraction = null;
     this.currentCard = null;
     this.currentElement = null;

@@ -24,7 +24,6 @@
 
   Mixin.touchEnd = function () {
     this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
-    this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
 
     this.stopInteraction();
   };
