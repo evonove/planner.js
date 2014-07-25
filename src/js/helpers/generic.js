@@ -53,6 +53,12 @@
     return _hourRows;
   };
 
+  Helpers.generateId = function (options) {
+    options.lastId = options.lastId || 999;
+
+    return ++options.lastId;
+  };
+
   // Register Handlebars helpers
   // ---------------------------
 

@@ -36,6 +36,7 @@
   };
 
   PlanningChart.DEFAULTS = {
+    autoId: true,
     show: true,                                   // TODO: use a better strategy to avoid planner draw
     plugins: [],
     model: null,
