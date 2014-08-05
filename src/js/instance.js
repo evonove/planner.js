@@ -1,4 +1,4 @@
-(function (Planner, undefined) {
+(function (Planner, HashMap, undefined) {
   'use strict';
 
   // Defines Planner.js instance
@@ -42,4 +42,4 @@
     Planner.Plugins.load(options.plugins, this);
   };
 
-})(window.Planner = window.Planner || {});
+})(window.Planner = window.Planner || {}, Ds.HashMap);
