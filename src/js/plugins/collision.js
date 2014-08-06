@@ -5,67 +5,105 @@
   // -------------------------------
 
   var Collision = function (element, options, planner) {
-    // TODO: use these as key for a type -> [] structure where type is a rule and [] is an array of object to order
     var SPLITTING = 0
       , OLDEST_ON_LEFT = 1;
 
     function _manager (card, dom) {
-      // Get all column cards except this one
       var collisionGroup = _findCollisions(dom);
-
-      if (collisionGroup.length > 0) {
-        _resolveCollisions(dom, collisionGroup);
-      }
+      _resolveCollisions(dom, collisionGroup);
     }
 
     function _findCollisions (dom) {
       var stack = []
-        , collisions = new Set()
+        , split = new Set()
+        , left = new Set()
         , currentNode
-        , sibling;
+        , sibling
+        , cardId;
 
       stack.push(dom);
 
       while(stack.length > 0) {
         currentNode = stack.shift();
 
-        var cardId = parseInt(currentNode.getAttribute('data-id'), 10);
+        cardId = parseInt(currentNode.getAttribute('data-id'), 10);
         sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not([data-id="' + cardId + '"])');
 
         for (var i = 0; i < sibling.length; i++) {
           if (_collisionsDetector(currentNode, sibling[i])) {
-            if (!collisions.in(sibling[i])) {
-              collisions.update([currentNode, sibling[i]]);
-              stack.push(sibling[i]);
+            var rule = _collisionRule(currentNode, sibling[i]);
+
+            if (rule === SPLITTING) {
+              if (!split.in(sibling[i])) {
+                split.update([currentNode, sibling[i]]);
+                stack.push(sibling[i]);
+              }
+
+            } else {
+              if (!left.in(sibling[i])) {
+                left.update([currentNode, sibling[i]]);
+                stack.push(sibling[i]);
+              }
             }
           }
         }
       }
 
-      return collisions.items();
+      // Put there all collision types
+      return {
+        split: split.items(),
+        left: left.items()
+      }
     }
 
     function _resolveCollisions (dom, collisionGroup) {
       var startingPosition = Utils.offset(dom.parentNode).left
-        , columnWidth = dom.parentNode.offsetWidth;
+        , columnWidth = dom.parentNode.offsetWidth
+        , currentLeft
+        , currentWidth
+        , splittingOffset;
 
-      // TODO: this collision should create an offset to splittingWidth
-//      if (collisionGroup.length > 0) {
-//        // ex: var splittingWidth = columnWidth / (splitGroup.length) - offset;
-//        // offset => increment x for each collisionGroup
-//
-//        console.debug('Resolving collision: OLDEST_ON_LEFT');
-//      }
+      // Put there all collision resolvers
+      // ---------------------------------
 
-      // TODO: this isn't the right behaviour because I'm missing resolution according to conflict rule
-      if (collisionGroup.length > 0) {
-        console.debug('Resolving collision: SPLITTING');
-        console.debug(collisionGroup);
+      if (collisionGroup.split.length > 0) {
+        var splittingWidth = columnWidth / collisionGroup.split.length;
 
-        var splittingWidth = columnWidth / collisionGroup.length;
-        for (var i = 0; i < collisionGroup.length; i++) {
-          collisionGroup[i].style.width = splittingWidth + 'px';
-          collisionGroup[i].style.left = startingPosition + (splittingWidth * i) + 'px';
+        for (var i = 0; i < collisionGroup.split.length; i++) {
+          collisionGroup.split[i].style.width = splittingWidth + 'px';
+          collisionGroup.split[i].style.left = startingPosition + (splittingWidth * i) + 'px';
+        }
+      }
+
+      if (collisionGroup.left.length > 0) {
+        // TODO: oldest must be on left without indent
+        collisionGroup.left.shift();
+
+        for (var i = 0; i < collisionGroup.left.length; i++) {
+          // Preserve current styles if set (ex: this card is in conflict with one card for SPLITTING
+          // and with another one with OLDEST_ON_LEFT
+
+          if (!!collisionGroup.left[i].style.left) {
+            // Removing 'px' suffix for left and width style
+            var elementLeft = collisionGroup.left[i].style.left
+              , elementWidth = collisionGroup.left[i].style.width;
+
+            elementLeft = elementLeft.substring(0, elementLeft.length - 2);
+            elementWidth = elementWidth.substring(0, elementWidth.length - 2);
+
+            currentLeft = parseInt(elementLeft, 10);
+            currentWidth = parseInt(elementWidth, 10);
+          } else {
+            currentLeft = startingPosition;
+            currentWidth = collisionGroup.left[i].offsetWidth;
+          }
+
+          // Add a splitting offset if this card is splitted
+          splittingOffset = columnWidth / currentWidth * options.collisionOffset;
+
+          // TODO: Bug here! splittingOffset is wrong
+          collisionGroup.left[i].style.left = currentLeft + options.collisionOffset + 'px';
+          collisionGroup.left[i].style.width = collisionGroup.left[i].offsetWidth - splittingOffset + 'px';
         }
       }
     }
@@ -86,9 +124,12 @@
       }
     }
 
-    function _precedenceRules (firstDom, secondDom) {
+    function _collisionRule (firstDom, secondDom) {
       var firstMin = parseInt(firstDom.getAttribute('data-start'), 10)
         , secondMin = parseInt(secondDom.getAttribute('data-start'), 10);
+
+      // Put there all collision rules
+      // -----------------------------
 
       // Check if two elements have the same time (or time + 1)
       if (firstMin === secondMin || firstMin === secondMin + 1 || secondMin === firstMin + 1) {
@@ -102,7 +143,9 @@
     planner.events.subscribe('cardDomDrawn', _manager);
   };
 
-  Collision.DEFAULTS = {};
+  Collision.DEFAULTS = {
+    collisionOffset: 20
+  };
 
   // Register this plugin to plugins list
   // ------------------------------------
