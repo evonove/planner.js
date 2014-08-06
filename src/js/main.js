@@ -30,7 +30,7 @@
       id: 2,
       title: 'DjangoCon meeting!',
       content: '@Orvieto',
-      start: generateDateFromNow(8, 0),
+      start: generateDateFromNow(13, 0),
       end: generateDateFromNow(15, 30),
       columns: [1]
     });
@@ -44,12 +44,21 @@
       columns: [2, 4]
     });
 
+    var card4 = new Planner.Models.Card({
+      id: 4,
+      title: 'Having a fucking long dinner',
+      content: 'Just a comment',
+      start: generateDateFromNow(19, 0),
+      end: generateDateFromNow(21, 45),
+      columns: [1]
+    });
+
     // Planner options
     var element = document.querySelector('.js-planner');
     var options = {
       plugins: [
         'mobile',
-        'interaction',
+        'interaction'
       ]
     };
 
@@ -58,6 +67,7 @@
     planner.drawCard(card1);
     planner.drawCard(card2);
     planner.drawCard(card3);
+    planner.drawCard(card4);
   });
 
 })();
