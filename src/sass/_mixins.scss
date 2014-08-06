@@ -22,3 +22,11 @@
     @include transition-desktop;
   }
 }
+
+// Colors
+// ------
+
+@mixin background-opacity($color, $opacity: 0.7) {
+  background: $color;
+  background: rgba($color, $opacity);
+}

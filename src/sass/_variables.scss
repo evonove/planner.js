@@ -34,7 +34,9 @@ $arrow-flat-round: 70px;
 // Card
 // ----
 
-$card-color: #57adc1;
+$card-color: #77c4d3;
+$card-color-light: lighten($card-color, 30%);
+$card-color-dark: #57adc1;
 $card-header-alpha: 0.3;
 $card-body-alpha: 0.6;
 $card-drag-alpha: 0.4;
