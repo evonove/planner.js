@@ -10,6 +10,10 @@
     this.currentElement = element;
     this.initialIndex = index;
     this.initialY = y;
+
+    // Clear all styles (useful after collisions)
+    this.currentElement.style.width = '';
+    this.currentElement.style.left = '';
   };
 
   Mixin.stopInteraction = function () {
