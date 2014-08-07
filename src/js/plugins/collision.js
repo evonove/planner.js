@@ -144,7 +144,7 @@
   };
 
   Collision.DEFAULTS = {
-    collisionOffset: 20
+    collisionOffset: 5
   };
 
   // Register this plugin to plugins list

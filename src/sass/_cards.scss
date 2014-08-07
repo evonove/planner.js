@@ -11,7 +11,7 @@ div.planner-card {
   overflow: hidden;
 
   color: $card-color-dark;
-  border-left: 4px solid $card-color;
+  border-left: 2px solid $card-color;
 
   margin-top: 2px;
   margin-left: 1%;
@@ -30,31 +30,6 @@ div.planner-card {
     white-space: normal;
   }
 }
-
-//div.planner-card {
-//    @include border-radius(4px, 4px);
-//    background-color: rgba($card-color, $card-header-alpha);
-//
-//    width: 88%;
-//    margin-top: 2px;
-//    margin-left: 1%;
-//    position: absolute;
-//    text-align: center;
-//    overflow: hidden;
-//
-//    > .planner-card-time {
-//        @include border-radius(4px, 4px);
-//        background-color: transparent;
-//
-//        font-weight: bold;
-//    }
-//
-//    > .planner-card-title {
-//        margin-left: 4px;
-//        white-space: normal;
-//    }
-//}
-
 
 // ================
 // User interaction
