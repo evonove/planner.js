@@ -27,7 +27,10 @@ div.planner-card {
 
   > .planner-card-title {
     margin-left: 4px;
-    white-space: normal;
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 
