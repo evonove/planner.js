@@ -20,13 +20,6 @@
       _resolveCollisions(dom, collisionGroup);
     }
 
-    function _removeCollisionEffects (doms) {
-      for (var i = 0; i < doms.length; i++) {
-        doms[i].style.left = '';
-        doms[i].style.width = '';
-      }
-    }
-
     function _findCollisions (dom) {
       var stack = []
         , items = new Set()
@@ -96,7 +89,7 @@
       }
 
       if (left.length > 0) {
-        // TODO: oldest must be on left without indent
+        left.sort(_orderOldestLeft);
         left.shift();
 
         for (var i = 0; i < left.length; i++) {
@@ -157,6 +150,23 @@
       } else {
         return OLDEST_ON_LEFT;
       }
+    }
+
+    // Helpers
+    // -------
+
+    function _removeCollisionEffects (doms) {
+      for (var i = 0; i < doms.length; i++) {
+        doms[i].style.left = '';
+        doms[i].style.width = '';
+      }
+    }
+
+    function _orderOldestLeft (firstDom, secondDom) {
+      var firstDomMin = parseInt(firstDom.getAttribute('data-start'), 10)
+        , secondDomMin = parseInt(secondDom.getAttribute('data-start'), 10);
+
+      return firstDomMin - secondDomMin;
     }
 
     // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
