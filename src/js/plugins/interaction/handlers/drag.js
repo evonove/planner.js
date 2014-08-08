@@ -28,7 +28,7 @@
       // Required for Firefox
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', '[Object] Card');
-      event.dataTransfer.setDragImage(this, 20, 20);
+      event.dataTransfer.setDragImage(element, 20, 20);
 
       // Add a ghost effect
       Utils.addClass(element, 'dragging');
