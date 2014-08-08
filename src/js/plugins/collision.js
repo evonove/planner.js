@@ -8,9 +8,23 @@
     var SPLITTING = 0
       , OLDEST_ON_LEFT = 1;
 
-    function _manager (card, dom) {
+    function _manager (card, dom, exclude) {
       var collisionGroup = _findCollisions(dom);
+
+      if (!!exclude) {
+        collisionGroup.left.discard(dom);
+        collisionGroup.split.discard(dom);
+      }
+
+      _removeCollisionEffects(collisionGroup.all.items());
       _resolveCollisions(dom, collisionGroup);
+    }
+
+    function _removeCollisionEffects (doms) {
+      for (var i = 0; i < doms.length; i++) {
+        doms[i].style.left = '';
+        doms[i].style.width = '';
+      }
     }
 
     function _findCollisions (dom) {
