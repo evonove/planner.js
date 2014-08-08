@@ -15,6 +15,7 @@
 
     function _findCollisions (dom) {
       var stack = []
+        , items = new Set()
         , split = new Set()
         , left = new Set()
         , currentNode
@@ -36,12 +37,14 @@
             if (rule === SPLITTING) {
               if (!split.in(sibling[i])) {
                 split.update([currentNode, sibling[i]]);
+                items.update([currentNode, sibling[i]]);
                 stack.push(sibling[i]);
               }
 
             } else {
               if (!left.in(sibling[i])) {
                 left.update([currentNode, sibling[i]]);
+                items.update([currentNode, sibling[i]]);
                 stack.push(sibling[i]);
               }
             }
@@ -51,13 +54,16 @@
 
       // Put there all collision types
       return {
-        split: split.items(),
-        left: left.items()
+        all: items,
+        split: split,
+        left: left
       }
     }
 
     function _resolveCollisions (dom, collisionGroup) {
-      var startingPosition = Utils.offset(dom.parentNode).left
+      var split = collisionGroup.split.items()
+        , left = collisionGroup.left.items()
+        , startingPosition = Utils.offset(dom.parentNode).left
         , columnWidth = dom.parentNode.offsetWidth
         , currentLeft
         , currentWidth
@@ -66,27 +72,27 @@
       // Put there all collision resolvers
       // ---------------------------------
 
-      if (collisionGroup.split.length > 0) {
-        var splittingWidth = columnWidth / collisionGroup.split.length;
+      if (split.length > 0) {
+        var splittingWidth = columnWidth / split.length;
 
-        for (var i = 0; i < collisionGroup.split.length; i++) {
-          collisionGroup.split[i].style.width = splittingWidth + 'px';
-          collisionGroup.split[i].style.left = startingPosition + (splittingWidth * i) + 'px';
+        for (var i = 0; i < split.length; i++) {
+          split[i].style.width = splittingWidth + 'px';
+          split[i].style.left = startingPosition + (splittingWidth * i) + 'px';
         }
       }
 
-      if (collisionGroup.left.length > 0) {
+      if (left.length > 0) {
         // TODO: oldest must be on left without indent
-        collisionGroup.left.shift();
+        left.shift();
 
-        for (var i = 0; i < collisionGroup.left.length; i++) {
+        for (var i = 0; i < left.length; i++) {
           // Preserve current styles if set (ex: this card is in conflict with one card for SPLITTING
           // and with another one with OLDEST_ON_LEFT
 
-          if (!!collisionGroup.left[i].style.left) {
+          if (!!left[i].style.left) {
             // Removing 'px' suffix for left and width style
-            var elementLeft = collisionGroup.left[i].style.left
-              , elementWidth = collisionGroup.left[i].style.width;
+            var elementLeft = left[i].style.left
+              , elementWidth = left[i].style.width;
 
             elementLeft = elementLeft.substring(0, elementLeft.length - 2);
             elementWidth = elementWidth.substring(0, elementWidth.length - 2);
@@ -95,15 +101,15 @@
             currentWidth = parseInt(elementWidth, 10);
           } else {
             currentLeft = startingPosition;
-            currentWidth = collisionGroup.left[i].offsetWidth;
+            currentWidth = left[i].offsetWidth;
           }
 
           // Add a splitting offset if this card is splitted
           splittingOffset = columnWidth / currentWidth * options.collisionOffset;
 
           // TODO: Bug here! splittingOffset is wrong
-          collisionGroup.left[i].style.left = currentLeft + options.collisionOffset + 'px';
-          collisionGroup.left[i].style.width = collisionGroup.left[i].offsetWidth - splittingOffset + 'px';
+          left[i].style.left = currentLeft + options.collisionOffset + 'px';
+          left[i].style.width = left[i].offsetWidth - splittingOffset + 'px';
         }
       }
     }
