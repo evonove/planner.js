@@ -14,9 +14,9 @@
       if (!!exclude) {
         collisionGroup.left.discard(dom);
         collisionGroup.split.discard(dom);
+        _removeCollisionEffects(collisionGroup.all.items());
       }
 
-      _removeCollisionEffects(collisionGroup.all.items());
       _resolveCollisions(dom, collisionGroup);
     }
 
