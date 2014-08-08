@@ -28,10 +28,7 @@
       // Required for Firefox
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/html', '[Object] Card');
-      event.dataTransfer.setDragImage(element, 20, 20);
-
-      // Add a ghost effect
-      Utils.addClass(element, 'dragging');
+      event.dataTransfer.setDragImage(element, 5, 10);
     };
 
     var dragEnter = function () {
@@ -50,8 +47,6 @@
     };
 
     var dragEnd = function () {
-      // Remove ghost effect
-      Utils.removeClass(element, 'dragging');
       that.resetReducedDom();
     };
 
