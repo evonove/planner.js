@@ -20,7 +20,9 @@
     "smarttabs": true,
     "globals": {
         "Planner": true,
-        "HashMap": true,
+        "Ds": true,
+        "Messenger": true,
+        "Hammer": true,
         "Handlebars": true
     }
 }

@@ -64,7 +64,7 @@
         all: items,
         split: split,
         left: left
-      }
+      };
     }
 
     function _resolveCollisions (dom, collisionGroup) {
@@ -74,7 +74,8 @@
         , columnWidth = dom.parentNode.offsetWidth
         , currentLeft
         , currentWidth
-        , splittingOffset;
+        , splittingOffset
+        , i;
 
       // Put there all collision resolvers
       // ---------------------------------
@@ -82,7 +83,7 @@
       if (split.length > 0) {
         var splittingWidth = columnWidth / split.length;
 
-        for (var i = 0; i < split.length; i++) {
+        for (i = 0; i < split.length; i++) {
           split[i].style.width = splittingWidth + 'px';
           split[i].style.left = startingPosition + (splittingWidth * i) + 'px';
         }
@@ -92,7 +93,7 @@
         left.sort(_orderOldestLeft);
         left.shift();
 
-        for (var i = 0; i < left.length; i++) {
+        for (i = 0; i < left.length; i++) {
           // Preserve current styles if set (ex: this card is in conflict with one card for SPLITTING
           // and with another one with OLDEST_ON_LEFT
 
