@@ -42,7 +42,7 @@
         currentNode = stack.shift();
 
         cardId = parseInt(currentNode.getAttribute('data-id'), 10);
-        sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not([data-id="' + cardId + '"])');
+        sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not(.dragged):not([data-id="' + cardId + '"])');
 
         for (var i = 0; i < sibling.length; i++) {
           if (_collisionsDetector(currentNode, sibling[i])) {
@@ -161,6 +161,7 @@
 
     // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
     planner.events.subscribe('cardDomDrawn', _manager);
+    planner.events.subscribe('/card/actions/dragged', _manager);
   };
 
   Collision.DEFAULTS = {

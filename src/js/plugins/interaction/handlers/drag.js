@@ -3,6 +3,7 @@
 
   var Mixin = {};
 
+  // Attach interaction to destination objects
   Mixin.dragOver = function (event) {
     event.preventDefault();
   };
@@ -10,50 +11,29 @@
   Mixin.drop = function (event) {
     this.drag(event.currentTarget);
     this.stopInteraction();
-    event.preventDefault();
-
     this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
+
+    event.preventDefault();
   };
 
+  // Attach interaction to source object
   Mixin.dragCard = function (card, element) {
-    element.setAttribute('draggable', true);
-
-    // TODO: refactoring of this handler is needed
     var that = this;
 
+    // Add draggable for native browsers
+    element.setAttribute('draggable', true);
+
     var dragStart = function (event) {
-      // Start interaction with created objects
       that.startInteraction('dragMove', card, element);
+      Utils.addClass(element, 'dragged');
 
       // Required for Firefox
       event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/html', '[Object] Card');
+      event.dataTransfer.setData('text/html', element.outerHTML);
       event.dataTransfer.setDragImage(element, 5, 10);
     };
 
-    var dragEnter = function () {
-      // Reduce card size if draggedElement goes upfront another card
-      // and store the node to remove this effect later
-      if (!Utils.hasClass(element, 'card-small')) {
-        Utils.addClass(element, 'card-small');
-        that.listReduced.push(element);
-      }
-    };
-
-    var drop = function (event) {
-      // Avoid to drop a card over another card
-      event.preventDefault();
-      that.resetReducedDom();
-    };
-
-    var dragEnd = function () {
-      that.resetReducedDom();
-    };
-
     element.addEventListener('dragstart', dragStart);
-    element.addEventListener('dragenter', dragEnter);
-    element.addEventListener('drop', drop);
-    element.addEventListener('dragend', dragEnd);
   };
 
   // Mixin for Interaction

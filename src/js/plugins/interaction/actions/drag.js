@@ -4,7 +4,10 @@
   var Mixin = {};
 
   Mixin.drag = function (destination) {
-    // Appends current element to dragged position
+    // Rearrange collisions in source column
+    this.planner.events.publish('/card/actions/dragged', [this.currentCard, this.currentElement, true]);
+
+    // Append current element to dragged position
     destination.appendChild(this.currentElement);
 
     // Calculate new values
@@ -19,6 +22,7 @@
       end: this.planner._indexToAttribute(startPosition + length + 1)
     });
 
+    Utils.removeClass(this.currentElement, 'dragged');
     this.planner.updateDom(this.currentElement, this.currentCard, column);
   };
 

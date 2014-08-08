@@ -10,13 +10,13 @@
     this.currentElement = element;
     this.initialIndex = index;
     this.initialY = y;
-
-    // Clear all styles (useful after collisions)
-    this.currentElement.style.width = '';
-    this.currentElement.style.left = '';
   };
 
   Mixin.stopInteraction = function () {
+    // Clear all styles (useful after collisions)
+    this.currentElement.style.width = '';
+    this.currentElement.style.left = '';
+
     // Publish card dom creation
     this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
 
