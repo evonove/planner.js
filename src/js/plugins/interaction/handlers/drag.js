@@ -33,13 +33,18 @@
     element.setAttribute('draggable', true);
 
     var dragStart = function (event) {
-      that.startInteraction('dragMove', card, element);
-      Utils.addClass(element, 'dragged');
+      if (card.columns.length > 1) {
+        // Don't allow card drag on multi-column events
+        event.preventDefault();
+      } else {
+        that.startInteraction('dragMove', card, element);
+        Utils.addClass(element, 'dragged');
 
-      // Required for Firefox
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/html', element.outerHTML);
-      event.dataTransfer.setDragImage(element, 5, 10);
+        // Required for Firefox
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/html', element.outerHTML);
+        event.dataTransfer.setDragImage(element, 5, 10);
+      }
     };
 
     var dragOver = function () {
