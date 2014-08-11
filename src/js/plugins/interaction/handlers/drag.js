@@ -16,6 +16,15 @@
     event.preventDefault();
   };
 
+  Mixin.dragChangeColumn = function (event) {
+    // Removes all dashed effects when you change the column
+    // TODO: this behaviour can be enhanced
+    if (event.currentTarget.parentElement !== this.currentColumn) {
+      this.currentColumn = event.currentTarget.parentElement;
+      this.resetDashedDom();
+    }
+  };
+
   // Attach interaction to source object
   Mixin.dragCard = function (card, element) {
     var that = this;
@@ -33,7 +42,17 @@
       event.dataTransfer.setDragImage(element, 5, 10);
     };
 
+    var dragOver = function () {
+      // Puts hovered card behind the planner so it's possible to
+      // drop dragged card on it
+      if (!Utils.hasClass(element, 'card-dashed')) {
+        Utils.addClass(element, 'card-dashed');
+        that.listReduced.push(element);
+      }
+    };
+
     element.addEventListener('dragstart', dragStart);
+    element.addEventListener('dragover', dragOver);
   };
 
   // Mixin for Interaction

@@ -17,6 +17,7 @@
     this.currentInteraction = null;
     this.currentCard = null;
     this.currentElement = null;
+    this.currentColumn = null;
     this.initialIndex = null;
     this.initialY = null;
 
@@ -57,6 +58,7 @@
       addListener('mousemove', this.mouseMove);
       addListener('mouseup', this.mouseUp);
       addListener('dragover', this.dragOver);
+      addListener('dragenter', this.dragChangeColumn);
       addListener('drop', this.drop);
     }
 

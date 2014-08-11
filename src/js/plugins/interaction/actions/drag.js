@@ -24,11 +24,14 @@
 
     Utils.removeClass(this.currentElement, 'dragged');
     this.planner.updateDom(this.currentElement, this.currentCard, column);
+
+    // Removes dashed effects when element is dropped and updated
+    this.resetDashedDom();
   };
 
-  Mixin.resetReducedDom = function () {
+  Mixin.resetDashedDom = function () {
     while (this.listReduced.length > 0) {
-      Utils.removeClass(this.listReduced.pop(), 'card-small');
+      Utils.removeClass(this.listReduced.pop(), 'card-dashed');
     }
   };
 

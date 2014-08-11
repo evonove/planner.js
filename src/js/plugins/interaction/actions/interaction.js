@@ -8,6 +8,7 @@
     this.currentInteraction = type;
     this.currentCard = card;
     this.currentElement = element;
+    this.currentColumn = element.parentElement.parentElement;
     this.initialIndex = index;
     this.initialY = y;
   };
@@ -23,6 +24,7 @@
     this.currentInteraction = null;
     this.currentCard = null;
     this.currentElement = null;
+    this.currentColumn = null;
     this.initialIndex = null;
     this.initialY = null;
   };

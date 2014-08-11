@@ -38,10 +38,9 @@ div.planner-card {
 // User interaction
 // ================
 
-div.planner-card.card-small {
-    @include transition-desktop;
-
-    width: 40%;
+div.planner-card.card-dashed {
+    z-index: -100;
+    border: 2px dashed $card-color;
 }
 
 *[draggable=true] {
