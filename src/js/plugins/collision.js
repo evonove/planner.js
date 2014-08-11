@@ -70,7 +70,7 @@
     function _resolveCollisions (dom, collisionGroup) {
       var split = collisionGroup.split.items()
         , left = collisionGroup.left.items()
-        , startingPosition = Utils.offset(dom.parentNode).left
+        , startingPosition = dom.offsetLeft
         , columnWidth = dom.parentNode.offsetWidth
         , currentLeft
         , currentWidth
@@ -108,7 +108,7 @@
             currentLeft = parseInt(elementLeft, 10);
             currentWidth = parseInt(elementWidth, 10);
           } else {
-            currentLeft = startingPosition;
+            currentLeft = startingPosition - options.marginAdjustment;
             currentWidth = left[i].offsetWidth;
           }
 
@@ -176,6 +176,7 @@
   };
 
   Collision.DEFAULTS = {
+    marginAdjustment: 3,
     collisionOffset: 5
   };
 
