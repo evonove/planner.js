@@ -47,16 +47,28 @@
   };
 
   Mixin.mouseUp = function (event) {
+    // TODO: remove this condition because this way is terribly WRONG and UGLY!
     if (this.currentInteraction === 'dragCreation') {
       this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
 
       this.stopInteraction();
       event.preventDefault();
     } else if (this.currentInteraction === 'resize') {
-      // TODO: fix this interaction because this way is terribly WRONG!
-      this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
+      if (this.currentCard.columns.length > 1) {
+        // Redraw other dom objects
+        var doms = this.planner.mapCard.get(this.currentCard);
+        for (var key in doms) {
+          if (doms.hasOwnProperty(key)) {
+            this.planner.updateDom(doms[key], this.currentCard);
+            this.planner.events.publish('cardDomDrawn', [this.currentCard, doms[key]]);
+          }
+        }
+      }
+
+      // Removes extra styles
       Utils.removeClass(this.currentElement, 'resizable');
 
+      this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
       this.stopInteraction();
       event.preventDefault();
     }
