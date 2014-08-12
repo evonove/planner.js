@@ -10,25 +10,21 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-        <!-- build:css({src,.tmp}) css/plannerjs.css -->
+        <!-- build:css({src,.tmp}) css/planner.css -->
         <link rel="stylesheet" href="modules/normalize-css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <!-- endbuild -->
     </head>
     <body>
         <div class="js-planner"></div>
-
-        <!-- External framework or libraries -->
-        <!-- build:js js/ext/vendors.js -->
+        <!-- Planner.js -->
+        <!-- build:js({src,.tmp}) js/planner.js -->
         <script src="modules/handlebars/handlebars.runtime.js"></script>
         <script src="modules/hammerjs/hammer.js"></script>
         <script src="modules/ds.js/dist/hashmap.js"></script>
         <script src="modules/ds.js/dist/set.js"></script>
         <script src="modules/messengerjs/dist/messenger.js"></script>
-        <!-- endbuild -->
 
-        <!-- Planner.js -->
-        <!-- build:js(.tmp) js/planner.js -->
         <script src="js/polyfill/array-map.js"></script>
 
         <script src="js/planner.js"></script>
