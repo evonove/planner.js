@@ -8,6 +8,8 @@
     var object = {};
 
     // Base attributes
+    attrs = attrs || {};
+
     object.id = attrs.id || null;
     object.title = attrs.title || null;
     object.content = attrs.content || null;
