@@ -12,7 +12,7 @@
 
     if (typeof _cachedDomList !== 'undefined') {
       // If this card has been already drawn, do nothing
-      return
+      return;
     }
 
     _cachedDomList = {};
