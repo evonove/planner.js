@@ -2,7 +2,7 @@
     <div class="planner-timeslots-header"></div>
     <div class="planner-slider">
         {{#each columnLabels}}
-            <div class="planner-column-header" data-column-id="{{id}}">{{name}}</div>
+            <div class="planner-column-header">{{name}}</div>
         {{/each}}
     </div>
 </div>
@@ -16,7 +16,7 @@
     </div>
     <div class="planner-slider">
         {{#each columnLabels}}
-            <div class="planner-column">
+            <div class="planner-column" data-column-id="{{id}}">
                 {{#each ../rowLabels}}
                     {{#times ../../timeslots}}
                         <div></div>
