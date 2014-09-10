@@ -6,7 +6,7 @@
   Mixin.createCard = function (element) {
     var startAttribute = this.planner._indexToAttribute(Utils.index(element))
       , endAttribute = this.planner._indexToAttribute(Utils.index(element) + 1)
-      , column = [Utils.index(element.parentNode) + 1]
+      , column = [Utils.index(element.parentNode)]
       , cardId = null;
 
     if (this.options.autoId) {
