@@ -40,10 +40,12 @@
     var dataColumn = parseInt(cardDom.getAttribute('data-column'), 10);
     var dataStart = parseInt(cardDom.getAttribute('data-start'), 10);
 
+    // Using column id data-attribute to find the correct index;
+    // useful if dataColumn represents a database 'id'
+    var columnIndex = Utils.index(this.element.querySelector('[data-column-id="' + dataColumn + '"]')) + 1;
+
     // TODO: this function doesn't support multi day events and collisions
-    // Find the right column and search starting div to append created object
-    // Note: (start + 1) is used because of CSS selector and not because index() function
-    this.element.querySelector('.planner-column:nth-child(' + dataColumn + ') > div:nth-child(' + (dataStart + 1) + ')').appendChild(cardDom);
+    this.element.querySelector('.planner-column:nth-child(' + columnIndex + ') > div:nth-child(' + (dataStart + 1) + ')').appendChild(cardDom);
     this.events.publish('cardDomDrawn', [this.mapDom.get(cardDom), cardDom]);
   };
 
