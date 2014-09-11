@@ -33,7 +33,6 @@
       var hourlineTop = findHeight(new Date());
 
       hourline.style.top = hourlineTop + 'px';
-      console.log("moving");
     }
   };
 
