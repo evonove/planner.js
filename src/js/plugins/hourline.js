@@ -7,7 +7,7 @@
   var Hourline = function (element, options) {
     var hourline = Utils.createElement(Planner.Templates.hourline());
 
-    document.querySelector('.planner-container').appendChild(hourline);
+    element.appendChild(hourline);
 
     scrollScreen();
     moveLine();
