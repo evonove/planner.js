@@ -58,7 +58,8 @@
     var options = {
       plugins: [
         'mobile',
-        'interaction'
+        'interaction',
+        'hourline'
       ]
     };
 
