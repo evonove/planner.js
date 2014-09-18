@@ -10,9 +10,9 @@
 
   Mixin.drop = function (event) {
     this.drag(event.currentTarget);
-    this.stopInteraction();
     this.planner.events.publish('cardUpdated', [this.currentCard, this.currentElement]);
 
+    this.stopInteraction();
     event.preventDefault();
   };
 
