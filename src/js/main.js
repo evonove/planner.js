@@ -46,7 +46,7 @@
 
     var card4 = new Planner.Models.Card({
       id: 4,
-      title: 'Having a fucking long dinner',
+      title: 'Having another dinner :(',
       content: 'Just a comment',
       start: generateDateFromNow(19, 0),
       end: generateDateFromNow(21, 45),
