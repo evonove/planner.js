@@ -23,9 +23,10 @@
   };
 
   Mixin.touchEnd = function () {
-    this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
-
-    this.stopInteraction();
+    if (this.currentCard !== null) {
+      this.planner.events.publish('cardCreated', [this.currentCard, this.currentElement]);
+      this.stopInteraction();
+    }
   };
 
   Mixin.touchTap = function (card, element) {
