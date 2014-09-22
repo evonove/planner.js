@@ -19,7 +19,7 @@
     this.currentElement.style.left = '';
 
     // Publish card dom creation
-    this.planner.events.publish('cardDomDrawn', [this.currentCard, this.currentElement]);
+    this.planner.events.publish('/card/interaction/drawn', [this.currentCard, this.currentElement]);
 
     this.currentInteraction = null;
     this.currentCard = null;

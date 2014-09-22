@@ -171,7 +171,7 @@
     }
 
     // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
-    planner.events.subscribe('cardDomDrawn', _manager);
+    planner.events.subscribe('/card/interaction/drawn', _manager);
     planner.events.subscribe('/card/actions/dragged', _manager);
   };
 
