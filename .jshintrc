@@ -9,7 +9,6 @@
     "immed": true,
     "indent": 2,
     "laxcomma": true,
-    "latedef": true,
     "newcap": true,
     "noarg": true,
     "quotmark": "single",
