@@ -13,7 +13,11 @@
       cardId = Helpers.generateId(this.options);
     }
 
-    return this.options.model({id: cardId, start: startAttribute, end: endAttribute, columns: column});
+    if (isNaN(column)) {
+      return null;
+    } else {
+      return this.options.model({id: cardId, start: startAttribute, end: endAttribute, columns: column});
+    }
   };
 
   // Mixin for Interaction

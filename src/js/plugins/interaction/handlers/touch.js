@@ -6,13 +6,18 @@
   Mixin.touchPress = function (event) {
     // Start interaction with created objects
     var card = this.createCard(event.srcEvent.target);
-    this.planner.drawCard(card);
 
+    // TODO: this is caused by touchPress event that is fired when the user holds over a card
     // TODO: fix me
-    // Utils.index(this) doesn't match strictly domId. After full migration to data-attribute,
-    // we can use this value to find the correct domId
-    var domId = card.columns[0];
-    this.startInteraction('dragCreation', card, this.planner.mapCard.get(card)[domId], Utils.index(event.target), event.srcEvent.touches[0].clientY);
+    if (card !== null) {
+      this.planner.drawCard(card);
+
+      // TODO: fix me
+      // Utils.index(this) doesn't match strictly domId. After full migration to data-attribute,
+      // we can use this value to find the correct domId
+      var domId = card.columns[0];
+      this.startInteraction('dragCreation', card, this.planner.mapCard.get(card)[domId], Utils.index(event.target), event.srcEvent.touches[0].clientY);
+    }
   };
 
   Mixin.touchMove = function (event) {
@@ -36,7 +41,7 @@
 
     // Add Hammer.js listener
     var hammer = new Hammer(element);
-    hammer.on('tap', touchEnd);
+    hammer.on('tap', touchEnd.bind(this));
   };
 
   // Mixin for Interaction
