@@ -10,9 +10,14 @@
   Mixin.mouseClick = function (card, element) {
     // Avoid this action on event propagation from children or if
     // another interaction is active
-    if (this.currentInteraction === null) {
+    var timeElement = element.children[0]
+      , titleElement = element.children[1];
+
+    if ((event.target === element || event.target === timeElement || event.target === titleElement) && this.currentInteraction === null) {
       this.planner.events.publish('cardClicked', [card, element]);
     }
+
+    event.stopPropagation();
   };
 
   Mixin.mouseDown = function (event) {
