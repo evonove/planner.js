@@ -35,14 +35,6 @@
     }
   };
 
-  Mixin.dragHandlers = function(card, element) {
-    if (card.columns.length > 1) {
-      // Remove all drag listeners
-    } else {
-      // Append all drag listeners
-    }
-  };
-
   // Mixin for Interaction
   // ------------------
 
