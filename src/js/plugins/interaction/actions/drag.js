@@ -12,7 +12,7 @@
 
     // Calculate new values
     var length = this.currentElement.getAttribute('data-end') - this.currentElement.getAttribute('data-start')
-      , column = Utils.index(this.currentElement.parentNode.parentNode) + 1
+      , column = parseInt(this.currentElement.parentElement.parentElement.getAttribute('data-column-id'), 10)
       , startPosition = Utils.index(this.currentElement.parentNode);
 
     // Update Card and DOM object
