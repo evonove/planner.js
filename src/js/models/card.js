@@ -1,58 +1,80 @@
 (function (Models, undefined) {
   'use strict';
 
-  // Card class definition
-  // ---------------------
+  // Defaults
+  // --------
 
-  Models.Card = function (attrs) {
+  var _DEFAULTS = {
+    id: null,
+    title: null,
+    content: null,
+    start: null,
+    end: null,
+    columns: []
+  };
+
+  // Card constructor
+  // ----------------
+
+  /**
+   * @name Card
+   * @param attrs
+   * @returns {object}
+   * @constructor
+   */
+  function Card (attrs) {
     var object = {};
 
     // Base attributes
     attrs = attrs || {};
 
-    object.id = attrs.id || null;
-    object.title = attrs.title || null;
-    object.content = attrs.content || null;
-    object.start = attrs.start || null;
-    object.end = attrs.end || null;
-    object.columns = attrs.columns || [];
+    object.id = attrs.id || _DEFAULTS.id;
+    object.title = attrs.title || _DEFAULTS.title;
+    object.content = attrs.content || _DEFAULTS.content;
+    object.start = attrs.start || _DEFAULTS.start;
+    object.end = attrs.end || _DEFAULTS.end;
+    object.columns = attrs.columns || _DEFAULTS.columns;
 
-    // Computed properties
-    Object.defineProperty(object, 'header', {get: _generateHeader});
-
-    // Public methods
-    object.update = _update;
+    object.header = getHeaderDateTime;
+    object.update = update;
 
     return object;
-  };
+  }
 
-  // Private methods
-  // ---------------
+  // Methods
+  // -------
 
-  var _generateHeader = function () {
+  /**
+   * @name getHeaderDateTime
+   * @returns {string}
+   */
+  function getHeaderDateTime () {
+    // TODO: it should be generic and must works even for simple strings
     var title = '';
 
-    // TODO: it should be generic and must works even for simple strings
     if (this.start !== null && this.end !== null) {
-      if (typeof this.start.getHours === 'function' && typeof this.start.getMinutes === 'function' && typeof this.end.getHours === 'function' && typeof this.end.getMinutes === 'function') {
-        title = Planner.Utils.pad(this.start.getHours()) + ':' + Planner.Utils.pad(this.start.getMinutes()) + ' - ' + Planner.Utils.pad(this.end.getHours()) + ':' + Planner.Utils.pad(this.end.getMinutes());
-      } else if (this.start === this.end) {
-        title = this.start;
-      } else {
-        title = this.start + '-' + this.end;
-      }
+      title = Planner.Utils.pad(this.start.getHours()) + ':'
+        + Planner.Utils.pad(this.start.getMinutes()) + ' - '
+        + Planner.Utils.pad(this.end.getHours()) + ':'
+        + Planner.Utils.pad(this.end.getMinutes());
     }
 
     return title;
-  };
+  }
 
-  var _update = function (attrs) {
+  /**
+   * @name update
+   * @param attrs
+   */
+  function update (attrs) {
     this.id = attrs.id || this.id;
     this.title = attrs.title || this.title;
     this.content = attrs.content || this.content;
     this.start = attrs.start || this.start;
     this.end = attrs.end || this.end;
     this.columns = attrs.columns || this.columns;
-  };
+  }
+
+  Models.Card = Card;
 
 })(Planner.Models = Planner.Models || {});
