@@ -16,10 +16,15 @@
       , startPosition = Utils.index(this.currentElement.parentNode);
 
     // Update Card and DOM object
+    var startAttribute = this.planner._indexToAttribute(startPosition)
+      , endAttribute = this.planner._indexToAttribute(startPosition + length + 1)
+      , newStart = Utils.updateDate(this.currentCard.start, startAttribute.hours, startAttribute.minutes)
+      , newEnd = Utils.updateDate(this.currentCard.end, endAttribute.hours, endAttribute.minutes);
+
     this.currentCard.update({
       columns: [column],
-      start: this.planner._indexToAttribute(startPosition),
-      end: this.planner._indexToAttribute(startPosition + length + 1)
+      start: newStart,
+      end: newEnd
     });
 
     Utils.removeClass(this.currentElement, 'dragged');

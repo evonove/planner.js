@@ -98,6 +98,21 @@
     };
   };
 
+  /**
+   * Updates given Date() object with new hours/minutes
+   * @param date
+   * @param hours
+   * @param minutes
+   * @param [seconds]
+   */
+  Utils.updateDate = function (date, hours, minutes, seconds) {
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(seconds || 0);
+
+    return date;
+  };
+
   // Internal helpers
   // ----------------
 

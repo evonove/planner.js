@@ -5,7 +5,10 @@
 
   Mixin.createCard = function (element) {
     var startAttribute = this.planner._indexToAttribute(Utils.index(element))
-      , endAttribute = this.planner._indexToAttribute(Utils.index(element) + 1)
+      , endAttribute = this.planner._indexToAttribute(Utils.index(element) + 1);
+
+    var start = Utils.updateDate(new Date(), startAttribute.hours, startAttribute.minutes)
+      , end = Utils.updateDate(new Date(), endAttribute.hours, endAttribute.minutes)
       , column = [parseInt(element.parentElement.getAttribute('data-column-id'), 10)]
       , cardId = null;
 
@@ -16,7 +19,7 @@
     if (isNaN(column)) {
       return null;
     } else {
-      return this.options.model({id: cardId, start: startAttribute, end: endAttribute, columns: column});
+      return this.options.model({id: cardId, start: start, end: end, columns: column});
     }
   };
 

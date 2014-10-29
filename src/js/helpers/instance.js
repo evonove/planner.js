@@ -43,9 +43,9 @@
   };
 
   // Transform element index to a valid card start/end object
+  // TODO: missing conversion from string object (ex: 'lunch')
+  // TODO [REQUIRED]: index assignment refactoring
   Mixin._indexToAttribute = function (index) {
-    var attribute;
-
     // Convert date time object
     var hours = Math.floor((index - 1) / this.options.timeslots);
     var minutes = 15 * (index % this.options.timeslots);
@@ -54,13 +54,10 @@
       hours += 1;
     }
 
-    // TODO: missing conversion from string object (ex: 'lunch')
-    attribute = new Date();
-    attribute.setHours(hours);
-    attribute.setMinutes(minutes);
-    attribute.setSeconds(0);
-
-    return attribute;
+    return {
+        hours: hours,
+        minutes: minutes
+    };
   };
 
   // Mixin for Instance
