@@ -149,7 +149,11 @@
       }
     }
 
-    return out;
+    if (Object.getOwnPropertyNames(out).length > 0) {
+      return out;
+    } else {
+      return undefined;
+    }
   }
 
   /**
