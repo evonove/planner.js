@@ -125,6 +125,8 @@
    * @private
    */
   function _deepMerge (out) {
+    var toString = Object.prototype.toString;
+
     out = out || {};
 
     for (var i = 1; i < arguments.length; i++) {
@@ -135,15 +137,15 @@
       }
 
       for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          if (typeof obj[key] !== 'undefined') {
-            if (Array.isArray(obj[key])) {
-              out[key] = obj[key];
-            } else if (typeof obj[key] === 'object') {
+        if (obj.hasOwnProperty(key) && typeof obj[key] !== 'undefined') {
+          var deducibleType = toString.call(obj[key]);
+
+          switch (deducibleType) {
+            case "[object Object]":
               out[key] = _deepMerge(out[key], obj[key]);
-            } else {
+              break;
+            default:
               out[key] = obj[key];
-            }
           }
         }
       }
