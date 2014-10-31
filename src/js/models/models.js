@@ -31,17 +31,13 @@
       Object.defineProperty(instance, '__attributes__', { value: {} });
       Object.defineProperty(instance, '__inFlightAttributes__', { value: {} });
 
+      // Deserialize given object
+      attrs = instance.deserializer(attrs);
+
       instance.__fields__.forEach(function (field) {
-        instance.__attributes__[field] = undefined;
+        instance.__attributes__[field] = attrs[field];
         instance.__inFlightAttributes__[field] = undefined;
       });
-
-      // Assign elements (without checking)
-      for (var key in attrs) {
-        if (attrs.hasOwnProperty(key)) {
-          instance.__attributes__[key] = attrs[key];
-        }
-      }
 
       // Instance methods
       // ----------------
@@ -79,16 +75,63 @@
     _attributesAccessors(Model.prototype.__fields__, Model.prototype);
     _methodsAccessors(methods, Model.prototype);
 
-    // Prototypes methods
-    // ------------------
+    // Serializers
+    // -----------
+
+    Model.prototype.toJSON = _defaultSerializer;
+    Model.prototype.deserializer = _defaultDeserializer;
+    Model.setSerializer = _setSerializer;
+    Model.setDeserializer = _setDeserializer;
 
     /**
-     * Required for serialization with JSON.stringify
+     * Default implementation of a basic serializer
+     * @name defaultSerializer
      * @returns {Object}
+     * @private
      */
-    Model.prototype.toJSON = function () {
+    function _defaultSerializer () {
       return _deepMerge({}, this.__attributes__, this.__inFlightAttributes__);
-    };
+    }
+
+    /**
+     * Default implementation of a basic deserializer
+     * @name defaultDeserializer
+     * @private
+     */
+    function _defaultDeserializer (attrs) {
+      return attrs || {};
+    }
+
+    /**
+     * Decorate the default model serializer with given function
+     * @name setSerializer
+     * @param fn
+     * @private
+     */
+    function _setSerializer (fn) {
+      if (typeof fn === 'function') {
+        Model.prototype.toJSON = function () {
+          var one = _defaultSerializer.apply(this);
+          return fn.apply(one);
+        };
+      } else {
+        throw new Error('Model serializer should be a function');
+      }
+    }
+
+    /**
+     * Set the default model deserializer with given function
+     * @name setSerializer
+     * @param fn
+     * @private
+     */
+    function _setDeserializer (fn) {
+      if (typeof fn === 'function') {
+        Model.prototype.deserializer = fn;
+      } else {
+        throw new Error('Model deserializer should be a function');
+      }
+    }
 
     return Model;
   }
