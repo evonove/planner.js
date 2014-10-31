@@ -49,7 +49,7 @@
       instance.rollback = function () {
         for (var key in instance.__inFlightAttributes__) {
           if (instance.__inFlightAttributes__.hasOwnProperty(key)) {
-            delete instance.__inFlightAttributes__[key];
+            instance.__inFlightAttributes__[key] = undefined;
           }
         }
       };
@@ -61,8 +61,10 @@
       instance.persist = function () {
         for (var key in instance.__inFlightAttributes__) {
           if (instance.__inFlightAttributes__.hasOwnProperty(key)) {
-            instance.__attributes__[key] = instance.__inFlightAttributes__[key];
-            delete instance.__inFlightAttributes__[key];
+            if (typeof instance.__inFlightAttributes__[key] !== 'undefined') {
+              instance.__attributes__[key] = instance.__inFlightAttributes__[key];
+              instance.__inFlightAttributes__[key] = undefined;
+            }
           }
         }
       };
