@@ -19,7 +19,7 @@
     if (isNaN(column)) {
       return null;
     } else {
-      return this.options.model({id: cardId, start: start, end: end, columns: column});
+      return new this.options.model({id: cardId, start: start, end: end, columns: column});
     }
   };
 

@@ -1,62 +1,41 @@
-(function (Models, undefined) {
+(function (Model, Models, undefined) {
   'use strict';
 
-  // Defaults
-  // --------
-
-  var _DEFAULTS = {
-    id: null,
-    title: null,
-    content: null,
-    start: null,
-    end: null,
-    columns: []
-  };
-
-  // Card constructor
+  // Class definition
   // ----------------
 
-  /**
-   * @name Card
-   * @param attrs
-   * @returns {object}
-   * @constructor
-   */
-  function Card (attrs) {
-    var object = {};
+  var fields = [
+    'id',
+    'title',
+    'content',
+    'start',
+    'end',
+    'columns'
+  ];
 
-    // Base attributes
-    attrs = attrs || {};
+  var methods = {
+    header: getHeaderDateTime,
+    update: update
+  };
 
-    object.id = attrs.id || _DEFAULTS.id;
-    object.title = attrs.title || _DEFAULTS.title;
-    object.content = attrs.content || _DEFAULTS.content;
-    object.start = attrs.start || _DEFAULTS.start;
-    object.end = attrs.end || _DEFAULTS.end;
-    object.columns = attrs.columns || _DEFAULTS.columns;
+  Models.Card = new Model(fields, methods);
 
-    object.header = getHeaderDateTime;
-    object.update = update;
-
-    return object;
-  }
-
-  // Methods
-  // -------
+  // Methods implementation
+  // ----------------------
 
   /**
    * @name getHeaderDateTime
    * @returns {string}
    */
   function getHeaderDateTime () {
-    // TODO: it should be generic and must works even for simple strings
     var title = '';
 
+    // TODO: it should be generic and must works even for simple strings
     if (this.start !== null && this.end !== null) {
       title = Planner.Utils.pad(this.start.getHours()) + ':'
-        + Planner.Utils.pad(this.start.getMinutes()) + ' - '
-        + Planner.Utils.pad(this.end.getHours()) + ':'
-        + Planner.Utils.pad(this.end.getMinutes());
+      + Planner.Utils.pad(this.start.getMinutes()) + ' - '
+      + Planner.Utils.pad(this.end.getHours()) + ':'
+      + Planner.Utils.pad(this.end.getMinutes());
     }
 
     return title;
@@ -75,6 +54,4 @@
     this.columns = attrs.columns || this.columns;
   }
 
-  Models.Card = Card;
-
-})(Planner.Models = Planner.Models || {});
+})(window.Model, Planner.Models = Planner.Models || {});
