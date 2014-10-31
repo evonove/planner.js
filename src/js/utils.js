@@ -106,11 +106,13 @@
    * @param [seconds]
    */
   Utils.updateDate = function (date, hours, minutes, seconds) {
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    date.setSeconds(seconds || 0);
+    var dateObject = new Date(date);
 
-    return date;
+    dateObject.setHours(hours);
+    dateObject.setMinutes(minutes);
+    dateObject.setSeconds(seconds || 0);
+
+    return dateObject;
   };
 
   // Internal helpers
