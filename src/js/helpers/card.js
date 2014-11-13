@@ -58,6 +58,9 @@
       end = this.options.timeslots * this.options.rowLabels.length - 1;
     }
 
+    // Allows start and end time to be the same. The event will be rendered as 'one tick' event
+    end = end < start ? start : end;
+
     if (start <= end) {
       var cardLength = (end - start + 1) * this.options.timeslotHeight - this.options.cardTitleMargin;
 

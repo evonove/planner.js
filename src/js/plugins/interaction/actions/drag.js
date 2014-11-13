@@ -15,9 +15,12 @@
       , column = parseInt(this.currentElement.parentElement.parentElement.getAttribute('data-column-id'), 10)
       , startPosition = Utils.index(this.currentElement.parentNode);
 
+    // Allows start and end time to be the same. The event will be rendered as 'one tick' event
+    var offset = length !== 0 ? length + 1 : length;
+
     // Update Card and DOM object
     var startAttribute = this.planner._indexToAttribute(startPosition)
-      , endAttribute = this.planner._indexToAttribute(startPosition + length + 1)
+      , endAttribute = this.planner._indexToAttribute(offset)
       , newStart = Utils.updateDate(this.currentCard.start, startAttribute.hours, startAttribute.minutes)
       , newEnd = Utils.updateDate(this.currentCard.end, endAttribute.hours, endAttribute.minutes);
 
