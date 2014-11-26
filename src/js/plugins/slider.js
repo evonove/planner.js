@@ -1,4 +1,4 @@
-(function (Plugins, Modernizr, undefined) {
+(function (window, Plugins, Modernizr, undefined) {
   'use strict';
 
   // Slider plugin to change visible columns
@@ -15,6 +15,8 @@
     // Note: it's a huge performance boost
     this.cacheSliders = element.querySelectorAll('.planner-slider');
     this.cacheColumn = element.querySelector('.planner-column');
+
+    var landscape = false;
 
     // Private plugin helpers
     // ----------------------
@@ -71,10 +73,17 @@
     };
 
     this.slideRight = function () {
-      // TODO: this behaviour should be optimized with better options passing
-      var visibleColumns = document.documentElement.clientWidth <= 768 ?
-        this.options.mobileVisibleColumns :
-        this.options.visibleColumns;
+      var visibleColumns;
+
+      if (document.documentElement.clientWidth <= 768) {
+        if (landscape) {
+          visibleColumns = this.options.mobileVisibleColumns;
+        } else {
+          visibleColumns = 1;
+        }
+      } else {
+        visibleColumns = this.options.visibleColumns;
+      }
 
       if (this.currentIndex < (this.options.columnLabels.length - visibleColumns)) {
         this.currentIndex += 1;
@@ -86,9 +95,18 @@
     // --------------------
 
     if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
+      window.addEventListener('resize', orientationChanged, false);
       _attachSlidingTouch();
     } else {
       _attachArrowsEvents();
+    }
+
+    /**
+     * @name orientationChanged
+     * @desc Changes the landscape status
+     */
+    function orientationChanged () {
+      landscape = window.innerHeight < window.innerWidth;
     }
   };
 
@@ -102,4 +120,4 @@
   Plugins.Slider = Slider;
   Plugins.register('slider', Slider);
 
-})(Planner.Plugins, Planner.Modernizr);
+})(window, Planner.Plugins, Planner.Modernizr);

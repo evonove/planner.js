@@ -1,19 +1,13 @@
 <style>
-    {{! Mobile computed styles }}
+    {{! Generic computed styles }}
 
     @media (max-width: 768px) {
         .planner-container.planner-column {
-            width: {{mobileWidth}}%;
             margin-right: 5px;
         }
 
         .planner-header.planner-column-header {
-            width: {{mobileWidth}}%;
             margin-right: 5px;
-        }
-
-        .planner-slider {
-            width: {{mobileWidth}}%;
         }
 
         .planner-timeslots {
@@ -22,6 +16,38 @@
 
         .planner-card-drag {
             display: none;
+        }
+    }
+
+    {{! In portrait should always be one column }}
+
+    @media (max-width: 768px) and (orientation: portrait) {
+        .planner-container.planner-column {
+            width: 100%;
+        }
+
+        .planner-header.planner-column-header {
+            width: 100%;
+        }
+
+        .planner-slider {
+            width: 100%;
+        }
+    }
+
+    {{! In landscape should use users preference }}
+
+    @media (max-width: 768px) and (orientation: landscape) {
+        .planner-container.planner-column {
+            width: {{mobileWidth}}%;
+        }
+
+        .planner-header.planner-column-header {
+            width: {{mobileWidth}}%;
+        }
+
+        .planner-slider {
+            width: {{mobileWidth}}%;
         }
     }
 </style>
