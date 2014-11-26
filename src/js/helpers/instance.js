@@ -15,6 +15,7 @@
       timeslots: this.options.timeslots,
       timeslotHeight: this.options.timeslotHeight,
       timeslotPadding: timeslotSize - this.options.timeslotPadding,
+      timeslotNormalized: timeslotSize - this.options.timeslotPadding - 1,
       lastTimeslotPadding: timeslotPadding,
       sliderWidth: 100 / this.options.visibleColumns
     };
