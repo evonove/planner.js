@@ -214,9 +214,12 @@
     attributes.forEach(function (fieldName) {
       Object.defineProperty(modelPrototype, fieldName, {
         get: function () {
-          if (this.__inFlightAttributes__[fieldName] !== undefined)
+          if (this.__inFlightAttributes__[fieldName] !== undefined) {
             return this.__inFlightAttributes__[fieldName];
-          return this.__attributes__[fieldName];
+          }
+          else {
+            return this.__attributes__[fieldName];
+          }
         },
         set: function (value) {
           this.__inFlightAttributes__[fieldName] = value;
