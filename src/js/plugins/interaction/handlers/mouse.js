@@ -7,7 +7,7 @@
     element.addEventListener('click', this.mouseClick.bind(this, card, element));
   };
 
-  Mixin.mouseClick = function (card, element) {
+  Mixin.mouseClick = function (card, element, event) {
     // Avoid this action on event propagation from children or if
     // another interaction is active
     var timeElement = element.children[0]
