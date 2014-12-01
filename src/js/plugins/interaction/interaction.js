@@ -27,7 +27,6 @@
     var cachedTimeslots = element.querySelectorAll('.planner-column > div')
       , subscribers = {}
       , listeners = {}
-      , hammer
       , that = this;
 
     var addSubscriber = function(channel, handler) {
@@ -46,7 +45,7 @@
     if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
       addSubscriber('cardDomDrawn', this.touchTap);
 
-      addListener('press', this.touchPress);
+      addListener('touchstart', this.touchPress);
       addListener('touchmove', this.touchMove);
       addListener('touchend', this.touchEnd);
     } else {
@@ -74,19 +73,10 @@
     }
 
     for (var i = 0; i < cachedTimeslots.length; i++) {
-      if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
-        hammer = new Hammer(cachedTimeslots[i]);
-      }
-
       for (var listener in listeners) {
         if (listeners.hasOwnProperty(listener)) {
           for (var j = 0; j < listeners[listener].length; j++) {
-            // Hammer.js events are automatically discarded
             cachedTimeslots[i].addEventListener(listener, listeners[listener][j]);
-
-            if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
-              hammer.on(listener, listeners[listener][j]);
-            }
           }
         }
       }
