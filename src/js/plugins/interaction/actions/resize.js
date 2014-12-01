@@ -20,9 +20,11 @@
     var currentCardPosition = Math.floor((pointerY - this.initialY) / this.options.timeslotHeight)
       , endAttribute = this.planner._indexToAttribute(this.initialIndex + currentCardPosition + 1);
 
-    // Update Card  and DOM object
-    this.currentCard.update({end: Utils.updateDate(this.currentCard.end, endAttribute.hours, endAttribute.minutes)});
-    this.planner.updateDom(this.currentElement, this.currentCard);
+    // Avoid negative values (end < start) during resize
+    if (currentCardPosition >= 0) {
+      this.currentCard.update({end: Utils.updateDate(this.currentCard.end, endAttribute.hours, endAttribute.minutes)});
+      this.planner.updateDom(this.currentElement, this.currentCard);
+    }
   };
 
   // Mixin for Interaction
