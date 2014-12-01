@@ -45,7 +45,7 @@
     var columnIndex = Utils.index(this.element.querySelector('[data-column-id="' + dataColumn + '"]')) + 1;
 
     // TODO: this function doesn't support multi day events and collisions
-    this.element.querySelector('.planner-column:nth-child(' + columnIndex + ') > div:nth-child(' + (dataStart + 1) + ')').appendChild(cardDom);
+    this.element.querySelector('.planner-column:nth-of-type(' + columnIndex + ') > div:nth-of-type(' + (dataStart + 1) + ')').appendChild(cardDom);
     this.events.publish('cardDomDrawn', [this.mapDom.get(cardDom), cardDom]);
   };
 
