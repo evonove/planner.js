@@ -6,7 +6,16 @@
 
   var Mobile = function (element, options) {
     var context = {
-      mobileWidth: 100 / options.mobileVisibleColumns
+      widths: {
+        phone: {
+          landscape: 100 / options.mobileVisibleColumns.phone.landscape,
+          portrait: 100 / options.mobileVisibleColumns.phone.portrait
+        },
+        tablet: {
+          landscape: 100 / options.mobileVisibleColumns.tablet.landscape,
+          portrait: 100 / options.mobileVisibleColumns.tablet.portrait
+        }
+      }
     };
 
     // Add mobile styles
@@ -14,7 +23,16 @@
   };
 
   Mobile.DEFAULTS = {
-    mobileVisibleColumns: 1
+    mobileVisibleColumns: {
+      phone: {
+        landscape: 2,
+        portrait: 1
+      },
+      tablet: {
+        landscape: 5,
+        portrait: 3
+      }
+    }
   };
 
   // Register this plugin to plugins list

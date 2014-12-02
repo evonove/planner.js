@@ -23,15 +23,15 @@
 
     @media (max-width: 768px) and (orientation: portrait) {
         .planner-container.planner-column {
-            width: 100%;
+            width: {{widths.phone.portrait}}%;
         }
 
         .planner-header.planner-column-header {
-            width: 100%;
+            width: {{widths.phone.portrait}}%;
         }
 
         .planner-slider {
-            width: 100%;
+            width: {{widths.phone.portrait}}%;
         }
     }
 
@@ -39,15 +39,47 @@
 
     @media (max-width: 768px) and (orientation: landscape) {
         .planner-container.planner-column {
-            width: {{mobileWidth}}%;
+            width: {{widths.phone.landscape}}%;
         }
 
         .planner-header.planner-column-header {
-            width: {{mobileWidth}}%;
+            width: {{widths.phone.landscape}}%;
         }
 
         .planner-slider {
-            width: {{mobileWidth}}%;
+            width: {{widths.phone.landscape}}%;
+        }
+    }
+
+    {{! Tablet, portrait }}
+
+    @media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
+        .planner-container.planner-column {
+            width: {{widths.tablet.portrait}}%;
+        }
+
+        .planner-header.planner-column-header {
+            width: {{widths.tablet.portrait}}%;
+        }
+
+        .planner-slider {
+            width: {{widths.tablet.portrait}}%;
+        }
+    }
+
+    {{! In landscape should use users preference }}
+
+    @media (min-width: 768px) and (max-width: 991px) and (orientation: landscape) {
+        .planner-container.planner-column {
+            width: {{widths.tablet.landscape}}%;
+        }
+
+        .planner-header.planner-column-header {
+            width: {{widths.tablet.landscape}}%;
+        }
+
+        .planner-slider {
+            width: {{widths.tablet.landscape}}%;
         }
     }
 </style>

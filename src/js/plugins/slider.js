@@ -73,16 +73,19 @@
     };
 
     this.slideRight = function () {
-      var visibleColumns;
+      var visibleColumns
+        , clientWidth = document.documentElement.clientWidth;
 
-      if (document.documentElement.clientWidth <= 768) {
-        if (landscape) {
-          visibleColumns = this.options.mobileVisibleColumns;
-        } else {
-          visibleColumns = 1;
-        }
-      } else {
+      // desktop
+      if (clientWidth >= 992) {
         visibleColumns = this.options.visibleColumns;
+      }
+      // mobile
+      else {
+        var mobileType = clientWidth < 768 ? 'phone' : 'tablet'
+          , orientation = landscape ? 'landscape' : 'portrait';
+
+        visibleColumns = this.options.mobileVisibleColumns[mobileType][orientation];
       }
 
       if (this.currentIndex < (this.options.columnLabels.length - visibleColumns)) {
@@ -91,11 +94,16 @@
       }
     };
 
+    // Initialization logic
+    // --------------------
+
+    updateOrientation();
+
     // Attach all listeners
     // --------------------
 
     if (Modernizr.touch && Planner.Plugins.isRegistered('mobile')) {
-      window.addEventListener('resize', orientationChanged, false);
+      window.addEventListener('resize', updateOrientation, false);
       _attachSlidingTouch();
     } else {
       _attachArrowsEvents();
@@ -105,7 +113,7 @@
      * @name orientationChanged
      * @desc Changes the landscape status
      */
-    function orientationChanged () {
+    function updateOrientation () {
       landscape = window.innerHeight < window.innerWidth;
     }
   };
