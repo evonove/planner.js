@@ -11,6 +11,8 @@
     this.currentColumn = element.parentElement.parentElement;
     this.initialIndex = index;
     this.initialY = y;
+
+    this.planner.events.publish('/card/interaction/starts', [type]);
   };
 
   Mixin.stopInteraction = function () {
@@ -20,6 +22,7 @@
 
     // Publish card dom creation
     this.planner.events.publish('/card/interaction/drawn', [this.currentCard, this.currentElement]);
+    this.planner.events.publish('/card/interaction/ends', [this.currentInteraction]);
 
     this.currentInteraction = null;
     this.currentCard = null;
