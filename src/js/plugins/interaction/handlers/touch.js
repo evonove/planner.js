@@ -38,7 +38,6 @@
 
     if (this.currentCard !== null) {
       this.resize(event.touches[0].clientY);
-      event.preventDefault();
     }
   };
 
