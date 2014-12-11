@@ -57,6 +57,8 @@
     var element = document.querySelector('.js-planner');
     var options = {
       plugins: [
+        'slider',
+        'collision',
         'mobile',
         'interaction',
         'hourline'

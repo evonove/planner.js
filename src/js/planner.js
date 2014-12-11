@@ -20,8 +20,6 @@
     options.plugins = options.plugins || (typeof options.plugins === 'string' && options.plugins.split(' ')) || [];
 
     // Put there all defaults
-    options.plugins.push('slider');
-    options.plugins.push('collision');
     options.model = options.model || Planner.Models.Card;
 
     // Return instance
