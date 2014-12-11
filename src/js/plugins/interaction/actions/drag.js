@@ -5,7 +5,7 @@
 
   Mixin.drag = function (destination) {
     // Rearrange collisions in source column
-    this.planner.events.publish('/card/actions/dragged', [this.currentCard, this.currentElement, true]);
+    this.planner.events.publish('/card/actions/dragged', [this.currentCard, this.currentElement]);
 
     // Append current element to dragged position
     destination.appendChild(this.currentElement);

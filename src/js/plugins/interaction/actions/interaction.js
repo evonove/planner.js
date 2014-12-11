@@ -20,8 +20,7 @@
     this.currentElement.style.width = '';
     this.currentElement.style.left = '';
 
-    // Publish card dom creation
-    this.planner.events.publish('/card/interaction/drawn', [this.currentCard, this.currentElement]);
+    // Publish interaction end
     this.planner.events.publish('/card/interaction/ends', [this.currentInteraction]);
 
     this.currentInteraction = null;

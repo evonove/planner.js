@@ -1,23 +1,35 @@
-(function (Plugins, Utils, Set, undefined) {
+(function (Plugins, Utils, Set, HashMap, undefined) {
   'use strict';
 
   // Plugin constructor and defaults
   // -------------------------------
 
   var Collision = function (element, options, planner) {
-    var SPLITTING = 0
-      , OLDEST_ON_LEFT = 1;
+    var SPLITTING = 0;
+    var OLDEST_ON_LEFT = 1;
 
-    function _manager (card, dom, exclude) {
+    // Caching (required to avoid bottlenecks)
+    var _cacheDom = new HashMap();
+    var _cacheColumn = element.querySelector('.planner-column');
+
+    // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
+    planner.events.subscribe('/card/actions/dragged', _collisionDrag);
+    planner.events.subscribe('cardDomDrawn', _collision);
+
+    function _collision (card, dom) {
       var collisionGroup = _findCollisions(dom);
 
-      if (!!exclude) {
-        collisionGroup.left.discard(dom);
-        collisionGroup.split.discard(dom);
-        _removeCollisionEffects(collisionGroup.all.items());
-      }
-
       _resolveCollisions(dom, collisionGroup);
+    }
+
+    function _collisionDrag (card, dom) {
+      var collisionGroup = _findCollisions(dom);
+      var nextDom = collisionGroup.all.items()[1];
+
+      collisionGroup.left.discard(dom);
+      collisionGroup.split.discard(dom);
+      _removeCollisionEffects(collisionGroup.all.items());
+      _resolveCollisions(nextDom, collisionGroup);
     }
 
     function _findCollisions (dom) {
@@ -37,7 +49,7 @@
         cardId = parseInt(currentNode.getAttribute('data-id'), 10);
         sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not(.dragged):not([data-id="' + cardId + '"])');
 
-        for (var i = 0; i < sibling.length; i++) {
+        for (var i = 0, n = sibling.length; i < n; i++) {
           if (_collisionsDetector(currentNode, sibling[i])) {
             var rule = _collisionRule(currentNode, sibling[i]);
 
@@ -68,57 +80,70 @@
     }
 
     function _resolveCollisions (dom, collisionGroup) {
-      var split = collisionGroup.split.items()
-        , left = collisionGroup.left.items()
-        , startingPosition = dom.offsetLeft
-        , columnWidth = dom.parentNode.offsetWidth
-        , currentLeft
-        , currentWidth
-        , splittingOffset
-        , i;
-
-      // Put there all collision resolvers
-      // ---------------------------------
-
-      if (split.length > 0) {
-        var splittingWidth = columnWidth / split.length;
-
-        for (i = 0; i < split.length; i++) {
-          split[i].style.width = splittingWidth + 'px';
-          split[i].style.left = startingPosition + (splittingWidth * i) + 'px';
-        }
+      if (collisionGroup.split.size > 0) {
+        _split(dom, collisionGroup.split.items());
       }
 
-      if (left.length > 0) {
-        left.sort(_orderOldestLeft);
-        left.shift();
+      if (collisionGroup.left.size > 0) {
+        _moveOnLeft(dom, collisionGroup.left.items());
+      }
+    }
 
-        for (i = 0; i < left.length; i++) {
-          // Preserve current styles if set (ex: this card is in conflict with one card for SPLITTING
-          // and with another one with OLDEST_ON_LEFT
+    // Conflicts resolvers
+    // -------------------
 
-          if (!!left[i].style.left) {
-            // Removing 'px' suffix for left and width style
-            var elementLeft = left[i].style.left
-              , elementWidth = left[i].style.width;
+    function _split (dom, collisionGroup) {
+      var startingPosition = _getOrCache(dom).offsetLeft;
+      var splittingWidth = _cacheColumn.offsetWidth / collisionGroup.length;
 
-            elementLeft = elementLeft.substring(0, elementLeft.length - 2);
-            elementWidth = elementWidth.substring(0, elementWidth.length - 2);
+      for (var i = 0, n = collisionGroup.length; i < n; i++) {
+        var offsetLeft = startingPosition + (splittingWidth * i);
 
-            currentLeft = parseInt(elementLeft, 10);
-            currentWidth = parseInt(elementWidth, 10);
-          } else {
-            currentLeft = startingPosition - options.marginAdjustment;
-            currentWidth = left[i].offsetWidth;
-          }
+        collisionGroup[i].style.width = splittingWidth + 'px';
+        collisionGroup[i].style.left = offsetLeft + 'px';
+        _updateCache(collisionGroup[i], offsetLeft, splittingWidth);
+      }
+    }
 
-          // Add a splitting offset if this card is splitted
-          splittingOffset = columnWidth / currentWidth * options.collisionOffset;
+    function _moveOnLeft (dom, collisionGroup) {
+      var startingPosition = _getOrCache(dom).offsetLeft;
+      var currentLeft;
+      var currentWidth;
+      var offsetLeft;
+      var offsetWidth;
+      var splittingOffset;
 
-          // TODO: Bug here! splittingOffset is wrong
-          left[i].style.left = currentLeft + options.collisionOffset + 'px';
-          left[i].style.width = left[i].offsetWidth - splittingOffset + 'px';
+      collisionGroup.sort(_orderOldestLeft);
+      collisionGroup.shift();
+
+      for (var i = 0, n = collisionGroup.length; i < n; i++) {
+        // Preserve current styles if set (ex: this card is in conflict with one card for SPLITTING
+        // and with another one with OLDEST_ON_LEFT
+
+        if (!!collisionGroup[i].style.left) {
+          var elementLeft = collisionGroup[i].style.left
+            , elementWidth = collisionGroup[i].style.width;
+
+          // Removing 'px' suffix for left and width style
+          elementLeft = elementLeft.substring(0, elementLeft.length - 2);
+          elementWidth = elementWidth.substring(0, elementWidth.length - 2);
+
+          currentLeft = parseInt(elementLeft, 10);
+          currentWidth = parseInt(elementWidth, 10);
+        } else {
+          currentLeft = startingPosition - options.marginAdjustment;
+          currentWidth = _getOrCache(collisionGroup[i]).offsetWidth;
         }
+
+        // Add a splitting offset if this card is split
+        splittingOffset = _cacheColumn.offsetWidth / currentWidth * options.collisionOffset;
+
+        // TODO: Bug here! splittingOffset is wrong
+        offsetLeft = currentLeft + options.collisionOffset;
+        offsetWidth = _getOrCache(collisionGroup[i]).offsetWidth - splittingOffset;
+        collisionGroup[i].style.left = offsetLeft + 'px';
+        collisionGroup[i].style.width = offsetWidth + 'px';
+        _updateCache(collisionGroup[i], offsetLeft, offsetWidth);
       }
     }
 
@@ -156,10 +181,48 @@
     // Helpers
     // -------
 
+    // Caching to avoid reflows
+    function _getOrCache (element) {
+      var cache = {};
+      var offsetLeft;
+      var offsetWidth;
+
+      if (_cacheDom.get(element) === undefined) {
+        offsetLeft = element.offsetLeft;
+        offsetWidth = element.offsetWidth;
+
+        cache.offsetLeft = offsetLeft;
+        cache.offsetWidth = offsetWidth;
+
+        _cacheDom.put(element, cache);
+      } else {
+        cache = _cacheDom.get(element);
+      }
+
+      return cache;
+    }
+
+    function _updateCache (element, offsetLeft, offsetWidth) {
+      var cache = _cacheDom.get(element);
+
+      if (cache !== undefined) {
+        if (!!offsetLeft) {
+          cache.offsetLeft = offsetLeft;
+        }
+
+        if (!!offsetWidth) {
+          cache.offsetWidth = offsetWidth
+        }
+
+        _cacheDom.put(element, cache);
+      }
+    }
+
     function _removeCollisionEffects (doms) {
-      for (var i = 0; i < doms.length; i++) {
+      for (var i = 0, n = doms.length; i < n; i++) {
         doms[i].style.left = '';
         doms[i].style.width = '';
+        _cacheDom.remove(doms[i]);
       }
     }
 
@@ -169,11 +232,6 @@
 
       return firstDomMin - secondDomMin;
     }
-
-    // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
-    planner.events.subscribe('/card/interaction/drawn', _manager);
-    planner.events.subscribe('cardDomDrawn', _manager);
-    planner.events.subscribe('/card/actions/dragged', _manager);
   };
 
   Collision.DEFAULTS = {
@@ -186,4 +244,4 @@
 
   Plugins.register('collision', Collision);
 
-})(Planner.Plugins, Planner.Utils, Ds.Set);
+})(Planner.Plugins, Planner.Utils, Ds.Set, Ds.HashMap);
