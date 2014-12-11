@@ -10,7 +10,7 @@
 }
 
 @mixin transition-mobile() {
-    @include transition(all $transition-mobile linear)
+    @include transition(all $transition-mobile ease-out)
 }
 
 @mixin animate() {

@@ -32,11 +32,70 @@
     };
 
     var _attachSlidingTouch = function () {
-      for (var i = 0; i < that.cacheSliders.length; i++) {
-        var hammer = new Hammer(that.cacheSliders[i]);
+      var startClientX = 0;
+      var lastClientX = 0;
+      var currentOffset = 0;
+      var started = false;
 
-        hammer.on('swiperight', that.slideLeft.bind(that));
-        hammer.on('swipeleft', that.slideRight.bind(that));
+      var _touchStart = function (event) {
+        // If is a touch event, use just the first touch property (i.e. the first finger)
+        event = event.touches[0];
+        startClientX = event.clientX;
+      };
+
+      var _touchMove = function (event) {
+        // Calculate delta movement
+        var eventTouch = event.touches[0];
+        lastClientX = eventTouch.clientX - startClientX;
+
+        // Start sliding without too much swipe
+        if (!started && (lastClientX < -that.options.minMovement || lastClientX > that.options.minMovement)) {
+          started = true;
+
+          for (var i = 0; i < that.cacheSliders.length; i++) {
+            that.cacheSliders[i].style.transition = 'none';
+          }
+        }
+
+        // Avoid column sliding when user has reached the border
+        // Note: 'started' check is required to increase performance on slower mobile devices
+        if (started &&
+          (that.currentIndex === 0 && lastClientX < 0 ||
+          (that.currentIndex !== 0 && that.currentIndex !== that.options.columnLabels.length - 1) ||
+          (that.currentIndex === that.options.columnLabels.length - 1 && lastClientX > 0))) {
+
+          _appendTranslate3d(currentOffset + lastClientX);
+        }
+      };
+
+      var _touchEnd = function () {
+        if (started) {
+          started = false;
+
+          if (lastClientX > that.options.minSwipe) {
+            that.slideLeft();
+          } else if (lastClientX < -that.options.minSwipe) {
+            that.slideRight();
+          } else {
+            _appendTranslate3d(currentOffset);
+          }
+
+          for (var i = 0; i < that.cacheSliders.length; i++) {
+            that.cacheSliders[i].style.transition = '';
+          }
+
+          lastClientX = 0;
+          currentOffset = _columnOffset();
+        }
+      };
+
+      // Add listeners
+      // -------------
+
+      for (var i = 0; i < that.cacheSliders.length; i++) {
+        that.cacheSliders[i].addEventListener('touchstart', _touchStart);
+        that.cacheSliders[i].addEventListener('touchmove', _touchMove);
+        that.cacheSliders[i].addEventListener('touchend', _touchEnd);
       }
     };
 
@@ -48,7 +107,7 @@
 
     var _appendTranslate3d = function (value) {
       if (typeof value === 'number') {
-        var translate = 'translateX(' + value + 'px)';
+        var translate = 'translate3d(' + value + 'px, 0, 0)';
 
         for (var i = 0; i < that.cacheSliders.length; i++) {
           that.cacheSliders[i].style.webkitTransform = translate;
@@ -119,6 +178,8 @@
   };
 
   Slider.DEFAULTS = {
+    minMovement: 50,
+    minSwipe: 90,
     headerOffset: 5
   };
 
