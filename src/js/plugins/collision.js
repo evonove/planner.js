@@ -8,11 +8,11 @@
     var SPLITTING = 0;
     var OLDEST_ON_LEFT = 1;
 
-    // Caching (required to avoid bottlenecks)
-    var _cacheDom = new HashMap();
+    // Caching
     var _cacheColumn = element.querySelector('.planner-column');
 
     // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
+    planner.events.subscribe('/card/interaction/drawn', _collision);
     planner.events.subscribe('/card/actions/dragged', _collisionDrag);
     planner.events.subscribe('cardDomDrawn', _collision);
 
@@ -93,7 +93,7 @@
     // -------------------
 
     function _split (dom, collisionGroup) {
-      var startingPosition = _getOrCache(dom).offsetLeft;
+      var startingPosition = dom.offsetLeft;
       var splittingWidth = _cacheColumn.offsetWidth / collisionGroup.length;
 
       for (var i = 0, n = collisionGroup.length; i < n; i++) {
@@ -101,12 +101,11 @@
 
         collisionGroup[i].style.width = splittingWidth + 'px';
         collisionGroup[i].style.left = offsetLeft + 'px';
-        _updateCache(collisionGroup[i], offsetLeft, splittingWidth);
       }
     }
 
     function _moveOnLeft (dom, collisionGroup) {
-      var startingPosition = _getOrCache(dom).offsetLeft;
+      var startingPosition = dom.offsetLeft;
       var currentLeft;
       var currentWidth;
       var offsetLeft;
@@ -132,7 +131,7 @@
           currentWidth = parseInt(elementWidth, 10);
         } else {
           currentLeft = startingPosition - options.marginAdjustment;
-          currentWidth = _getOrCache(collisionGroup[i]).offsetWidth;
+          currentWidth = collisionGroup[i].offsetWidth;
         }
 
         // Add a splitting offset if this card is split
@@ -140,10 +139,9 @@
 
         // TODO: Bug here! splittingOffset is wrong
         offsetLeft = currentLeft + options.collisionOffset;
-        offsetWidth = _getOrCache(collisionGroup[i]).offsetWidth - splittingOffset;
+        offsetWidth = collisionGroup[i].offsetWidth - splittingOffset;
         collisionGroup[i].style.left = offsetLeft + 'px';
         collisionGroup[i].style.width = offsetWidth + 'px';
-        _updateCache(collisionGroup[i], offsetLeft, offsetWidth);
       }
     }
 
@@ -181,48 +179,10 @@
     // Helpers
     // -------
 
-    // Caching to avoid reflows
-    function _getOrCache (element) {
-      var cache = {};
-      var offsetLeft;
-      var offsetWidth;
-
-      if (_cacheDom.get(element) === undefined) {
-        offsetLeft = element.offsetLeft;
-        offsetWidth = element.offsetWidth;
-
-        cache.offsetLeft = offsetLeft;
-        cache.offsetWidth = offsetWidth;
-
-        _cacheDom.put(element, cache);
-      } else {
-        cache = _cacheDom.get(element);
-      }
-
-      return cache;
-    }
-
-    function _updateCache (element, offsetLeft, offsetWidth) {
-      var cache = _cacheDom.get(element);
-
-      if (cache !== undefined) {
-        if (!!offsetLeft) {
-          cache.offsetLeft = offsetLeft;
-        }
-
-        if (!!offsetWidth) {
-          cache.offsetWidth = offsetWidth
-        }
-
-        _cacheDom.put(element, cache);
-      }
-    }
-
     function _removeCollisionEffects (doms) {
       for (var i = 0, n = doms.length; i < n; i++) {
         doms[i].style.left = '';
         doms[i].style.width = '';
-        _cacheDom.remove(doms[i]);
       }
     }
 
