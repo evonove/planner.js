@@ -38,6 +38,7 @@
         , split = new Set()
         , left = new Set()
         , currentNode
+        , timeslot
         , sibling
         , cardId;
 
@@ -45,26 +46,29 @@
 
       while(stack.length > 0) {
         currentNode = stack.shift();
+        timeslot = dom.parentElement;
 
-        cardId = parseInt(currentNode.getAttribute('data-id'), 10);
-        sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not(.dragged):not([data-id="' + cardId + '"])');
+        if (timeslot !== null) {
+          cardId = parseInt(currentNode.getAttribute('data-id'), 10);
+          sibling = dom.parentElement.parentElement.querySelectorAll('.planner-card:not(.dragged):not([data-id="' + cardId + '"])');
 
-        for (var i = 0, n = sibling.length; i < n; i++) {
-          if (_collisionsDetector(currentNode, sibling[i])) {
-            var rule = _collisionRule(currentNode, sibling[i]);
+          for (var i = 0, n = sibling.length; i < n; i++) {
+            if (_collisionsDetector(currentNode, sibling[i])) {
+              var rule = _collisionRule(currentNode, sibling[i]);
 
-            if (rule === SPLITTING) {
-              if (!split.in(sibling[i])) {
-                split.update([currentNode, sibling[i]]);
-                items.update([currentNode, sibling[i]]);
-                stack.push(sibling[i]);
-              }
+              if (rule === SPLITTING) {
+                if (!split.in(sibling[i])) {
+                  split.update([currentNode, sibling[i]]);
+                  items.update([currentNode, sibling[i]]);
+                  stack.push(sibling[i]);
+                }
 
-            } else {
-              if (!left.in(sibling[i])) {
-                left.update([currentNode, sibling[i]]);
-                items.update([currentNode, sibling[i]]);
-                stack.push(sibling[i]);
+              } else {
+                if (!left.in(sibling[i])) {
+                  left.update([currentNode, sibling[i]]);
+                  items.update([currentNode, sibling[i]]);
+                  stack.push(sibling[i]);
+                }
               }
             }
           }
