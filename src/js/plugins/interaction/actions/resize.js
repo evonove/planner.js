@@ -4,6 +4,10 @@
   var Mixin = {};
 
   Mixin.addResizeDom = function (card, element) {
+    if (card.fixed) {
+      return;
+    }
+
     var resizableDom = Utils.createElement(Templates.drag({dragComponent: this.options.dragComponent}))
       , cardDomTitle = element.querySelectorAll('.planner-card-title');
 

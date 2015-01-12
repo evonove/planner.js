@@ -4,6 +4,10 @@
   var Mixin = {};
 
   Mixin.cardClick = function (card, element) {
+    if (card.fixed) {
+      return;
+    }
+
     element.addEventListener('click', this.mouseClick.bind(this, card, element));
   };
 

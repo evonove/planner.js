@@ -6,7 +6,7 @@
   // Card and DOM operations
   // -----------------------
 
-  Mixin.drawCard = function (card) {
+  Mixin.drawCard = function (card, fixed) {
     var _cardDom
       , _cachedDomList = this.mapCard.get(card);
 
@@ -14,6 +14,9 @@
       // If this card has been already drawn, do nothing
       return;
     }
+
+    // prevents plugin listeners from being attached
+    card.fixed = fixed;
 
     _cachedDomList = {};
     this.mapCard.put(card, _cachedDomList);

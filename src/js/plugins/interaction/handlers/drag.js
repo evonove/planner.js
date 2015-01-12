@@ -27,6 +27,10 @@
 
   // Attach interaction to source object
   Mixin.dragCard = function (card, element) {
+    if (card.fixed) {
+      return;
+    }
+
     var that = this;
 
     // Add draggable for native browsers
