@@ -14,27 +14,65 @@
     // Cache selectors
     // Note: it's a huge performance boost
     this.cacheSliders = element.querySelectorAll('.planner-slider');
-    this.cacheColumn = element.querySelector('.planner-column');
 
     var landscape = false;
+    var currentOffset = 0;
 
     // Private plugin helpers
     // ----------------------
 
     var that = this;
 
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function getColumnWidth(columns) {
+      columns = columns || getColumns();
+      return columns[0].offsetWidth;
+    }
+
+    function getColumns() {
+      var value = [], columns = element.querySelectorAll('.planner-column');
+      for (var i=0; i<columns.length; i++) {
+        if (columns[i].style.display !== 'none') {
+          value.push(columns[i]);
+        }
+      }
+      return value;
+    }
+
+    // Returns the amount of columns displayed at the same time on the screen
+    function getVisibleColumns() {
+      var visibleColumns
+        , clientWidth = document.documentElement.clientWidth;
+
+      // desktop
+      if (clientWidth >= 992) {
+        visibleColumns = that.options.visibleColumns;
+      }
+      // mobile
+      else {
+        var mobileType = clientWidth < 768 ? 'phone' : 'tablet'
+          , orientation = landscape ? 'landscape' : 'portrait';
+
+        visibleColumns = that.options.mobileVisibleColumns[mobileType][orientation];
+      }
+
+      return visibleColumns;
+    }
+
     var _attachArrowsEvents = function () {
       var arrowLeft = that.element.querySelector('.arrow-left')
         , arrowRight = that.element.querySelector('.arrow-right');
 
-      arrowLeft.addEventListener('click', that.slideLeft.bind(that));
-      arrowRight.addEventListener('click', that.slideRight.bind(that));
+      arrowLeft.addEventListener('click', function () { that.slideLeft(); });
+      arrowRight.addEventListener('click', function () { that.slideRight(); });
     };
 
     var _attachSlidingTouch = function () {
       var startClientX = 0;
       var lastClientX = 0;
-      var currentOffset = 0;
       var started = false;
 
       var _touchStart = function (event) {
@@ -50,43 +88,52 @@
 
         // Start sliding without too much swipe
         if (!started && (lastClientX < -that.options.minMovement || lastClientX > that.options.minMovement)) {
-          started = true;
+          var visibleColumns = getVisibleColumns();
+          var columns = getColumns();
 
-          for (var i = 0; i < that.cacheSliders.length; i++) {
+          started = true;
+          that.minOffset = 0;
+
+          for (var i = 0, n = that.cacheSliders.length; i < n; i++) {
             that.cacheSliders[i].style.transition = 'none';
+          }
+
+          // this is to circumvent different columns width bug
+          for (i = 0, n = columns.length - visibleColumns; i < n; i++) {
+            that.minOffset -= columns[i].offsetWidth + that.options.headerOffset;
           }
         }
 
         // Avoid column sliding when user has reached the border
         // Note: 'started' check is required to increase performance on slower mobile devices
-        if (started &&
-          (that.currentIndex === 0 && lastClientX < 0 ||
-          (that.currentIndex !== 0 && that.currentIndex !== that.options.columnLabels.length - 1) ||
-          (that.currentIndex === that.options.columnLabels.length - 1 && lastClientX > 0))) {
-
-          _appendTranslate3d(currentOffset + lastClientX);
+        if (started) {
+          _appendTranslate3d(clamp(currentOffset + lastClientX, that.minOffset, 0));
         }
       };
 
-      var _touchEnd = function () {
-        if (started) {
-          started = false;
-
-          if (lastClientX > that.options.minSwipe) {
-            that.slideLeft();
-          } else if (lastClientX < -that.options.minSwipe) {
-            that.slideRight();
-          } else {
-            _appendTranslate3d(currentOffset);
-          }
-
-          for (var i = 0; i < that.cacheSliders.length; i++) {
-            that.cacheSliders[i].style.transition = '';
-          }
-
-          lastClientX = 0;
-          currentOffset = _columnOffset();
+      var _touchEnd = function (event) {
+        if (!started) {
+          return;
         }
+
+        var eventTouch = event.changedTouches[0];
+        var columnsToSlide = Math.abs(Math.round((eventTouch.clientX - startClientX) / getColumnWidth()));
+        started = false;
+
+        if (lastClientX > that.options.minSwipe) {
+          that.slideLeft(columnsToSlide);
+        } else if (lastClientX < -that.options.minSwipe) {
+          that.slideRight(columnsToSlide);
+        } else {
+          _appendTranslate3d(currentOffset);
+        }
+
+        for (var i = 0; i < that.cacheSliders.length; i++) {
+          that.cacheSliders[i].style.transition = '';
+        }
+
+        lastClientX = 0;
+        currentOffset = _columnOffset();
       };
 
       // Add listeners
@@ -124,33 +171,25 @@
     // Privileged methods
     // ------------------
 
-    this.slideLeft = function () {
-      if (this.currentIndex > 0) {
-        this.currentIndex -= 1;
-        _appendTranslate3d(_columnOffset());
-      }
+    this.goToStart = function () {
+      this.currentIndex = 0;
+
+      _appendTranslate3d(0);
+      currentOffset = 0;
     };
 
-    this.slideRight = function () {
-      var visibleColumns
-        , clientWidth = document.documentElement.clientWidth;
+    this.slideLeft = function (columnsAmount) {
+      columnsAmount = columnsAmount || 1;
 
-      // desktop
-      if (clientWidth >= 992) {
-        visibleColumns = this.options.visibleColumns;
-      }
-      // mobile
-      else {
-        var mobileType = clientWidth < 768 ? 'phone' : 'tablet'
-          , orientation = landscape ? 'landscape' : 'portrait';
+      this.currentIndex = Math.max(this.currentIndex - columnsAmount, 0);
+      _appendTranslate3d(_columnOffset());
+    };
 
-        visibleColumns = this.options.mobileVisibleColumns[mobileType][orientation];
-      }
+    this.slideRight = function (columnsAmount) {
+      columnsAmount = columnsAmount || 1;
 
-      if (this.currentIndex < (this.options.columnLabels.length - visibleColumns)) {
-        this.currentIndex += 1;
-        _appendTranslate3d(_columnOffset());
-      }
+      this.currentIndex = Math.min(this.currentIndex + columnsAmount, Math.max(getColumns().length - getVisibleColumns(), 0));
+      _appendTranslate3d(_columnOffset());
     };
 
     // Initialization logic
