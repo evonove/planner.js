@@ -147,7 +147,7 @@
     };
 
     var _columnOffset = function () {
-      var columnWidth = that.cacheColumn.offsetWidth + that.options.headerOffset;
+      var columnWidth = getColumnWidth() + that.options.headerOffset;
 
       return -columnWidth * that.currentIndex;
     };
