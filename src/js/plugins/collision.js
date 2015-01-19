@@ -8,9 +8,6 @@
     var SPLITTING = 0;
     var OLDEST_ON_LEFT = 1;
 
-    // Caching
-    var _cacheColumn = element.querySelector('.planner-column');
-
     // TODO: use this event AND a generic "drawingDone" otherwise there are too many (useless) conflict management
     planner.events.subscribe('/card/interaction/drawn', _collision);
     planner.events.subscribe('/card/actions/dragged', _collisionDrag);
@@ -98,7 +95,7 @@
 
     function _split (dom, collisionGroup) {
       var startingPosition = dom.offsetLeft;
-      var splittingWidth = _cacheColumn.offsetWidth / collisionGroup.length;
+      var splittingWidth = Utils.getColumnWidth(element) / collisionGroup.length;
 
       for (var i = 0, n = collisionGroup.length; i < n; i++) {
         var offsetLeft = startingPosition + (splittingWidth * i);
@@ -139,7 +136,7 @@
         }
 
         // Add a splitting offset if this card is split
-        splittingOffset = _cacheColumn.offsetWidth / currentWidth * options.collisionOffset;
+        splittingOffset = Utils.getColumnWidth(element) / currentWidth * options.collisionOffset;
 
         // TODO: Bug here! splittingOffset is wrong
         offsetLeft = currentLeft + options.collisionOffset;

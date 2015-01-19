@@ -115,6 +115,25 @@
     return dateObject;
   };
 
+  Utils.clamp = function(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  };
+
+  Utils.getColumnWidth = function(element, columns) {
+    columns = columns || Utils.getColumns(element);
+    return columns[0].offsetWidth;
+  };
+
+  Utils.getColumns = function(element) {
+    var value = [], columns = element.querySelectorAll('.planner-column');
+    for (var i=0; i<columns.length; i++) {
+      if (columns[i].style.display !== 'none') {
+        value.push(columns[i]);
+      }
+    }
+    return value;
+  };
+
   // Internal helpers
   // ----------------
 

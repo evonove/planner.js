@@ -1,4 +1,4 @@
-(function (window, Plugins, Modernizr, undefined) {
+(function (window, Plugins, Modernizr, Utils, undefined) {
   'use strict';
 
   // Slider plugin to change visible columns
@@ -22,25 +22,6 @@
     // ----------------------
 
     var that = this;
-
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-    function getColumnWidth(columns) {
-      columns = columns || getColumns();
-      return columns[0].offsetWidth;
-    }
-
-    function getColumns() {
-      var value = [], columns = element.querySelectorAll('.planner-column');
-      for (var i=0; i<columns.length; i++) {
-        if (columns[i].style.display !== 'none') {
-          value.push(columns[i]);
-        }
-      }
-      return value;
-    }
 
     // Returns the amount of columns displayed at the same time on the screen
     function getVisibleColumns() {
@@ -89,7 +70,7 @@
         // Start sliding without too much swipe
         if (!started && (lastClientX < -that.options.minMovement || lastClientX > that.options.minMovement)) {
           var visibleColumns = getVisibleColumns();
-          var columns = getColumns();
+          var columns = Utils.getColumns(element);
 
           started = true;
           that.minOffset = 0;
@@ -107,7 +88,7 @@
         // Avoid column sliding when user has reached the border
         // Note: 'started' check is required to increase performance on slower mobile devices
         if (started) {
-          _appendTranslate3d(clamp(currentOffset + lastClientX, that.minOffset, 0));
+          _appendTranslate3d(Utils.clamp(currentOffset + lastClientX, that.minOffset, 0));
         }
       };
 
@@ -117,7 +98,7 @@
         }
 
         var eventTouch = event.changedTouches[0];
-        var columnsToSlide = Math.abs(Math.round((eventTouch.clientX - startClientX) / getColumnWidth()));
+        var columnsToSlide = Math.abs(Math.round((eventTouch.clientX - startClientX) / Utils.getColumnWidth(element)));
         started = false;
 
         if (lastClientX > that.options.minSwipe) {
@@ -147,7 +128,7 @@
     };
 
     var _columnOffset = function () {
-      var columnWidth = getColumnWidth() + that.options.headerOffset;
+      var columnWidth = Utils.getColumnWidth(element) + that.options.headerOffset;
 
       return -columnWidth * that.currentIndex;
     };
@@ -188,7 +169,7 @@
     this.slideRight = function (columnsAmount) {
       columnsAmount = columnsAmount || 1;
 
-      this.currentIndex = Math.min(this.currentIndex + columnsAmount, Math.max(getColumns().length - getVisibleColumns(), 0));
+      this.currentIndex = Math.min(this.currentIndex + columnsAmount, Math.max(Utils.getColumns(element).length - getVisibleColumns(), 0));
       _appendTranslate3d(_columnOffset());
     };
 
@@ -228,4 +209,4 @@
   Plugins.Slider = Slider;
   Plugins.register('slider', Slider);
 
-})(window, Planner.Plugins, Planner.Modernizr);
+})(window, Planner.Plugins, Planner.Modernizr, Planner.Utils);
