@@ -3,6 +3,7 @@
 
   var timer;
   var timeoutHold = 300;
+  var thresholdGuard = 0;
   var currentX = 0;
   var currentY = 0;
 
@@ -14,6 +15,7 @@
     var card;
 
     timer = setTimeout(press, timeoutHold);
+    thresholdGuard = event.touches[0].pageY;
 
     function press () {
       card = that.createCard(event.target);
@@ -28,7 +30,7 @@
   };
 
   Mixin.touchMove = function (event) {
-    if (timer) {
+    if (timer && thresholdGuard !== event.touches[0].pageY) {
       clearTimeout(timer);
     }
 
@@ -38,6 +40,7 @@
 
     if (this.currentCard !== null) {
       this.resize(event.touches[0].clientY);
+      event.preventDefault();
     }
   };
 
