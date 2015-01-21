@@ -32,6 +32,13 @@ div.planner-card {
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 // ================
@@ -45,13 +52,4 @@ div.planner-card.card-dashed {
 
 *[draggable=true] {
     cursor: move;
-
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-
-    /* Old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
 }
