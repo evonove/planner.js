@@ -81,7 +81,7 @@
 
           // this is to circumvent different columns width bug
           for (i = 0, n = columns.length - visibleColumns; i < n; i++) {
-            that.minOffset -= columns[i].offsetWidth + that.options.headerOffset;
+            that.minOffset -= columns[i].offsetWidth;
           }
         }
 
@@ -128,7 +128,7 @@
     };
 
     var _columnOffset = function () {
-      var columnWidth = Utils.getColumnWidth(element) + that.options.headerOffset;
+      var columnWidth = Utils.getColumnWidth(element);
 
       return -columnWidth * that.currentIndex;
     };

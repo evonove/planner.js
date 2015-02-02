@@ -16,11 +16,14 @@
     line-height: $line-height;
 
     .planner-column-header {
+        font-size: 14px;
         width: 90%;
-        padding: 5px;
+        padding: 2.5px;
         text-align: center;
         display: inline-block;
-        border-bottom: 5px solid #cccccc;
+        .planner-column-header-inner {
+          border-bottom: 5px solid #cccccc;
+        }
     }
 }
 
@@ -31,11 +34,14 @@
     padding-top: $container-padding;
 
     .planner-column {
+        font-size: 14px;
+        padding: 2.5px;
         width: 90%;
         margin-top: 20px;
         display: inline-block;
 
         > div {
+            position: relative;
             border-bottom: 1px dotted #cccccc;
         }
 
@@ -48,6 +54,7 @@
 .planner-slider {
     @include animate;
 
+    font-size: 0;
     position: relative;
     white-space: nowrap;
 }

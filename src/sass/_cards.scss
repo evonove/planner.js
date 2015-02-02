@@ -6,7 +6,7 @@ div.planner-card {
   @include border-radius(0px, 0px);
   @include background-opacity($card-color-light, 0.6);
 
-  width: 88%;
+  width: 99%;
   position: absolute;
   overflow: hidden;
 
@@ -17,6 +17,8 @@ div.planner-card {
   margin-left: 1%;
   padding-left: 4px;
   padding-right: 4px;
+
+  z-index: 1;
 
   text-align: left;
 
