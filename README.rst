@@ -4,15 +4,15 @@ planner.js
 
 A modular Javascript planner that uses stickers to represent your information... like a traditional planner!
 
-It's light enough:
+It's small enough:
 
-``dist/css/planner.css``: 15.08 kB → 6.4 kB (gzip)
-``dist/js/planner.js``: 98.17 kB → 42.91 kB → 11.89 kB (gzip)
+* ``dist/css/planner.css``: 15.08 kB → **6.4 kB** (gzip)
+* ``dist/js/planner.js``: 98.17 kB → 42.91 kB → **11.89 kB** (gzip)
 
 Installation
 ------------
 
-Install ``Planner.js`` dependency throuhg `bower`_:
+Install ``Planner.js`` dependency through `bower`_:
 
 .. code-block:: bash
 
@@ -39,13 +39,13 @@ Usage
 
 ``Planner.js`` offers two different way to initialize your planner.
 
-Using data-attribute styles, you can generate the planner adding a node in your HTML:
+Using data attributes, you can render the planner using just an HTML node:
 
 .. code-block:: html
 
   <div data-planner="container"></div>
 
-Otherwise, you can initialize it from your Javascript as follow:
+Otherwise, you can initialize the planner from your Javascript as follows:
 
 .. code-block:: html
 
@@ -119,7 +119,7 @@ Feel free to make your proposals!
 License
 -------
 
-planner.js is released under the terms of the BSD license. Full details in ``LICENSE`` file.
+``Planner.js`` is released under the terms of the BSD license. Full details in ``LICENSE`` file.
 
 Changelog
 ---------
