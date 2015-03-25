@@ -6,11 +6,11 @@
 // ---------
 
 @mixin transition-desktop() {
-    @include transition(all $transition-desktop linear)
+  transition: all $transition-desktop linear;
 }
 
 @mixin transition-mobile() {
-    @include transition(all $transition-mobile ease-out)
+  transition: all $transition-mobile ease-out;
 }
 
 @mixin animate() {

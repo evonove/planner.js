@@ -37,11 +37,11 @@ $degree: 45deg;
     }
 
     &:after {
-        @include rotate(-$degree);
+        transform: rotate(-$degree);
     }
 
     &:before {
-        @include rotate($degree);
+        transform: rotate($degree);
     }
 
     &:before, &:after {
@@ -65,7 +65,7 @@ $degree: 45deg;
 
 .arrow-left {
     @extend .arrow-switcher;
-    @include border-radius($arrow-flat-radius $arrow-flat-round $arrow-flat-round $arrow-flat-radius);
+    border-radius: $arrow-flat-radius $arrow-flat-round $arrow-flat-round $arrow-flat-radius;
     left: -($arrow-width - 45);
 
     &:hover {
@@ -83,7 +83,7 @@ $degree: 45deg;
 
 .arrow-right {
     @extend .arrow-switcher;
-    @include border-radius($arrow-flat-round $arrow-flat-radius $arrow-flat-radius $arrow-flat-round);
+    border-radius: $arrow-flat-round $arrow-flat-radius $arrow-flat-radius $arrow-flat-round;
     right: -($arrow-width - 45);
 
     &:hover {

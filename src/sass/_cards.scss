@@ -3,8 +3,7 @@
 // ==============
 
 div.planner-card {
-  @include border-radius(0px, 0px);
-  @include background-opacity($card-color-light, 0.6);
+  background-color: rgba($card-color-light, 0.6);
 
   width: 99%;
   position: absolute;
