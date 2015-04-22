@@ -1,10 +1,12 @@
-# Library
+# libraries
 node_modules
 .tmp
 .sass-cache
-src/modules/
 
-# Build files
+# dependencies
+vendors/
+
+# build files
 # dist/*.html
 # dist/js/main.js
 
