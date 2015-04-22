@@ -181,6 +181,28 @@ module.exports = function (grunt) {
             }
         },
 
+        htmlmin: {
+            dist: {
+                options: {
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    conservativeCollapse: true,
+                    removeAttributeQuotes: true,
+                    removeCommentsFromCDATA: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.dist %>',
+                    src: '{,*/}*.html',
+                        dest: '<%= yeoman.dist %>'
+                }]
+            }
+        },
+
         copy: {
             dist: {
                 files: [{
@@ -284,7 +306,8 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
-        'usemin'
+        'usemin',
+        'htmlmin'
     ]);
 
     grunt.registerTask('default', [

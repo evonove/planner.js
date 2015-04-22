@@ -5,8 +5,8 @@ node_modules
 src/modules/
 
 # Build files
-dist/*.html
-dist/js/main.js
+# dist/*.html
+# dist/js/main.js
 
 # IDE
 .idea/
