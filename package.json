@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/evonove/planner.js/issues"
   },
-  "homepage": "https://github.com/evonove/planner.js"
+  "homepage": "https://github.com/evonove/planner.js",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "wheelie": "^0.1.1",
+    "wheelie-recipe": "^0.1.0"
+  }
 }
