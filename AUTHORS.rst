@@ -1,0 +1,4 @@
+Authors
+=======
+
+Emanuele Palazzetti
