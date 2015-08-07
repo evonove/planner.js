@@ -7,8 +7,6 @@ node_modules
 vendors/
 
 # build files
-# dist/*.html
-# dist/js/main.js
 build/
 
 # IDE
