@@ -1,49 +1,22 @@
 {
-  "name": "planner-js",
-  "description": "Planner.js, an awesome planner!",
+  "name": "planner.js",
   "version": "0.0.0",
-  "main": "./app/js/index.js",
+  "description": "Fancy and modular Javascript planner built with Handlebars template engine",
+  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/evonove/planner.js"
+    "url": "https://github.com/evonove/planner.js.git"
   },
+  "keywords": [
+    "planner"
+  ],
+  "author": "Emanuele Palazzetti <hello@palazzetti.me>",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/evonove/planner.js/issues"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "gulp": "^3.8.10",
-    "gulp-autoprefixer": "^2.0.0",
-    "gulp-concat": "^2.5.2",
-    "gulp-declare": "^0.3.0",
-    "gulp-handlebars": "^4.0.0",
-    "gulp-if": "^1.2.5",
-    "gulp-jshint": "^1.9.0",
-    "gulp-mocha": "^1.1.1",
-    "gulp-notify": "^2.0.1",
-    "gulp-postcss": "^2.0.0",
-    "gulp-sass": "^1.2.2",
-    "gulp-sourcemaps": "^1.2.7",
-    "gulp-uglify": "^1.2.0",
-    "gulp-util": "^3.0.1",
-    "gulp-wrap": "^0.11.0",
-    "browser-sync": "^1.7.2",
-    "chalk": "^0.5.1",
-    "jshint-stylish": "^1.0.0",
-    "lodash.assign": "^3.0.0",
-    "loglevel": "~1.2.0",
-    "merge-stream": "^0.1.7",
-    "pretty-hrtime": "~0.2.1",
-    "require-dir": "^0.1.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.1.1",
-    "yargs": "^1.3.2"
-  },
-  "engines": {
-    "node": ">=0.8.0"
-  }
+  "homepage": "https://github.com/evonove/planner.js"
 }
