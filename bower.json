@@ -2,10 +2,9 @@
   "name": "planner-js",
   "version": "0.0.0",
   "dependencies": {
-    "normalize-css": "3.0.1",
     "handlebars": "3.0.0",
     "ds.js": "0.1.0",
-    "messengerjs": "0.1.0"
-  },
-  "devDependencies": {}
+    "messengerjs": "0.1.0",
+    "normalize.css": "3.0.3"
+  }
 }

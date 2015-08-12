@@ -1,12 +1,14 @@
-# Library
+# libraries
 node_modules
 .tmp
 .sass-cache
-src/modules/
 
-# Build files
-# dist/*.html
-# dist/js/main.js
+# dependencies
+vendors/
+
+# build files
+build/
+client/js/templates.js
 
 # IDE
 .idea/
