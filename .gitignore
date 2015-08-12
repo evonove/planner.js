@@ -8,6 +8,7 @@ vendors/
 
 # build files
 build/
+client/js/templates.js
 
 # IDE
 .idea/
