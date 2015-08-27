@@ -22,6 +22,6 @@
   "devDependencies": {
     "gulp": "3.9.0",
     "wheelie": "0.1.3",
-    "wheelie-recipe": "0.2.0"
+    "wheelie-recipe": "0.2.1"
   }
 }
