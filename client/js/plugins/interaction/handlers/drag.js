@@ -27,7 +27,7 @@
 
   // Attach interaction to source object
   Mixin.dragCard = function (card, element) {
-    if (card.fixed) {
+    if (card.disabled) {
       return;
     }
 

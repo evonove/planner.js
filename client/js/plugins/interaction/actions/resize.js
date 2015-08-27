@@ -4,7 +4,7 @@
   var Mixin = {};
 
   Mixin.addResizeDom = function (card, element) {
-    if (card.fixed) {
+    if (card.disabled) {
       return;
     }
 

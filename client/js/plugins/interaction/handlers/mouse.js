@@ -4,7 +4,7 @@
   var Mixin = {};
 
   Mixin.cardClick = function (card, element) {
-    if (card.fixed) {
+    if (card.disabled) {
       return;
     }
 

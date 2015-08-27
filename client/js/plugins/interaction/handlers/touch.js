@@ -58,6 +58,10 @@
   Mixin.touchTap = function (card, element) {
     var that = this;
 
+    if (card.disabled) {
+      return;
+    }
+
     element.addEventListener('touchstart', detectTap);
 
     function detectTap (event) {

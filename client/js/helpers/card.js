@@ -6,7 +6,7 @@
   // Card and DOM operations
   // -----------------------
 
-  Mixin.drawCard = function (card, cssList, fixed) {
+  Mixin.drawCard = function (card, cssList, disabled) {
     var _cardDom
       , _cachedDomList = this.mapCard.get(card);
 
@@ -16,7 +16,7 @@
     }
 
     // prevents plugin listeners from being attached
-    card.fixed = fixed;
+    card.disabled = disabled;
 
     // append a CSS list to the card
     card.cssList = cssList;
