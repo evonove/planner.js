@@ -5,6 +5,7 @@
   // ------------------
 
   function Hourline (element, options) {
+    var visibility = true;
     var hourline = Utils.createElement(Planner.Templates.hourline());
 
     element.querySelector('.planner-container').appendChild(hourline);
@@ -18,6 +19,9 @@
     // --------------
 
     this.findHeight = findHeight;
+    this.show = show;
+    this.hide = hide;
+    this.toggle = toggle;
 
     // Helpers
     // -------
@@ -40,6 +44,25 @@
       var hourlineTop = findHeight();
 
       hourline.style.top = hourlineTop + 'px';
+    }
+
+    function show () {
+      visibility = true;
+      hourline.style.display = 'inherit';
+    }
+
+    function hide () {
+      visibility = false;
+      hourline.style.display = 'none';
+    }
+
+    function toggle () {
+      visibility = !visibility;
+      if (visibility) {
+        show();
+      } else {
+        hide();
+      }
     }
   }
 
