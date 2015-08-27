@@ -6,7 +6,7 @@
   // Card and DOM operations
   // -----------------------
 
-  Mixin.drawCard = function (card, fixed) {
+  Mixin.drawCard = function (card, cssList, fixed) {
     var _cardDom
       , _cachedDomList = this.mapCard.get(card);
 
@@ -17,6 +17,9 @@
 
     // prevents plugin listeners from being attached
     card.fixed = fixed;
+
+    // append a CSS list to the card
+    card.cssList = cssList;
 
     _cachedDomList = {};
     this.mapCard.put(card, _cachedDomList);
@@ -81,6 +84,10 @@
       dom.querySelector('.planner-card-time').innerHTML = card.header();
 
       dom.style.height = cardLength + 'px';
+    }
+
+    if (card.cssList !== undefined) {
+      Utils.addClass(dom, card.cssList);
     }
   };
 
