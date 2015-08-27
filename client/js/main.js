@@ -71,6 +71,8 @@
     planner.drawCard(card2);
     planner.drawCard(card3);
     planner.drawCard(card4);
+
+    window.planner = planner;
   });
 
 })();
