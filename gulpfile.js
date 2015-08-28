@@ -12,6 +12,7 @@ var vendors = [
   'handlebars/handlebars.runtime.js',
   'ds.js/dist/hashmap.js',
   'ds.js/dist/set.js',
+  'ds.js/dist/heap.js',
   'messengerjs/dist/messenger.js'
 ];
 
