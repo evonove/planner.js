@@ -117,7 +117,7 @@
 
     // Removing all mappings
     this.mapCard.remove(card);
-    this.events.publish('cardDeleted', [this]);
+    this.events.publish('cardDeleted', [card]);
   };
 
   Mixin.clear = function() {
@@ -137,6 +137,8 @@
     // Logic delete waiting for the garbage collector to do the rest
     this.mapCard = new HashMap();
     this.mapDom = new HashMap();
+
+    this.events.publish('plannerClear', [this]);
   };
 
   // Mixin for Instance
