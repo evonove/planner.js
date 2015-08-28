@@ -1,8 +1,14 @@
 div.hourline {
   height: 0;
-  border-top: 2px solid #FF7F6E;
+  border-top: 2px solid #ff7f6e;
   overflow: hidden;
   position: absolute;
   width: 100%;
   z-index: 1030;
+}
+
+div.planner-card.past-event {
+  background: rgba(210,210,210,.2) !important;
+  border-left: solid 2px #d2d2d2 !important;
+  color: #858585 !important;
 }
