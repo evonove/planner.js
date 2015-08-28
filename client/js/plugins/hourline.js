@@ -159,7 +159,7 @@
 
       // attaching to Planner.js events;
       // this makes the Hourline plugin self-sufficient
-      planner.events.subscribe('cardCreated', heap.push);
+      planner.events.subscribe('cardDrawn', heap.push);
       planner.events.subscribe('cardDeleted', heap.remove);
       planner.events.subscribe('cardUpdated', heap.update);
       planner.events.subscribe('plannerClear', heap.clear);
