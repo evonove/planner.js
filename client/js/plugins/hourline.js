@@ -19,6 +19,7 @@
     // --------------
 
     this.findHeight = findHeight;
+    this.scrollScreen = scrollScreen;
     this.show = show;
     this.hide = hide;
     this.toggle = toggle;
