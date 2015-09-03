@@ -44,6 +44,10 @@
     }
 
     var _attachArrowsEvents = function () {
+      // append arrows template
+      that.element.innerHTML += Planner.Templates.arrows();
+
+      // attach arrow listeners
       var arrowLeft = that.element.querySelector('.arrow-left')
         , arrowRight = that.element.querySelector('.arrow-right');
 
