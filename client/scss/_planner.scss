@@ -12,3 +12,10 @@ div[data-planner=container] {
     font-size: $text-size;
     line-height: $line-height;
 }
+
+.planner-scroller {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
