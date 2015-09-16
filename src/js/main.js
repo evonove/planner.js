@@ -62,7 +62,17 @@
         'mobile',
         'interaction',
         'hourline'
-      ]
+      ],
+      mobileVisibleColumns: {
+        phone: {
+          landscape: 7,
+          portrait: 1
+        },
+        tablet: {
+          landscape: 5,
+          portrait: 3
+        }
+      }
     };
 
     // Init and draw cards

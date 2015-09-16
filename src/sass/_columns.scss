@@ -24,6 +24,8 @@
 
         .planner-column-header-inner {
           border-bottom: 5px solid #cccccc;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
     }
 }
