@@ -1,6 +1,6 @@
 {
   "name": "planner.js",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Fancy and modular Javascript planner built with Handlebars template engine",
   "main": "gulpfile.js",
   "scripts": {
