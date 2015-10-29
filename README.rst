@@ -4,10 +4,14 @@ planner.js
 
 A modular Javascript planner that uses stickers to represent your information... like a traditional planner!
 
-It's small enough:
+Built with `Wheelie`_!
 
-* ``dist/css/planner.css``: 15.08 kB → **6.4 kB** (gzip)
-* ``dist/js/planner.js``: 98.17 kB → 42.91 kB → **11.89 kB** (gzip)
+It's small enough (minified):
+
+* ``dist/css/planner.css``: 5.5 kB
+* ``dist/js/planner.js``: 45 kB
+
+.. _Wheelie: https://github.com/palazzem/wheelie
 
 Installation
 ------------
@@ -106,13 +110,11 @@ Roadmap
 
 We're working hard to create a really nice component and this is the future we see for this widget:
 
-* change the build system
 * use ES6 modules to provide a better code experience :)
 * write tests to have a nice code coverage and use cases coverage
-* provide a timeline plugin that can transform the planner in a real time planner
 * provide the list of available options
 * provide the list of public APIs to manipulate the planner programmatically
-* extend Internet Explorer support (IE9+)
+* extend Internet Explorer support (IE10+)
 
 Feel free to make your proposals!
 
