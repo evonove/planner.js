@@ -126,6 +126,24 @@ License
 Changelog
 ---------
 
+0.1.0 [2015-10-29]
+~~~~~~~~~~~~~~~~~~
+
+**New features**
+
+* build system migration towards `Gulp`_
+* added `Wheelie`_ task registry
+* hourline plugin offers show/hide/toggle methods for displaying/hiding the DOM element
+* hourline plugin adds the *passing time* effect and appends new styles to the card
+* hourline plugin provides a method to reset the viewport on the current time
+
+**Bugfixes**
+
+* users selection is disabled on the header and on the side bar
+* arrows are not added to the main template until needed
+
+.. _Gulp: http://gulpjs.com/
+
 0.0.4 [2015-09-16]
 ~~~~~~~~~~~~~~~~~~
 
